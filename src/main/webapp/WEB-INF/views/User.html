@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
+    <title>Document</title>
+    {% load static %}
+</head>
+
+<body>
+    <div class="header">
+        <div class="header_item1">
+            <div>Liên hệ: 0818666***/0979334***</div>
+            <div>Email: 20521251@gm.uit.edu.vn </div>
+            <div class="dropdown">
+                <span><i class="fa-regular fa-user"></i> {{user.username}} <i class="fa-solid fa-angle-down"></i></span>
+                <div class="dropdown-content">
+                    <a href="">Thông tin cá nhân</a>
+                    <a href="">Lịch sử giao dịch</a>
+                    <a href="/Changeyourpassword">Đổi mật khẩu</a>
+                    <a href="/Logout">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+        <div class="header_item2">
+            <a href="/"><img style="width: 350px;" src="{%static 'image/logoLacViet.png'%}" alt=""></a>
+            <div class="form">
+                <form action="/Search/" method='POST'>
+                    {%csrf_token%}
+                    <input class="input1" list="types" name="types" placeholder=" Danh mục">
+                    <datalist id="types">
+                        <option value="Hàng hiệu">
+                        <option value="Sưu tầm - Nghệ thuật">
+                        <option value="Phương tiện xe cộ">
+                        <option value="Bất động sản - Quyền sử dụng đất">
+                        <option value="Tài sản thanh lý">
+                    </datalist>
+                    <input class="input2" type="text" id="searched" name="searched" placeholder="Tìm kiếm...">
+                    <button><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="header_item3">
+            &nbsp;
+            <nav role="navigation" class="primary-navigation">
+                <li>
+                    <a style="color:white;"><i class="fa-solid fa-bars"></i> Danh mục tài sản</a>
+                    <ul class="dropdown">
+                        <li><a href="/Search/Hàng hiệu">Hàng hiệu</a></li>
+                        <li><a href="/Search/Sưu tầm - Nghệ thuật">Sưu tầm - Nghệ thuật</a></li>
+                        <li><a href="/Search/Phương tiện xe cộ">Phương tiện xe cộ</a></li>
+                        <li><a href="/Search/Bất động sản - Quyền sử dụng đất">Bất động sản </a></li>
+                        <li><a href="/Search/Tài sản thanh lý">Tài sản thanh lý</a></li>
+                    </ul>
+                </li>
+            </nav>
+            <form action="/Search/" method="POST">
+                {%csrf_token%}
+                <input type="hidden" list="types" name="types">
+                <input type="hidden" id="searched" name="searched" placeholder="Tìm kiếm...">
+                <button class="but1">
+                    <a class="a1">Cuộc đấu giá</a></button>
+            </form>
+            <a class="a1" href="/Information">Tin tức</a>
+            <a class="a1" href="/Information">Giới thiệu</a>
+            <a class="a1" href="/Lienhe">Liên hệ bán tài sản</a>
+            <DIv></DIv>
+            <p id="time"></p>
+            <p id="current_date"></p>
+            <script>
+                date = new Date();
+                year = date.getFullYear();
+                month = date.getMonth() + 1;
+                day = date.getDate();
+                document.getElementById("current_date").innerHTML = day + "/" + month + "/" + year;
+
+            </script>
+        </div>
+    </div>
+    <div class="item">
+        <a href="/Auction">Trang chủ/</a>
+        <a href="/Auction">Tài khoản</a>
+        <div style="padding-bottom: 0.5ch;">Quản lý tài khoản</div>
+    </div>
+    <div class="main1">
+        <div class="TuyChon">
+            <div style="display: flex; flex-direction: column;align-items: center;">
+                <div style="font-size: 24px;padding-top: 1.5ch;">{{user_profile.firstname}} {{user_profile.lastname}}
+                </div>
+                <div style="padding-bottom:0.5ch;padding-bottom: 1ch;">Tài khoản cá nhân</div>
+                <img style="width: 155px;background-color: white; border-radius: 200px;"
+                    src="{%static 'image/user1.png'%}" alt="">
+                <div style="background-color: white;height:2cm;width:100% ;"></div>
+            </div>
+            <a><i class="fa-regular fa-bell"></i>&nbsp; Thông báo</a>
+            <a><i class="fa-regular fa-circle-user"></i>&nbsp; Thông tin tài
+                khoản</a>
+            <a><i class="fa-solid fa-bars-staggered"></i>&nbsp; Lịch sử giao dịch
+            </a>
+            <a><i class="fa-solid fa-house-chimney"></i>&nbsp; Cuộc đấu giá của
+                tôi</a>
+            <a href="/Logout"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; Đăng xuất </a>
+        </div>
+        <div class="in4 thongbao in4--active ">
+            <div class="thongbao1">
+                Thông báo
+            </div>
+            {%for notification in notification_list %}
+            <a class="list" href="/Goods/{{notification.goods}}">
+                <div><i class="fa-regular fa-bell"></i></div>
+                <div>{{notification.type}} sản phẩm </div>
+                <div>{{notification.goods}}</div>
+                <div>{{notification.price}} VND</div>
+                <div>{{notification.time}}
+                </div>
+            </a>
+            {%endfor%}
+        </div>
+        <div class="in4 info ">
+            <div class="thongbao1">
+                Thông tin tài khoản
+            </div>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <label style="grid-column: 1/2;">Họ và tên:</label>
+                <input style="grid-column: 2/5;" type="text" name="firstname"
+                    value="{{user_profile.firstname}} {{user_profile.lastname}}" readonly>
+                <label style="grid-column: 1/2;">Địa chỉ email:</label>
+                <input style="grid-column: 2/7;" type="email" name="email" value="{{user.email}}" readonly>
+                <label style="grid-column: 1/2;">Số điện thoại(di động):</label>
+                <input style="grid-column: 2/7;" type="text" name="phonenumber" value="{{user_profile.phonenumber}}"
+                    readonly>
+                <label style="grid-column: 1/2;">Ngày sinh:</label>
+                <input style="grid-column: 2/7;" value="{{user_profile.dateofbirth}}" readonly>
+                <label style="grid-column: 1/2;">Địa chỉ:</label>
+                <input style="grid-column: 2/4;" name="tinh" value="{{user_profile.tinh}}" readonly>
+                <input style="grid-column: 4/6;" name="huyen" value="{{user_profile.huyen}}" readonly>
+                <input style="grid-column: 6/7;" name="xa" value="{{user_profile.xa}}" readonly>
+                <input style="grid-column: 2/7;" type="text" name="diachi" value="{{user_profile.diachi}}" readonly>
+                <label style="grid-column: 1/2;">Giới tính:</label>
+                <input style="grid-column: 2/4;" type="text" name="diachi" value="{{user_profile.gender}}" readonly>
+
+
+            </form>
+        </div>
+        <div class="in4 history ">
+            <div class="thongbao1">
+                Lịch sử giao dịch
+            </div>
+            <a class="list0">
+                <div>Tên người dùng </div>
+                <div>Giá tiền</div>
+                <div>ID sản phẩm</div>
+                <div>Thời gian trả giá </div>
+            </a>
+            {%for history in history_list %}
+            <a class="list1" href="/Goods/{{history.goods}}">
+                <div>{{history.user}} </div>
+                <div>{{history.price}} VND</div>
+                <div>{{history.goods}}</div>
+                <div>{{history.datetime}}
+                </div>
+            </a>
+            {%endfor%}
+        </div>
+        <div class="in4 myauction ">
+            <div class="thongbao1">
+                Các cuộc dấu giá
+            </div>
+            <a class="list0">
+                <div>Tên người dùng </div>
+                <div>Giá khởi điểm</div>
+                <div>ID sản phẩm </div>
+                <div>Ngày đấu giá</div>
+            </a>
+            {%for goods in goods_list %}
+            <a class="list1" href="/Goods/{{goods.id}}">
+                <div>{{goods.user}} </div>
+                <div>{{goods.price}} VND</div>
+                <div>{{goods.id}}</div>
+                <div>{{goods.startingdate}}</div>
+            </a>
+            {%endfor%}
+        </div>
+    </div>
+    <script>
+        const thongbao = document.querySelectorAll(".in4.thongbao")
+        const history = document.querySelectorAll(".in4.history")
+        const info = document.querySelectorAll(".in4.info")
+        const myauction = document.querySelectorAll(".in4.myauction")
+        const tuychon = document.querySelector(".TuyChon").children
+        tuychon[1].addEventListener('click', () => {
+            thongbao.forEach((item) => item.classList.add("in4--active"))
+            info.forEach((item) => item.classList.remove("in4--active"))
+            history.forEach((item) => item.classList.remove("in4--active"))
+            myauction.forEach((item) => item.classList.remove("in4--active"))
+        })
+        tuychon[2].addEventListener('click', () => {
+            thongbao.forEach((item) => item.classList.remove("in4--active"))
+            info.forEach((item) => item.classList.add("in4--active"))
+            history.forEach((item) => item.classList.remove("in4--active"))
+            myauction.forEach((item) => item.classList.remove("in4--active"))
+
+        })
+        tuychon[3].addEventListener('click', () => {
+            thongbao.forEach((item) => item.classList.remove("in4--active"))
+            info.forEach((item) => item.classList.remove("in4--active"))
+            history.forEach((item) => item.classList.add("in4--active"))
+            myauction.forEach((item) => item.classList.remove("in4--active"))
+
+        })
+        tuychon[4].addEventListener('click', () => {
+            thongbao.forEach((item) => item.classList.remove("in4--active"))
+            info.forEach((item) => item.classList.remove("in4--active"))
+            history.forEach((item) => item.classList.remove("in4--active"))
+            myauction.forEach((item) => item.classList.add("in4--active"))
+        })
+    </script>
+    <style>
+        .but1 {
+            background-color: transparent;
+            border: none;
+            font-family: 'Times New Roman', Times, serif;
+            height: 1.75cm;
+            padding: 0cm;
+        }
+
+        /*--------------------------------*/
+        .in4 {
+            padding-left: 4ch;
+            display: none;
+        }
+
+        .in4--active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .in4.history.in4--active {
+            display: flex;
+        }
+
+        .in4.history {
+            display: hidden;
+        }
+
+        .in4.info {
+            display: hidden;
+        }
+
+        .in4.myauction {
+            display: hidden;
+        }
+
+        .thongbao1 {
+            background-color: #dfdfdf;
+            font-size: 18px;
+            border-style: hidden hidden solid hidden;
+            border-color: #585858;
+            display: grid;
+            grid-template-columns: 30% 70%;
+            align-items: center;
+            height: 1cm;
+            text-align: center;
+            padding-bottom: 2px;
+        }
+
+        /*---------------form----------------*/
+        .in4 form {
+            display: grid;
+            grid-template-columns: 25% 1fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 1em;
+            padding: 3em;
+            background-color: white;
+        }
+
+        .in4 form input {
+            padding: 0.5em;
+            border: none;
+            border-bottom: 1px solid #686666;
+            background-color: white;
+            font-size: 16px;
+        }
+
+        .in4 form label {
+            padding: 1em;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .in4 form button {
+            padding: 0.5em;
+            width: 4cm;
+            height: 1cm;
+            background-color: #b41712;
+            border: none;
+            border-radius: 100px;
+            color: white;
+        }
+
+        /*--------------list----------------*/
+        .list {
+            background-color: #ffffff;
+            font-size: 18px;
+            display: grid;
+            grid-template-columns: 5% 25% 30% 20% 20%;
+            height: 2.5cm;
+            align-items: center;
+            padding-left: 2ch;
+            border-style: hidden solid solid solid;
+            border-width: 1px;
+            border-color: #dfdfdf;
+        }
+
+        .list:hover {
+            background-color: #ffffff;
+            font-size: 18px;
+            display: grid;
+            grid-template-columns: 5% 25% 30% 20% 20%;
+            height: 2.5cm;
+            align-items: center;
+            padding-left: 2ch;
+            border-style: solid solid solid solid;
+            border-width: 1px;
+            border-color: #242424;
+        }
+
+        .list0 {
+            background-color: #ffffff;
+            font-size: 18px;
+            display: grid;
+            grid-template-columns: 15% 25% 35% 25%;
+            height: 1cm;
+            align-items: center;
+            text-align: center;
+            padding-left: 2ch;
+            border-style: hidden solid solid solid;
+            border-width: 1px;
+            border-color: #dfdfdf;
+        }
+
+        .list1 {
+            background-color: #ffffff;
+            font-size: 18px;
+            display: grid;
+            grid-template-columns: 15% 25% 35% 25%;
+            height: 1cm;
+            align-items: center;
+            text-align: center;
+            padding-left: 2ch;
+            border-style: hidden solid solid solid;
+            border-width: 1px;
+            border-color: #dfdfdf;
+        }
+
+        .list1:hover {
+            background-color: #ffffff;
+            font-size: 18px;
+            display: grid;
+            grid-template-columns: 15% 25% 35% 25%;
+            height: 1cm;
+            align-items: center;
+            text-align: center;
+            padding-left: 2ch;
+            border-style: solid solid solid solid;
+            border-width: 1px;
+            border-color: #242424;
+        }
+
+        .primary-navigation {
+            margin: 0 auto;
+            display: flex;
+            font-size: 20px;
+            height: 100%;
+        }
+
+        .primary-navigation li {
+            list-style: none;
+            margin: 0 auto;
+            display: inline-flex;
+            position: relative;
+            text-decoration: none;
+            height: 1.75cm;
+            align-items: center;
+        }
+
+        .primary-navigation li ul {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            padding-left: 0;
+            top: 50px;
+            left: 0px;
+            display: none;
+            background: white;
+        }
+
+        .primary-navigation li ul::before {
+            content: '';
+            top: -10px;
+            position: absolute;
+            width: 100%;
+            z-index: 10;
+            height: 20px;
+            background-color: transparent;
+        }
+
+        .primary-navigation li:hover>ul,
+        .primary-navigation li ul:hover {
+            visibility: visible;
+            opacity: 1;
+            display: block;
+            min-width: 250px;
+            text-align: left;
+            padding-top: 10px;
+            box-shadow: 0px 3px 5px -1px #ccc;
+        }
+
+        .primary-navigation li ul li {
+            clear: both;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 20px;
+            padding-left: 5px;
+            border-style: none;
+            text-decoration: none;
+            height: 100%;
+
+        }
+
+        .primary-navigation li ul li a {
+            text-align: center;
+            display: flex;
+            transition: all 1s ease;
+            padding-left: 10px;
+        }
+
+        .primary-navigation li ul li a:hover {
+            padding-left: 20px;
+            border-left: 3px solid #ffffff;
+            transition: all 0.3s ease;
+            color: #b41712;
+            height: 100%;
+            text-align: left;
+        }
+
+        /*---------------header-------------------*/
+        body {
+            background-color: rgb(248, 250, 250);
+        }
+
+        .header_item1 {
+            display: grid;
+            grid-template-columns: 18% 67% 7% 8%;
+            align-items: center;
+            padding-left: 2vh;
+            border-color: rgb(182, 181, 181);
+            border-style: hidden hidden solid hidden;
+            border-width: 1px;
+            color: rgb(161, 161, 161);
+            background-color: rgb(248, 250, 250);
+        }
+
+        a {
+            list-style: none;
+            color: black;
+            text-decoration: none;
+        }
+
+        .header_item2 {
+            display: grid;
+            grid-template-columns: 30% 50%;
+            align-items: center;
+            padding: 1.5ch;
+            background-color: rgb(248, 250, 250);
+        }
+
+        .header_item3 {
+            display: grid;
+            grid-template-columns: 2% 15% 8% 8% 8% 15% 24% 6% 6%;
+            align-items: center;
+            justify-items: center;
+            height: 1.75cm;
+            background-color: #b41712;
+            color: white;
+            font-size: 20px;
+            position: relative;
+        }
+
+        .a1 {
+            color: white;
+            font-size: 20px;
+        }
+
+        .a1:hover {
+            background-color: #ffffff;
+            color: #b41712;
+            font-size: 20px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        .input01 {
+            border: none;
+        }
+
+        .input1 {
+            border-bottom-left-radius: 15px;
+            border-top-left-radius: 15px;
+            border: none;
+            height: 1cm;
+            padding-right: 0%;
+            box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
+        }
+
+        .input2 {
+            border-bottom-right-radius: 15px;
+            border-top-right-radius: 15px;
+            border: none;
+            height: 1cm;
+            width: 10cm;
+            padding-left: 0%;
+            box-shadow: 50px 10px #111111 0 0 10px 30px #0e0d0d 30px 0 20px 30px #1a1919;
+        }
+
+        .form form button {
+            background-color: rgb(66, 65, 65);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            width: 1cm;
+            height: 1cm;
+        }
+
+        /*-------------dropdowm-----------*/
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            color: #0e0d0d;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 140px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            padding: 12px 16px;
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dropdown-content a:hover {
+            font-size: 18px;
+            color: #b41712;
+        }
+
+        /*------------item-----------*/
+        .item div {
+            padding-top: 0.3em;
+            font-size: 24px;
+        }
+
+        .item {
+            padding-top: 2ch;
+            border-color: rgb(182, 181, 181);
+            border-style: hidden hidden solid hidden;
+            border-width: 1px;
+        }
+
+        .item a {
+            color: gray;
+        }
+
+        /*-----------main1----------*/
+        .main1 {
+            display: grid;
+            grid-template-columns: 25% 75%;
+        }
+
+        .TuyChon {
+            background-color: #b41712;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            height: 18cm;
+        }
+
+        .TuyChon a {
+            height: 1.5cm;
+            color: #ffffff;
+            font-size: 18px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 1ch;
+        }
+
+        .TuyChon a:hover {
+            background-color: #ffffff;
+            color: #b41712;
+            font-size: 18px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 1ch;
+        }
+    </style>
+</body>
+
+</html>

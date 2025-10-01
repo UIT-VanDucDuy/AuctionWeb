@@ -1,0 +1,129 @@
+.header {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 15% 11% 11% 11%;
+    align-items: center;
+    position: fixed;
+    background-color: white;
+    z-index: 1;
+    padding: 0.5vw;
+    padding-left: 2vh;
+    left: 0;
+    top: 0;
+}
+
+a {
+    list-style: none;
+    color: black;
+    text-decoration: none;
+
+}
+
+.slideshow {
+    overflow: hidden;
+    height: 500px;
+    width: 1300px;
+    margin-top: 80px;
+    background-color: rgb(243, 243, 243);
+    padding-left: 15px;
+}
+
+.slides {
+    background-color: rgb(243, 243, 243);
+    align-items: center;
+    justify-items: center;
+    width: 6000px;
+    -webkit-animation: slide 14s ease infinite;
+}
+
+.slide {
+    float: left;
+    width: 1500px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-items: center;
+}
+
+@-webkit-keyframes slide {
+    20% {
+        margin-left: 0px;
+    }
+
+    30% {
+        margin-left: -1500px;
+    }
+
+    50% {
+        margin-left: -1500px;
+    }
+
+    60% {
+        margin-left: -3000px;
+    }
+
+    80% {
+        margin-left: -3000px;
+    }
+}
+.PDG{
+    background-color: red;
+    font-size: large;
+    border: none;
+    border-radius: 2px;
+    padding: 6px;
+    width: 5cm;
+    height: 1.5cm;
+}
+.TTNB{
+    border: none;
+    border-radius: 2px;
+    font-size: 15px;
+    padding: 6px;
+    width: 3cm;
+    height: 1cm;
+}
+.main1{
+    padding-left: 3vh;
+    padding-right: 3vh;
+    padding-bottom: 3vh;
+    display: flex;
+    flex-direction: row;
+    font-size: 24px;
+}
+.new{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    border-color: gray;
+
+}
+/*------------main4------------*/
+.main4 {
+    padding-top: 5ch;
+    padding-bottom: 5ch;
+    padding-left: 3ch;
+    padding-right: 3ch;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 30px;
+    border: #686666;
+    border-color: red;
+    font-size: 22px;
+}
+
+.main4>div>a {
+    font-size: 17px;
+    color: #686666;
+}
+.timkiem {
+    display: grid;
+    grid-template-columns: 40% 40% 20%;
+    align-items: center;
+    justify-items: center;
+    height: 1.5cm;
+    background-color: #b41712;
+    color: white;
+    font-size: 20px;
+}
