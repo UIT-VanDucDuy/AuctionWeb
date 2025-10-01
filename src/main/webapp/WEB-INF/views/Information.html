@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
+    <title>Giới thiệu</title>
+    {% load static %}
+</head>
+
+<body>
+    <div class="header">
+        <div class="header_item1">
+            <div>Liên hệ: 0818666***/0979334***</div>
+            <div>Email: 20521251@gm.uit.edu.vn </div>
+            <div class="dropdown">
+                <span><i class="fa-regular fa-user"></i> {{user.username}} <i class="fa-solid fa-angle-down"></i></span>
+                <div class="dropdown-content">
+                    <a href="/User">Thông tin cá nhân</a>
+                    <a href="">Lịch sử giao dịch</a>
+                    <a href="/Changeyourpassword">Đổi mật khẩu</a>
+                    <a href="/Logout">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+        <div class="header_item2">
+            <a href="/"><img style="width: 350px;" src="{%static 'image/logoLacViet.png'%}" alt=""></a>
+            <div class="form">
+                <form action="/Search/" method='POST'>
+                    {%csrf_token%}
+                    <input class="input1" list="types" name="types" placeholder=" Danh mục">
+                    <datalist id="types">
+                        <option value="Hàng hiệu">
+                        <option value="Sưu tầm - Nghệ thuật">
+                        <option value="Phương tiện xe cộ">
+                        <option value="Bất động sản - Quyền sử dụng đất">
+                        <option value="Tài sản thanh lý">
+                    </datalist>
+                    <input class="input2" type="text" id="searched" name="searched" placeholder="Tìm kiếm...">
+                    <button><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="header_item3">
+            &nbsp;
+            <nav role="navigation" class="primary-navigation">
+                <li>
+                    <a style="color:white;"><i class="fa-solid fa-bars"></i> Danh mục tài sản</a>
+                    <ul class="dropdown">
+                        <li><a href="/Search/Hàng hiệu">Hàng hiệu</a></li>
+                        <li><a href="/Search/Sưu tầm - Nghệ thuật">Sưu tầm - Nghệ thuật</a></li>
+                        <li><a href="/Search/Phương tiện xe cộ">Phương tiện xe cộ</a></li>
+                        <li><a href="/Search/Bất động sản - Quyền sử dụng đất">Bất động sản </a></li>
+                        <li><a href="/Search/Tài sản thanh lý">Tài sản thanh lý</a></li>
+                    </ul>
+                </li>
+            </nav>
+            <form action="/Search/" method="POST">
+                {%csrf_token%}
+                <input type="hidden" list="types" name="types">
+                <input type="hidden" id="searched" name="searched" placeholder="Tìm kiếm...">
+                <button class="but1">
+                    <a class="a1">Cuộc đấu giá</a></button>
+            </form>
+            <a class="a1" href="/Information">Tin tức</a>
+            <a class="a1" href="/Information">Giới thiệu</a>
+            <a class="a1" href="/Lienhe">Liên hệ bán tài sản</a>
+            <DIv></DIv>
+            <p id="time"></p>
+            <p id="current_date"></p>
+            <script>
+                date = new Date();
+                year = date.getFullYear();
+                month = date.getMonth() + 1;
+                day = date.getDate();
+                document.getElementById("current_date").innerHTML = day + "/" + month + "/" + year;
+
+            </script>
+        </div>
+    </div>
+    <div class="item">
+        <a href="/Auction">Trang chủ/</a>
+        <a href="/Information">Giới thiệu</a>
+        <div style="padding-bottom: 0.5ch;">Giới thiệu về chúng tôi</div>
+    </div>
+    </div>
+    <div style="padding: 2ch;"></div>
+    <div class="main3">
+        <div style="grid-column: 1/2;">
+            <div>
+                <p>
+                    Lời đầu tiên Công ty Đấu giá Hợp danh Lạc Việt xin được gửi lời chào trân trọng nhất tới Quý Khách
+                    hàng.
+                </p>
+                <p>Trong xu thế phát triển tất yếu của nghề “Bán đấu giá”, Công ty Đấu giá Hợp danh Lạc Việt đã được
+                    hình
+                    thành. Với một Hội đồng cố vấn gồm các chuyên viên đấu giá, luật sư nhiều năm kinh nghiệm và được
+                    điều
+                    hành bởi các đấu giá viên chuyên nghiệp của Bộ Tư pháp, chúng tôi là một trong 18 đơn vị bán đấu giá
+                    chuyên nghiệp trên địa bàn thành phố Hà Nội được Sở Tư pháp Thành phố Hà Nội tổng hợp trong báo cáo
+                    số
+                    35/BC-STP, ngày 15 tháng 8 năm 2011. Là đơn vị đấu giá duy nhất được Chủ tịch Ủy ban nhân dân Thành
+                    phố
+                    Hà Nội tặng bằng khen vì “đã có thành tích trong hoạt động bổ trợ Tư pháp năm 2014” ngày 19/03/2015.
+                    Công ty chúng tôi hiện có Chi nhánh tại các thành phố lớn trên toàn quốc như: Thành phố Hồ Chí Minh,
+                    Thành phố Đà Nẵng, cũng như các Văn phòng đại diện trên toàn địa bàn thành phố Hà Nội.</p>
+                <p>Công ty Đấu giá Hợp danh Lạc Việt là một thành viên trong Lạc Việt Group với hệ thống Văn phòng Công
+                    chứng và Công ty Luật có chuyên môn nghiệp vụ cao, đây là sự hỗ trợ đắc lực cho hoạt động bán đấu
+                    giá
+                    tài sản của Công ty chúng tôi. Do đó, Công ty Đấu giá Hợp danh Lạc Việt luôn tin tưởng và đảm bảo sẽ
+                    đem
+                    đến cho Quý Khách hàng chất lượng dịch vụ tốt nhất và hiệu quả nhất.</p>
+                <p>Chúng tôi được biết Quý Khách hàng đang có nhu cầu về tư vấn và tổ chức bán đấu giá tài sản, vì vậy
+                    Công
+                    ty chúng tôi xin gửi Hồ sơ đề xuất giới thiệu về năng lực của Công ty với mong muốn được chọn là tổ
+                    chức
+                    bán đấu giá tài sản cho Quý Khách hàng.
+                </p>
+                <p>Với phương châm hoạt động: “Đem lại hiệu quả kinh tế vượt trội”, chúng tôi hy vọng sẽ làm hài lòng
+                    Quý
+                    Khách và mong muốn được đồng hành cùng Quý Khách hàng trong suốt quá trình hoạt động và phát triển.
+
+                </p>
+            </div>
+            <div>
+                <div class="p1">VỀ CHÚNG TÔI</div>
+                <p>Tiền thân của Công ty chúng tôi là Công ty Cổ phần Bán đấu giá Lạc Việt được thành lập vào ngày 29
+                    tháng 04 năm 2011 bởi hai người:
+                </p>
+                <li>Bà Đỗ Thị Hồng Hạnh – Th.s Luật Quốc Tế, Đấu giá viên, nguyên Tổng giám đốc Công ty cổ phần Bán đấu
+                    giá Lạc Việt.</li>
+                <li>Ông Đoàn Xuyên Sơn - Luật sư, giám đốc Công ty TNHH Luật Khánh Việt</li>
+                <p>
+                    Công ty hiện nay đang hoạt động dưới sự điều hành của những nhà quản lý là các luật sư và đấu giá
+                    viên có trình độ chuyên môn cao, do đó Công ty đang không ngừng phát triển và có uy tín trong lĩnh
+                    vực hành nghề đấu giá.
+                </p>
+            </div>
+            <div class="div1">
+                <div>
+                    <p>“Chúng tôi muốn đi trước, đón đầu để đến khi thế giới nhìn vào, họ cũng thấy, ở Việt Nam có những
+                        nhà bán đấu giá có uy tín, họ cũng sẽ gửi tài sản về đây nhờ mình bán, hoặc mời mình ra nước
+                        ngoài hợp tác. Con đường còn rất dài, chúng tôi mới chỉ như một đứa bé đang chập chững tập đi.
+                    </p>
+                    <p>Chỉ mong Lạc Việt sẽ là con tàu dẫn đầu, sau này càng nhiều tàu đi càng đông vui, cùng đến đích,
+                        tàu đi trước cản sóng cho tàu đi sau, vượt sóng lớn an toàn”</p>
+                </div>
+                <div style="background: transparent; height: 250px;">
+                    <img style="height:80%; width: 65%;object-fit: cover;" src=" {% static 'image/user1.png' %}" alt="">
+                    <div style="font-size: 20px;"> Văn Đức Duy</div>
+                    <div>Tổng giám đốc công ty đấu giá Lạc Việt</div>
+                </div>
+            </div>
+            <div style="display: grid;grid-template-columns: 25% 25% 25% 25%; padding: ch;">
+                <div class="p1" style="grid-column:1/5">NHỮNG CON SỐ NỔI BẬT</div>
+                <div class="main2_item">
+                    <img src="{%static 'image/LandingPage (3).png'%}" alt="">
+                    <div style="color:red;font-size:30px;font-weight: bold;">69 +</div>
+                    <div>Nhà đấu giá đối tác của Lạc Việt</div>
+                </div>
+                <div class="main2_item">
+                    <img src="{%static 'image/LandingPage (4).png'%}" alt="">
+                    <div style="color:red;font-size:30px;font-weight: bold;">3.569 tỷ + </div>
+                    <div>Giá trị tài sản đã bán</div>
+                </div>
+                <div class="main2_item">
+                    <img src="{%static 'image/LandingPage (6).png'%}" alt="">
+                    <div style="color:red;font-size:30px;font-weight: bold;">350 +</div>
+                    <div>Tài sản đã đấu giá thành công</div>
+                </div>
+                <div class="main2_item">
+                    <img src="{%static 'image/LandingPage (5).png'%}" alt="">
+                    <div style="color:red;font-size:30px;font-weight: bold;">296 +</div>
+                    <div>Cuộc đấu giá đã diễn ra</div>
+                </div>
+            </div>
+            <div>
+                <div class="p1" style="grid-column:1/5 ">SỨ MỆNH</div>
+                <p>Sứ mệnh của chúng tôi là xây dựng lên một cộng đồng đấu giá chuyên nghiệp và bền vững ở Việt Nam. Đấu
+                    giá Lạc Việt tự hào là đơn vị đi đầu về chuyển đổi số trong lĩnh vực đấu giá tại Việt Nam, tạo ra
+                    trải nghiệm đấu giá kết hợp Online - Offline thuận tiện, đơn giản hơn bao giờ hết.</p>
+                <p style="color:#686666;text-align: center;"><img style="height:100%; width: 100%;object-fit: cover;"
+                        src="{% static 'image/Quangcanh-aboutus.png' %}" alt=""> Buổi đấu giá tác phẩm nghệ thuật đầu
+                    tiên tại Việt Nam</p>
+
+            </div>
+
+        </div>
+        <div class="Tintuc">
+            <div>
+                <div class="tt1">Tin tức</div>
+                <div>
+                    <p style="margin-left: 1ch;"><a href="#" style="font-size: 17px;">Thông báo việc đấu giá đối với
+                            danh mục tài
+                            sản: Tài sản thi hành án theo quy định của pháp luật về thi hành án dân sự;</a></p>
+                    <p style="margin-left: 1ch;"><a href="#" style="font-size: 17px;">Thông báo việc đấu giá đối với
+                            danh mục tài sản: Tài sản thi
+                            hành án theo quy định của
+                            pháp luật về thi hành án dân sự;</a></p>
+                    <p style="margin-left: 1ch;"><a href="#" style="font-size: 17px;">Thông báo việc đấu giá đối với
+                            danh mục tài sản: Tài sản thi
+                            hành án theo quy định của
+                            pháp luật về thi hành án dân sự;</a></p>
+                    <p style="margin-left: 1ch;"><a href="#" style="font-size: 17px;">
+                            Thông báo việc đấu giá đối với danh mục tài sản: tài sản kê biên thi hành án của Công ty cổ
+                            phần
+                            Luyện cán thép Việt Mỹ</a></p>
+                </div>
+            </div>
+            <div>
+                <div class="tt1" style="padding-top: 3ch;">Danh mục tài sản</div>
+                <div>
+                    <p style="margin-left: 1ch;"><a href="/Search/Hàng hiệu">Hàng hiệu</a></p>
+                    <p style="margin-left: 1ch;"><a href="/Search/Sưu tầm - Nghệ thuật">Sưu tầm - Nghệ thuật</a></p>
+                    <p style="margin-left: 1ch;"><a href="/Search/Phương tiện xe cộ">Phương tiện xe cộ</a></p>
+                    <p style="margin-left: 1ch;"><a href="/Search/Bất động sản - Quyền sử dụng đất">Bất động sản </a>
+                    </p>
+                    <p style="margin-left: 1ch;"><a href="/Search/Tài sản thanh lý">Tài sản thanh lý</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main5">
+        <div class="main5_item">
+            <div style="grid-column:1/2;font-size: 50px;">Trở thành đối tác của Lạc Việt</div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div style="align-items: center;flex-direction: column;justify-items: center;display: flex;">
+                <div style="grid-row:1/3;font-size: 20px;color: grey;"><br>Trở thành đối tác của Lạc Việt. Chúng tôi
+                    sẽ đồng hành
+                    cùng bạn để đấu giá các tác phẩm nghệ thuật.
+                    Sứ mệnh của chúng tôi là xây dựng lên một cộng đồng đấu giá chuyên nghiệp và bền vững ở Việt
+                    Nam.
+                </div>
+                &nbsp;
+                <a href="http://127.0.0.1:8000/Lienhe"><button onclick="clickLHBTS()">liên hệ bán tài
+                        sản</button>
+                </a>
+            </div>
+
+        </div>
+    </div>
+    <div class="timkiem">
+        <div>Nhanh tay tìm kiếm vật phẩm bạn cần nào !</div>
+        <div></div>
+        <form action="/Search/" method="POST">
+            {%csrf_token%}
+            <input type="text" id="searched" name="searched" placeholder="Tìm kiếm...">
+            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+    </div>
+
+    <div class="main4">
+        <div style="display:flex;flex-direction:column">
+            <img style="width: 350px;" src="{% static 'image/logoLacViet.png' %}" alt="">
+            <br>
+            Đăng ký email để nhận tin tức mới nhất từ chúng tôi
+        </div>
+        <div style="display:flex;flex-direction:column">
+            Thông tin liên hệ:
+            <div></div>
+            &nbsp;
+            <a class="click">20521251@bm.uit.edu.vn</a>&nbsp;
+            <a class="click">0818666***</a>&nbsp;
+            <a class="click">0979334***</a>&nbsp;
+        </div>
+        <div style="display:flex;flex-direction:column">
+            Về chúng tôi :
+            <div></div>
+            &nbsp;
+            <a class="click" href="#">Giới thiệu</a>&nbsp;
+            <a class="click" href="#">Quy chế hoạt động</a>&nbsp;
+            <a class="click" href="#">Cơ chế giải quyết tranh chấp</a>&nbsp;
+        </div>
+        <div style="display:flex;flex-direction:column">
+            Chính sách :
+            <div></div>
+            &nbsp;
+            <a class="click" href="#"> Văn bản pháp quy</a>&nbsp;
+            <a class="click" href="#">Chính sách bảo mật thông tin</a>&nbsp;
+
+        </div>
+        <div></div>
+        <div>Công ty đấu giá ****</div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div>Công ty đấu giá ****</div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div>Công ty đấu giá ****</div>
+    </div>
+
+
+    <style>
+        .but1 {
+            background-color: transparent;
+            border: none;
+            font-family: 'Times New Roman', Times, serif;
+            height: 1.75cm;
+            padding: 0cm;
+        }
+
+        .main5 {
+            height: 100vh;
+            padding-left: 3ch;
+            padding-right: 3ch;
+            padding-top: 5ch;
+            padding-bottom: 9ch;
+            background-color: rgb(243, 243, 243);
+        }
+
+        .main5_item {
+            background-image: url("shttps://firebasestorage.googleapis.com/v0/b/nt208-28e2a.appspot.com/o/handshake1.jpg?alt=media&token=eb4a62ad-77dc-4e20-9cf1-691703e9ed37");
+            height: 100vh;
+            background-size: 100%;
+            background-position: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-gap: 10px;
+            padding-top: 5ch;
+            padding-left: 6ch;
+            padding-right: 4ch;
+            background-color: rgb(243, 243, 243);
+            box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
+        }
+
+        /*-------------tintuc-----------*/
+        .tt1 {
+            border-color: rgb(182, 181, 181);
+            border-style: hidden hidden solid hidden;
+            border-width: 1px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /*-----------main3---------------*/
+        .main3 {
+            padding-bottom: 2ch;
+            display: grid;
+            grid-template-columns: 65% 30%;
+            gap: 3em;
+            padding-left: 2em;
+        }
+
+        .main3 div div p {
+            font-size: 20px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .main3 div div li {
+            font-size: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            padding-left: 3em;
+        }
+
+        .p1 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            padding-top: 3ch;
+            padding-bottom: 3ch;
+        }
+
+        .div1 {
+            display: grid;
+            grid-template-columns: 60% 40%;
+            gap: 2em;
+            align-items: center;
+        }
+
+        .div1 div {
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1em;
+        }
+
+        .div1 div div {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: transparent;
+        }
+
+        /*------------------------------*/
+        .primary-navigation {
+            margin: 0 auto;
+            display: flex;
+            font-size: 20px;
+            height: 100%;
+        }
+
+        .primary-navigation li {
+            list-style: none;
+            margin: 0 auto;
+            display: inline-flex;
+            position: relative;
+            text-decoration: none;
+            height: 1.75cm;
+            align-items: center;
+        }
+
+        .primary-navigation li ul {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            padding-left: 0;
+            top: 50px;
+            left: 0px;
+            display: none;
+            background: white;
+        }
+
+        .primary-navigation li ul::before {
+            content: '';
+            top: -10px;
+            position: absolute;
+            width: 100%;
+            z-index: 10;
+            height: 20px;
+            background-color: transparent;
+        }
+
+        .primary-navigation li:hover>ul,
+        .primary-navigation li ul:hover {
+            visibility: visible;
+            opacity: 1;
+            display: block;
+            min-width: 250px;
+            text-align: left;
+            padding-top: 10px;
+            box-shadow: 0px 3px 5px -1px #ccc;
+        }
+
+        .primary-navigation li ul li {
+            clear: both;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 20px;
+            padding-left: 5px;
+            border-style: none;
+            text-decoration: none;
+            height: 100%;
+
+        }
+
+        .primary-navigation li ul li a {
+            text-align: center;
+            display: flex;
+            transition: all 1s ease;
+            padding-left: 10px;
+        }
+
+        .primary-navigation li ul li a:hover {
+            padding-left: 20px;
+            border-left: 3px solid #ffffff;
+            transition: all 0.3s ease;
+            color: #b41712;
+            height: 100%;
+            text-align: left;
+        }
+
+        /*---------------header-------------------*/
+        body {
+            background-color: rgb(248, 250, 250);
+        }
+
+        .header_item1 {
+            display: grid;
+            grid-template-columns: 18% 67% 7% 8%;
+            align-items: center;
+            padding-left: 2vh;
+            border-color: rgb(182, 181, 181);
+            border-style: hidden hidden solid hidden;
+            border-width: 1px;
+            color: rgb(161, 161, 161);
+            background-color: rgb(248, 250, 250);
+        }
+
+        a {
+            list-style: none;
+            color: black;
+            text-decoration: none;
+        }
+
+        .header_item2 {
+            display: grid;
+            grid-template-columns: 30% 50%;
+            align-items: center;
+            padding: 1.5ch;
+            background-color: rgb(248, 250, 250);
+        }
+
+        .header_item3 {
+            display: grid;
+            grid-template-columns: 2% 15% 8% 8% 8% 15% 24% 6% 6%;
+            align-items: center;
+            justify-items: center;
+            height: 1.75cm;
+            background-color: #b41712;
+            color: white;
+            font-size: 20px;
+            position: relative;
+        }
+
+        .a1 {
+            color: white;
+            font-size: 20px;
+        }
+
+        .a1:hover {
+            background-color: #ffffff;
+            color: #b41712;
+            font-size: 20px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        .input1 {
+            border-bottom-left-radius: 15px;
+            border-top-left-radius: 15px;
+            border: none;
+            height: 1cm;
+            padding-right: 0%;
+            box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
+        }
+
+        .input2 {
+            border-bottom-right-radius: 15px;
+            border-top-right-radius: 15px;
+            border: none;
+            height: 1cm;
+            width: 10cm;
+            padding-left: 0%;
+            box-shadow: 50px 10px #111111 0 0 10px 30px #0e0d0d 30px 0 20px 30px #1a1919;
+        }
+
+        .form form button {
+            background-color: rgb(66, 65, 65);
+            color: #ffffff;
+            border: none;
+            border-radius: 20px;
+            width: 1cm;
+            height: 1cm;
+        }
+
+        /*-------------dropdowm-----------*/
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            color: #0e0d0d;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 140px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            padding: 12px 16px;
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dropdown-content a:hover {
+            font-size: 18px;
+            color: #b41712;
+        }
+
+        /*------------item-----------*/
+        .item div {
+            padding-top: 0.3em;
+            font-size: 24px;
+        }
+
+        .item {
+            padding-top: 2ch;
+            border-color: rgb(182, 181, 181);
+            border-style: hidden hidden solid hidden;
+            border-width: 1px;
+        }
+
+        .item a {
+            color: gray;
+        }
+
+        /*----------*/
+        .main4 {
+            padding-top: 5ch;
+            padding-bottom: 5ch;
+            padding-left: 3ch;
+            padding-right: 3ch;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-gap: 30px;
+            border: #686666;
+            border-color: red;
+            font-size: 22px;
+        }
+
+        .main4>div>a {
+            font-size: 17px;
+            color: #686666;
+        }
+
+        .timkiem {
+            display: grid;
+            grid-template-columns: 40% 40% 20%;
+            align-items: center;
+            justify-items: center;
+            height: 1.5cm;
+            background-color: #b41712;
+            color: white;
+            font-size: 20px;
+        }
+
+        /* Logged in */
+        /*-------------dropdowm-----------*/
+        .dropdown1 {
+            position: relative;
+            display: inline-block;
+            color: #0e0d0d;
+        }
+
+        .dropdown1-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 140px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            padding: 12px 16px;
+            z-index: 1;
+        }
+
+        .dropdown1:hover .dropdown1-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dropdown1-content a:hover {
+            font-size: 18px;
+            color: #b41712;
+        }
+
+        /*--------------main 5 ---------------*/
+        .main5 {
+            height: 100vh;
+            padding-left: 3ch;
+            padding-right: 3ch;
+            padding-top: 4ch;
+            padding-bottom: 9ch;
+            background-color: rgb(243, 243, 243);
+        }
+
+        .main5_item {
+            background-image: url("https://firebasestorage.googleapis.com/v0/b/nt208-28e2a.appspot.com/o/handshake1.jpg?alt=media&token=eb4a62ad-77dc-4e20-9cf1-691703e9ed37");
+            height: 100vh;
+            background-size: 100%;
+            background-position: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-gap: 10px;
+            padding-top: 5ch;
+            padding-left: 6ch;
+            padding-right: 4ch;
+            background-color: rgb(243, 243, 243);
+            box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
+        }
+
+        .main5_item div a button {
+            padding: 0.5em;
+            width: 10cm;
+            height: 1cm;
+            background-color: #b41712;
+            border: none;
+            border-radius: 100px;
+            color: white;
+            font-size: 18px;
+        }
+    </style>
+</body>
+
+</html>
