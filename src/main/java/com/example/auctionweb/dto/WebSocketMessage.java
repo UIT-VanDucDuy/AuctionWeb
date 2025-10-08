@@ -13,7 +13,7 @@ public class WebSocketMessage {
     private String type; // "BID", "NOTIFICATION", "ERROR", "SUCCESS"
     private Object data;
     private String message;
-    private Long auctionId;
+    private int auctionId;
     private String timestamp;
 
     public WebSocketMessage(String type, Object data) {

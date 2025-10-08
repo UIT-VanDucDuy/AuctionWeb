@@ -12,16 +12,14 @@ public class BidHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
     @JoinColumn(name = "auction_id", nullable = false)
-    private Auction auction;
+    private int auctionId;
 
-    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private int userId;
 
     @Column(precision = 15, scale = 2, nullable = false)
-    private BigDecimal amount;
+    private int amount;
 
     @Column
     private LocalDateTime time;
@@ -40,27 +38,27 @@ public class BidHistory {
         this.id = id;
     }
 
-    public Auction getAuction() {
-        return auction;
+    public int getAuctionId() {
+        return auctionId;
     }
 
-    public void setAuction(Auction auction) {
-        this.auction = auction;
+    public void setAuctionId(int auctionId) {
+        this.auctionId = auctionId;
     }
 
-    public User getUser() {
-        return user;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public BigDecimal getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 

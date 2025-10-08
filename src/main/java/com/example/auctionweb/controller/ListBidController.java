@@ -26,7 +26,7 @@ public class ListBidController{
     @GetMapping("")
     public ModelAndView showList(@ModelAttribute("bidHistory") BidHistory bidHistory,
                                  Model model){
-        ModelAndView modelAndView = new ModelAndView("home1");
+        ModelAndView modelAndView = new ModelAndView("home");
         modelAndView.addObject("bidHistoryList", bidHistoryService.findAll());
         return modelAndView;
     }
@@ -37,7 +37,6 @@ public class ListBidController{
 
         if (success) {
             try {
-                // ✅ broadcast chỉ khi lưu thành công
                 bidWebSocketHandler.broadcastNewBid(bidHistory);
             } catch (Exception e) {
                 e.printStackTrace();

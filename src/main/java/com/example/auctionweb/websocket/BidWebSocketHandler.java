@@ -43,11 +43,12 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
             BidHistory bid = objectMapper.readValue(message.getPayload(), BidHistory.class);
             
             // Validate bid
-            if (bid.getAmount() == null || bid.getAmount().compareTo(java.math.BigDecimal.ZERO) <= 0) {
+            if (bid.getAmount() <= 0) {
                 WebSocketMessage errorMsg = new WebSocketMessage("ERROR", "Số tiền đấu giá không hợp lệ!");
                 sendMessageToSession(session, errorMsg);
                 return;
             }
+
 
             // Lưu vào DB
             boolean saved = bidHistoryService.add(bid);
@@ -55,7 +56,7 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
                 // Nếu lưu thành công thì broadcast cho tất cả client
                 broadcastNewBid(bid);
                 logger.info("Bid saved and broadcasted: Auction ID {}, Amount {}", 
-                           bid.getAuction().getId(), bid.getAmount());
+                           bid.getAuctionId(), bid.getAmount());
             } else {
                 WebSocketMessage errorMsg = new WebSocketMessage("ERROR", "Không thể lưu đấu giá. Vui lòng thử lại!");
                 sendMessageToSession(session, errorMsg);
@@ -80,10 +81,10 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
         sessions.remove(session);
     }
 
-    // 🟢 Method để broadcast BidHistory sau khi lưu
+
     public void broadcastNewBid(BidHistory bid) throws Exception {
         WebSocketMessage message = new WebSocketMessage("BID", bid);
-        message.setAuctionId(bid.getAuction().getId().longValue());
+        message.setAuctionId(bid.getAuctionId());
         broadcastMessage(message);
     }
 

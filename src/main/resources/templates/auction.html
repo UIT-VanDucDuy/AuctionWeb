@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Thông tin sản phẩm</title>
+</head>
+
+<body class="container-fluid">
+<div class="header">
+    <div class="container-fluid border-bottom bg-light text-secondary py-2">
+        <div class="row align-items-center px-3 text-center text-md-start">
+            <div class="col-12 col-md-2 mb-1 mb-md-0">
+                <small>Liên hệ: 0818666***/0979334***</small>
+            </div>
+            <div class="col-12 col-md-8 mb-1 mb-md-0">
+                <small>Email: 20521251@gm.uit.edu.vn</small>
+            </div>
+<!--            <div class="col-6 col-md-1 text-md-end">-->
+<!--                <a href="/Signin" class="text-decoration-none text-secondary">Đăng nhập</a>-->
+<!--            </div>-->
+<!--            <div class="col-6 col-md-1 text-md-end">-->
+<!--                <a href="/Signup" class="text-decoration-none text-secondary">Đăng ký</a>-->
+<!--            </div>-->
+            <div class="dropdown col-6 col-md-2 text-md-end">
+                <span class="d-flex gap-1 align-items-center">
+                    <i class="fa-regular fa-user"></i>
+                    <b>Văn Đức Duy</b>
+                    <i class="fa-solid fa-sort-down"></i>
+                </span>
+                <div class="dropdown-content">
+                    <a href="/User">Thông tin cá nhân</a>
+                    <a href="/User">Lịch sử giao dịch</a>
+                    <a href="/Changeyourpassword">Đổi mật khẩu</a>
+                    <a href="/Logout">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid py-3">
+        <div class="row align-items-center">
+            <!-- Logo -->
+            <div class="col-md-3 col-12 mb-2 mb-md-0">
+                <a href="/"><img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/logoLacViet.png" class="img-fluid" alt="Logo"></a>
+            </div>
+            <!-- Search form -->
+            <div class="col-md-9 col-12 d-flex">
+                <form class="d-flex ms-5 gap-2" action="/Search/" method="POST">
+                    <input class="input1" list="types" name="types" placeholder="Danh mục">
+                    <datalist id="types">
+                        <option value="Hàng hiệu">
+                        <option value="Sưu tầm - Nghệ thuật">
+                        <option value="Phương tiện xe cộ">
+                        <option value="Bất động sản - Quyền sử dụng đất">
+                        <option value="Tài sản thanh lý">
+                    </datalist>
+                    <input class="input2" type="text" id="searched" name="searched" placeholder="Tìm kiếm...">
+                    <button class="btn searchbutton" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header menu chính -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #b41712;">
+        <div class="container-fluid">
+            <!-- Menu chính -->
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                    <!-- Dropdown Danh mục tài sản -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white fw-bold" href="#" id="danhMucDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-bars"></i> Danh mục tài sản
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="danhMucDropdown">
+                            <li><a class="dropdown-item" href="/Search/Hàng hiệu">Hàng hiệu</a></li>
+                            <li><a class="dropdown-item" href="/Search/Sưu tầm - Nghệ thuật">Sưu tầm - Nghệ thuật</a></li>
+                            <li><a class="dropdown-item" href="/Search/Phương tiện xe cộ">Phương tiện xe cộ</a></li>
+                            <li><a class="dropdown-item" href="/Search/Bất động sản - Quyền sử dụng đất">Bất động sản</a></li>
+                            <li><a class="dropdown-item" href="/Search/Tài sản thanh lý">Tài sản thanh lý</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Các nav link khác -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bold" href="/Information">Tin tức</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bold" href="/Information">Giới thiệu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bold" href="/Lienhe">Liên hệ bán tài sản</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white fw-bold" href="/Lienhe">Cuộc đấu giá</a>
+                    </li>
+
+                </ul>
+            </div>
+
+            <!-- Ngày giờ -->
+            <div class="text-white fw-bold" id="current_date"></div>
+
+        </div>
+    </nav>
+
+</div>
+<div class="item" style="padding:1em ;">
+    <a style="color: gray;" href="/Auction">Trang chủ/</a>
+    <a style="color: gray;">Tài sản đấu giá</a>
+    <div style="padding-top:0.5em ;font-size: 25px;">Xe ô tô Ford cũ nhưng còn mới :))
+    </div>
+</div>
+<div class="main1">
+    <div class="gird-container">
+        <div class="img" style="grid-row: 1/4;">
+            <a href="#">
+                <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_cu5.jpg" alt=""
+                     class="img-product">
+            </a>
+        </div>
+        <div class="i4">
+            <div style="grid-column: 1/3;font-size: 24px;">Thông tin phiên đấu giá và sản phẩm :</div>
+<!--            <div style="font-size: 25px;">Đã đấu giá thành công cho </div>-->
+<!--            <div style="font-size: 25px;">{{goods_profile.owner}}</div>-->
+            <div>Mã tài sản:</div>
+            <div>ff-1030</div>
+            <div>Thời gian mở đăng ký:</div>
+            <div>12/10/2022 08:00:00</div>
+            <div>Thời gian kết thúc đăng ký: </div>
+            <div>21/10/2022 17:00:00</div>
+            <div>Phí đăng ký tham gia đấu giá:</div>
+            <div>200.000 VNĐ</div>
+            <div>Bước giá:</div>
+            <div>1.000.000 VNĐ</div>
+            <div>Số bước tối đa/lần trả:</div>
+            <div>10 bước giá, 40 phút cuối bước giá không giới hạn</div>
+            <div>Tiền đặt trước:</div>
+            <div>20.000.000 VNĐ</div>
+            <div>Phương thức đấu giá:</div>
+            <div>Trả giá lên và liên tục</div>
+            <div>Tên chủ tài sản:</div>
+            <div>{{goods_profile.user}}</div>
+            <div>Nơi xem tài sản:</div>
+            <div>{{goods_profile.diachi}}</div>
+            <div>Thời gian xem tài sản:</div>
+            <div>{{goods_profile.time}}</div>
+            <div>Tổ chức đấu giá tài sản</div>
+            <div>Công ty trách nhiệm hữu hạn một thành viên</div>
+            <div>Đấu giá viên:</div>
+            <div>Nguyễn Văn A</div>
+            <div>Thời gian bắt đầu trả giá:</div>
+            <div>{{goods_profile.startingdate}}</div>
+            <div>Thời gian kết thúc trả giá:</div>
+            <div>{{goods_profile.endingdate}}</div>
+            <div style="font-size: 24px; grid-column:1/3 ;">Giá khởi điểm: 300.000.000 VND</div>
+            <div style="font-size: 24px;grid-column:1/3 ;">Giá cao nhất hiện tại: 400.000.000 VND
+            </div>
+
+            <form style="grid-column:1/3 ;" class="Daugia" action="/Goods/{{goods_profile.id}}" method="POST">
+                <div style="font-size: 24px;">
+                    <input style="grid-column:1/3;width: 27ch;" type="number" step="1000000" name="price"
+                           min="{{goods_profile.price_now}}" placeholder="Số tiền ...">
+                    VND
+                </div>
+                <br>
+                <input type="hidden" name="username" value="{user_profile.username}">
+                <input type="hidden" name="name" value="{goods_profile.name}">
+                <button type="submit">Đấu giá</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+<!-- Nav tabs -->
+<div>
+    <ul class="nav nav-tabs mb-4 custom-tabs d-flex align-content-center ps-3 " id="auctionTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="similar-tab" data-bs-toggle="tab" data-bs-target="#similar" type="button" role="tab" aria-controls="similar" aria-selected="true">
+                Những mặt hàng tương tự
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">
+                Lịch sử ra giá
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab content -->
+    <div class="tab-content mb-4" id="auctionTabsContent">
+        <!-- TAB 1: Những mặt hàng tương tự -->
+        <div class="tab-pane fade show active" id="similar" role="tabpanel" aria-labelledby="similar-tab">
+            <div class="row g-4">
+                <div th:each="goods, iterStat : ${goods_list}" th:if="${iterStat.index} < 4" class="col-md-3 col-sm-6">
+                    <div class="card h-100 shadow-sm">
+                        <a th:href="@{/Goods/{id}(id=${goods.id})}">
+                            <img th:src="${goods.image}" class="card-img-top" alt="Hình sản phẩm">
+                        </a>
+                        <div class="card-body">
+                            <a th:href="@{/Goods/{id}(id=${goods.id})}" class="text-decoration-none">
+                                <h5 class="card-title fw-bold" th:text="${goods.name}">Tên sản phẩm</h5>
+                            </a>
+                            <p class="mb-1">Giá khởi điểm:</p>
+                            <p class="fw-bold text-primary" th:text="${goods.price + ' VND'}">0 VND</p>
+                            <p class="text-muted mb-0">Thời gian kết thúc: <span th:text="${goods.endingdate}">--/--/----</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: Lịch sử ra giá -->
+        <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Lịch sử ra giá gần đây</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Người dùng</th>
+                                <th>Hành động</th>
+                                <th>Giá</th>
+                                <th>Thời gian</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="history, iterStat : ${history_list}" th:if="${iterStat.index} < 10" th:classappend="${goods_profile.user == history.user} ? 'table-warning'">
+                                <td th:text="${iterStat.index + 1}">1</td>
+                                <td th:text="${history.user}">username</td>
+                                <td>Đã trả giá</td>
+                                <td th:text="${history.price + ' VND'}">0 VND</td>
+                                <td th:text="${history.datetime}">2025-10-06 18:00</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="timkiem">
+    <div>Nhanh tay tìm kiếm vật phẩm bạn cần nào !</div>
+    <div></div>
+<!--    <form action="/Search/" method="POST">-->
+<!--        <input type="text" id="searched" name="searched" placeholder="Tìm kiếm...">-->
+<!--        <input type="hidden" id="types" name="types">-->
+<!--        <button><i class="fa-solid fa-magnifying-glass"></i></button>-->
+<!--    </form>-->
+
+</div>
+<div class="main4">
+    <div style="display:flex;flex-direction:column">
+        <img style="width: 350px;" src="{%static 'image/logoLacViet.png'%}" alt="">
+        Đăng ký email để nhận tin tức mới nhất từ chúng tôi
+    </div>
+    <div style="display:flex;flex-direction:column">
+        Thông tin liên hệ:
+        <div></div>
+        &nbsp;
+        <a class="click">20521251@bm.uit.edu.vn</a>&nbsp;
+        <a class="click">0818666***</a>&nbsp;
+        <a class="click">0979334***</a>&nbsp;
+    </div>
+    <div style="display:flex;flex-direction:column">
+        Về chúng tôi :
+        <div></div>
+        &nbsp;
+        <a class="click" href="#">Giới thiệu</a>&nbsp;
+        <a class="click" href="#">Quy chế hoạt động</a>&nbsp;
+        <a class="click" href="#">Cơ chế giải quyết tranh chấp</a>&nbsp;
+    </div>
+    <div style="display:flex;flex-direction:column">
+        Chính sách :
+        <div></div>
+        &nbsp;
+        <a class="click" href="#"> Văn bản pháp quy</a>&nbsp;
+        <a class="click" href="#">Chính sách bảo mật thông tin</a>&nbsp;
+
+    </div>
+    <div></div>
+    <div>Công ty đấu giá ****</div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div>Công ty đấu giá ****</div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div>Công ty đấu giá ****</div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        function updateDateTime() {
+            const now = new Date();
+
+            const day = now.getDate().toString().padStart(2, '0');
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const year = now.getFullYear();
+
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+
+            document.getElementById("current_date").textContent =
+                `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        }
+
+        updateDateTime();               // hiển thị ngay khi load
+        setInterval(updateDateTime, 1000); // cập nhật mỗi giây
+    });
+</script>
+
+</script>
+
+<style>
+
+    .primary-navigation li {
+        justify-content: center;
+        list-style: none;
+        margin: 0 auto;
+        display: inline-flex;
+        position: relative;
+        text-decoration: none;
+        height: 1.75cm;
+        align-items: center;
+    }
+
+    .primary-navigation li ul {
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        padding-left: 0;
+        top: 50px;
+        left: 0px;
+        display: none;
+        background: white;
+    }
+
+    .primary-navigation li ul::before {
+        content: '';
+        top: -10px;
+        position: absolute;
+        width: 100%;
+        z-index: 10;
+        height: 20px;
+        background-color: transparent;
+    }
+
+    .primary-navigation li:hover>ul,
+    .primary-navigation li ul:hover {
+        visibility: visible;
+        opacity: 1;
+        display: block;
+        min-width: 250px;
+        text-align: left;
+        padding-top: 10px;
+        box-shadow: 0px 3px 5px -1px #ccc;
+    }
+
+    .primary-navigation li ul li {
+        clear: both;
+        width: 100%;
+        text-align: left;
+        margin-bottom: 20px;
+        padding-left: 5px;
+        border-style: none;
+        text-decoration: none;
+        height: 100%;
+
+    }
+
+    .primary-navigation li ul li a {
+        text-align: center;
+        display: flex;
+        transition: all 1s ease;
+        padding-left: 10px;
+    }
+
+    .primary-navigation li ul li a:hover {
+        padding-left: 20px;
+        border-left: 3px solid #ffffff;
+        transition: all 0.3s ease;
+        color: #b41712;
+        height: 100%;
+        text-align: left;
+    }
+
+    .Daugia {
+        display: flex;
+        flex-direction: column;
+        padding: 1em;
+        grid-template: 50% 50%;
+    }
+
+    .Daugia input {
+        padding: 0.5em;
+        border: none;
+        border-bottom: 1px solid #686666;
+        background-color: rgb(245, 245, 245);
+        font-size: 20px;
+    }
+
+    .Daugia button {
+        padding: 0.5em;
+        width: 4cm;
+        height: 1cm;
+        background-color: #b41712;
+        border: none;
+        border-radius: 100px;
+        color: white;
+        font-size: 18px;
+    }
+
+    /*-------------dropdowm-----------*/
+    .dropdown {
+        position: relative;
+        display: inline-block;
+        color: #0e0d0d;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 140px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        padding: 12px 16px;
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dropdown-content a:hover {
+        font-size: 18px;
+        color: #b41712;
+    }
+
+    /*---------------header-------------------*/
+
+    a {
+        align-items;
+        list-style: none;
+        color: black;
+        text-decoration: none;
+    }
+
+
+
+    .input1 {
+        border-bottom-left-radius: 15px;
+        border-top-left-radius: 15px;
+        height: 1cm;
+        padding: 0 0.5em;
+        border: 1px solid #ccc;           /* viền rõ ràng */
+        background-color: #fff;           /* màu nền sáng để nổi bật */
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.1); /* shadow nhẹ */
+        outline: none;                     /* bỏ viền focus mặc định */
+        transition: all 0.3s ease;        /* hiệu ứng mượt khi focus */
+    }
+
+    .input2 {
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 15px;
+        border: 1px solid #c5c5c5;        /* viền hợp lý */
+        height: 1cm;
+        width: 10cm;                        /* responsive theo container */
+        max-width: 400px;                   /* giới hạn tối đa nếu muốn */
+        padding: 0 0.5em;                   /* padding vừa phải để text không dính viền */
+        background-color: #fff;             /* nền trắng nổi bật */
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.1), 0 0 10px rgba(0,0,0,0.05); /* shadow hợp lệ */
+        outline: none;                       /* bỏ viền focus mặc định */
+        transition: all 0.3s ease;
+    }
+
+
+    .searchbutton {
+        background-color: rgb(66, 65, 65);
+        color: #ffffff;
+        border: none;
+        border-radius: 20px;
+        width: 1cm;
+        height: 1cm;
+    }
+
+    /*------------item------------*/
+    .item {
+        border-color: rgb(185, 183, 183);
+        border-style: hidden hidden solid hidden;
+        border-width: 1px;
+    }
+
+    /*----------------main---------*/
+    .main1 {
+        padding-top: 2ch;
+    }
+
+    .gird-container {
+        display: grid;
+        grid-template-columns: 43% 55%;
+        gap: 1em;
+    }
+
+    .gird-container div a img {
+        max-width: 100%;
+        object-fit: cover;
+    }
+
+    .img {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .i4 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .i4>div {
+        padding: 0.5em;
+        font-size: 18px;
+    }
+
+
+    /*------------main4------------*/
+    .main4 {
+        padding-top: 5ch;
+        padding-bottom: 5ch;
+        padding-left: 3ch;
+        padding-right: 3ch;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-gap: 30px;
+        border: #686666;
+        border-color: red;
+        font-size: 22px;
+    }
+
+    .main4>div>a {
+        font-size: 17px;
+        color: #686666;
+    }
+
+    .timkiem {
+        display: flex;
+        align-content: center;
+        height: 1.5cm;
+        background-color: #b41712;
+        color: white;
+        font-size: 20px;
+    }
+
+
+    /*tab*/
+    .custom-tabs{
+        background-color: #b41712;
+        color: white;
+        font-size: 20px;
+        height: 1.5cm;
+    }
+    .nav-item{
+        height: 100%;
+    }
+    .custom-tabs .nav-link {
+        height: 100%;
+        border-radius: 0 !important; /* bỏ bo góc */
+        border: none;/* bỏ border mặc định */
+        color: #fff;           /* màu chữ bình thường */
+        font-weight: bold;
+        transition: background-color 0.3s, color 0.3s;
+     }
+
+    .custom-tabs .nav-link:hover .nav-link.active {
+        background-color: white; /* màu hover */
+        color: black;
+    }
+    .img-product{
+        height: 500px;
+        width: 650px;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+</style>
+</body>
+
+</html>
