@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Demo - Auction Web</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .card {
+            margin-bottom: 20px;
+        }
+        .list-group-item {
+            border-left: 4px solid #007bff;
+        }
+        .bid-item {
+            border-left-color: #28a745;
+        }
+        .notification-item {
+            border-left-color: #ffc107;
+        }
+        #websocket-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            min-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">WebSocket Demo - Auction Web</h1>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Đấu giá</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="bid-form">
+                            <div class="mb-3">
+                                <label for="bid-amount" class="form-label">Số tiền đấu giá (VND):</label>
+                                <input type="number" id="bid-amount" class="form-control" min="0" step="1000" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="bidder-name" class="form-label">Tên người đấu giá:</label>
+                                <input type="text" id="bidder-name" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Đấu giá</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Thông tin kết nối</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Auction ID:</strong> <span id="current-auction-id">1</span></p>
+                        <p><strong>Bid WebSocket:</strong> <span id="bid-status" class="badge bg-secondary">Chưa kết nối</span></p>
+                        <p><strong>Notification WebSocket:</strong> <span id="notification-status" class="badge bg-secondary">Chưa kết nối</span></p>
+                        <button id="reconnect-btn" class="btn btn-outline-primary btn-sm">Kết nối lại</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Lịch sử đấu giá</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="bid-list" class="list-group">
+                            <div class="list-group-item text-muted text-center">
+                                Chưa có đấu giá nào
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Thông báo</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="notification-list" class="list-group">
+                            <div class="list-group-item text-muted text-center">
+                                Chưa có thông báo nào
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Hướng dẫn sử dụng</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol>
+                            <li>WebSocket sẽ tự động kết nối khi trang load</li>
+                            <li>Nhập thông tin đấu giá và click "Đấu giá"</li>
+                            <li>Đấu giá sẽ được gửi qua WebSocket và hiển thị cho tất cả clients</li>
+                            <li>Mở nhiều tab để test real-time updates</li>
+                            <li>Sử dụng console để debug: <code>window.auctionDemo</code></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- WebSocket Client -->
+    <script src="/js/websocket-client.js"></script>
+    <script src="/js/auction-websocket-demo.js"></script>
+    
+    <script>
+        // Custom demo implementation
+        class CustomAuctionDemo extends AuctionWebSocketDemo {
+            onBidConnectionOpen(event) {
+                super.onBidConnectionOpen(event);
+                document.getElementById('bid-status').textContent = 'Đã kết nối';
+                document.getElementById('bid-status').className = 'badge bg-success';
+            }
+
+            onBidConnectionClose(event) {
+                super.onBidConnectionClose(event);
+                document.getElementById('bid-status').textContent = 'Mất kết nối';
+                document.getElementById('bid-status').className = 'badge bg-danger';
+            }
+
+            onNotificationConnectionOpen(event) {
+                super.onNotificationConnectionOpen(event);
+                document.getElementById('notification-status').textContent = 'Đã kết nối';
+                document.getElementById('notification-status').className = 'badge bg-success';
+            }
+
+            onNotificationConnectionClose(event) {
+                super.onNotificationConnectionClose(event);
+                document.getElementById('notification-status').textContent = 'Mất kết nối';
+                document.getElementById('notification-status').className = 'badge bg-warning';
+            }
+
+            onNewBidReceived(bidData) {
+                super.onNewBidReceived(bidData);
+                this.updateBidHistory();
+            }
+
+            onNotificationReceived(notificationData) {
+                super.onNotificationReceived(notificationData);
+                this.updateNotifications();
+            }
+
+            updateBidHistory() {
+                const bidList = document.getElementById('bid-list');
+                if (!bidList) return;
+
+                if (this.bidHistory.length === 0) {
+                    bidList.innerHTML = '<div class="list-group-item text-muted text-center">Chưa có đấu giá nào</div>';
+                    return;
+                }
+
+                bidList.innerHTML = this.bidHistory.map(bid => `
+                    <div class="list-group-item bid-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">${bid.user ? bid.user.username : 'Unknown'}</h6>
+                            <small>${new Date(bid.time).toLocaleString()}</small>
+                        </div>
+                        <p class="mb-1"><strong>${(bid.amount || 0).toLocaleString()} VND</strong></p>
+                    </div>
+                `).join('');
+            }
+
+            updateNotifications() {
+                const notificationList = document.getElementById('notification-list');
+                if (!notificationList) return;
+
+                if (this.notifications.length === 0) {
+                    notificationList.innerHTML = '<div class="list-group-item text-muted text-center">Chưa có thông báo nào</div>';
+                    return;
+                }
+
+                notificationList.innerHTML = this.notifications.map(notification => `
+                    <div class="list-group-item notification-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">${notification.title || 'Thông báo'}</h6>
+                            <small>${new Date(notification.createdAt || Date.now()).toLocaleString()}</small>
+                        </div>
+                        <p class="mb-1">${notification.content || notification.message || 'Nội dung thông báo'}</p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Khởi tạo demo
+        document.addEventListener('DOMContentLoaded', function() {
+            const demo = new CustomAuctionDemo();
+            
+            // Lấy auction ID từ URL hoặc set mặc định
+            const urlParams = new URLSearchParams(window.location.search);
+            const auctionId = urlParams.get('auctionId') || 1;
+            
+            document.getElementById('current-auction-id').textContent = auctionId;
+            demo.init(auctionId);
+            
+            // Export để có thể sử dụng từ console
+            window.auctionDemo = demo;
+            
+            // Reconnect button
+            document.getElementById('reconnect-btn').addEventListener('click', function() {
+                demo.disconnect();
+                setTimeout(() => {
+                    demo.connectWebSockets();
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

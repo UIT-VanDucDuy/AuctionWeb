@@ -1,33 +1,40 @@
 package com.example.auctionweb.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "bidhistory")
 public class BidHistory {
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @JoinColumn(name = "auction_id", nullable = false)
     private int auctionId;
+
+    @JoinColumn(name = "user_id", nullable = false)
     private int userId;
+
+    @Column(precision = 15, scale = 2, nullable = false)
     private int amount;
-    private String time;
-    private boolean winnerFlag;
+
+    @Column
+    private LocalDateTime time;
+
+    @Column(name = "winner_flag")
+    private Boolean winnerFlag;
+
     public BidHistory() {
     }
 
-    public BidHistory(int id, int auctionId, int userId, int amount) {
-        this.id = id;
-        this.auctionId = auctionId;
-        this.userId = userId;
-        this.amount = amount;
-    }
-
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -55,19 +62,19 @@ public class BidHistory {
         this.amount = amount;
     }
 
-    public String getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 
-    public boolean isWinnerFlag() {
+    public Boolean getWinnerFlag() {
         return winnerFlag;
     }
 
-    public void setWinnerFlag(boolean winnerFlag) {
+    public void setWinnerFlag(Boolean winnerFlag) {
         this.winnerFlag = winnerFlag;
     }
 }

@@ -1,8 +1,9 @@
 package com.example.auctionweb.repository;
+
+import com.example.auctionweb.entity.BidHistory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import com.example.auctionweb.entity.BidHistory;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
