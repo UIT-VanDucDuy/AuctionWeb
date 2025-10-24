@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
+    <title>Signup</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/Signup.css' %}" />
+</head>
+
+<body>
+    <div class="header">
+        <div class="header_item1">
+            <div>Liên hệ: 0818666***/0979334***</div>
+            <div>Email: 20521251@gm.uit.edu.vn </div>
+            <a style="color: rgb(161, 161, 161)" href="/Signin">Đăng nhập</a>
+            <a style="color: rgb(161, 161, 161)" href="/Signup">Đăng ký</a>
+        </div>
+        <div class="header_item2">
+            <a href="/"><img style="width: 350px;" src="{% static 'image/logoLacViet.png' %}" alt=""></a>
+            <div class="form">
+                <form action="/Search">
+                    <input class="input1" list="browsers" name="browser" placeholder=" Danh mục">
+                    <datalist id="browsers">
+                        <option value="Hàng hiệu">
+                        <option value="Sưu tầm - Nghệ thuật">
+                        <option value="Phương tiện xe cộ">
+                        <option value="Bất động sản - Quyền sử dụng đất">
+                        <option value="Tài sản thanh lý">
+                    </datalist>
+                    <input class="input2" type="text" id="search" name="search" placeholder="Tìm kiếm...">
+                    <button><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="header_item3">
+            &nbsp;
+            <div><i class="fa-solid fa-bars"></i> Danh mục tài sản</div>
+            <a href="#">Cuộc đấu giá</a>
+            <a href="#">Tin tức</a>
+            <a href="#">Giới thiệu</a>
+            <a href="/Lienhe">Liên hệ bán tài sản</a>
+        </div>
+    </div>
+    <div style="padding: 10px;">
+        <a style="color: gray;" href="/Auction">Trang chủ/</a>
+        <a style="color: gray;" href="/Signup"> Đăng ký</a>
+    </div>
+    <ul class="ul1">
+        <a style="grid-column:2/3 ;" href="/Signin">Đăng nhập</a>
+        <a href="/Signup">Đăng ký</a>
+    </ul>
+    <div class="main1">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <fieldset>
+                <div style="grid-column: 1/8;">
+                    <style>
+                        h1 {
+                            color: red;
+                            font-size: 13pt;
+                        }
+                    </style>
+                    {% for message in messages %}
+                    <h1>{{message}}</h1>
+                    {% endfor %}
+                </div>
+                <legend>Đăng ký:</legend>
+                <label style="grid-column: 1/2;">Họ và tên*:</label>
+                <input style="grid-column: 2/5;" type="text" name="firstname" placeholder="Họ">
+                <input style="grid-column: 5/8;" type="text" name="lastname" placeholder="Tên">
+                <label style="grid-column: 1/2;">Địa chỉ email*:</label>
+                <input style="grid-column: 2/8;" type="email" name="email" placeholder="Nhập email">
+                <label style="grid-column: 1/2;">Số điện thoại(di động)*:</label>
+                <input style="grid-column: 2/8;" type="text" name="phonenumber" placeholder="Nhập số điện thoại">
+                <label style="grid-column: 1/2;">Tên đăng nhập*:</label>
+                <input style="grid-column: 2/8;" type="text" name="username" placeholder="Tối thiểu 8 ký tự ">
+                <label style="grid-column: 1/2;">Mật khẩu*:</label>
+                <input style="grid-column: 2/8;" type="password" name="password"
+                    placeholder="Bao gồm 8 ký tự, bao gồm ký tự viết hoa,ký tự thường,số và ký tự đặc biệt">
+                <label style="grid-column: 1/2;">Nhập lại mật khẩu*:</label>
+                <input style="grid-column: 2/8;" type="password" name="password2"
+                    placeholder="Bao gồm 8 ký tự, bao gồm ký tự viết hoa,ký tự thường,số và ký tự đặc biệt">
+                <label style="grid-column: 1/2;">Ngày sinh*:</label>
+                <input style="grid-column: 2/8;" type="date" name="dateofbirth" max="2022-12-31">
+                <label style="grid-column: 1/2;">Địa chỉ*:</label>
+                <input style="grid-column: 2/4;" name="tinh" placeholder="Tỉnh/Thành phố">
+                <input style="grid-column: 4/6;" name="huyen" placeholder="Quận/Huyện">
+                <input style="grid-column: 6/8;" name="xa" placeholder="Xã/Phường">
+                <input style="grid-column: 2/8;" type="text" name="diachi" placeholder="Địa chỉ chi tiết ">
+                <label style="grid-column: 1/2;">Giới tính:</label>
+                <div style="grid-column: 2/4;">
+                    <input type="radio" name="gender" value="Nam">
+                    <label style="grid-column: 1/2;">Nam</label>
+                </div>
+                <div style="grid-column: 4/6;">
+                    <input type="radio" name="gender" value="Nữ">
+                    <label>Nữ</label>
+                </div>
+                <div style="grid-column: 6/8;">
+                    <input type="radio" name="gender" value="Khác">
+                    <label style="grid-column: 1/2;">Khác</label>
+                </div>
+                <label style="grid-column: 1/2;">Số CMT/Thẻ căn cước/Hộ chiếu*:</label>
+                <input style="grid-column: 2/8;" type="text" name="idcard"
+                    placeholder="Nhập số CMT,số thẻ căn cước công dân,số hộ chiếu">
+                <div style="grid-column: 2/6;">
+                    <label for="imagefront">Ảnh mặt trước: </label> <br>
+                    <input type="file" id="imagefront" name="imagefront" accept="image/png, image/jpg">
+                    <div class="display_image"></div>
+                    <script>
+
+                    </script>
+                </div>
+                <div style="grid-column: 2/6;">
+                    <label for="imageback">Ảnh mặt sau: </label> <br>
+                    <input type="file" id="imageback" name="imageback" accept="image/png, image/jpg">
+                    <div class="display_image"></div>
+                    <script>
+
+                    </script>
+                </div>
+                <div style="grid-column: 1/8;">
+                    <br />
+                    <input type="checkbox" id="checkbox" name="checkbox" value="checkbox">
+                    <label for="checkbox">Tôi cam kết tuân thủ Quyền và trách nhiệm của Người tham gia đấu giá (Quy định
+                        theo tài sản đấu giá), Chính sách bảo mật thông tin khách hàng, Cơ chế giải quyết tranh chấp,
+                        Quy
+                        chế hoạt động tại website đấu giá trực tuyến lacvietauction.vn</label>
+                </div>
+                <br>
+                <button type="submit" style="grid-column: 5/8;">Đăng ký tài khoản</button>
+            </fieldset>
+        </form>
+    </div>
+    <div class="timkiem">
+        <div>Nhanh tay tìm kiếm vật phẩm bạn cần nào !</div>
+        <div></div>
+        <form action="{%static 'template/Search.html'%}">
+            <input type="text" id="lname" name="lname" placeholder="Tìm kiếm...">
+            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+    </div>
+    <div class="main4">
+        <div style="display:flex;flex-direction:column">
+            <img style="width: 350px;" src="{% static 'image/logoLacViet.png'%}" alt="">
+
+            Đăng ký email để nhận tin tức mới nhất từ chúng tôi
+        </div>
+        <div style="display:flex;flex-direction:column">
+            Thông tin liên hệ:
+            <div></div>
+            &nbsp;
+            <a class="click">20521251@bm.uit.edu.vn</a>&nbsp;
+            <a class="click">0818666***</a>&nbsp;
+            <a class="click">0979334***</a>&nbsp;
+        </div>
+        <div style="display:flex;flex-direction:column">
+            Về chúng tôi :
+            <div></div>
+            &nbsp;
+            <a class="click" href="#">Giới thiệu</a>&nbsp;
+            <a class="click" href="#">Quy chế hoạt động</a>&nbsp;
+            <a class="click" href="#">Cơ chế giải quyết tranh chấp</a>&nbsp;
+        </div>
+        <div style="display:flex;flex-direction:column">
+            Chính sách :
+            <div></div>
+            &nbsp;
+            <a class="click" href="#"> Văn bản pháp quy</a>&nbsp;
+            <a class="click" href="#">Chính sách bảo mật thông tin</a>&nbsp;
+
+        </div>
+        <div></div>
+        <div>Công ty đấu giá ****</div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div>Công ty đấu giá ****</div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div>Công ty đấu giá ****</div>
+    </div>
+    <script>
+        const imagefront = document.querySelector("#imagefront");
+        const imageback = document.querySelector("#imageback")
+
+        imagefront.addEventListener("change", function () {
+            const reader = new FileReader();
+            reader.addEventListener("load", () => {
+                let uploaded_image = reader.result;
+                const displayImage = document.querySelector(".display_image")
+                displayImage.style.backgroundImage = `url(${uploaded_image})`
+            });
+            reader.readAsDataURL(this.files[0]);
+        })
+
+        imageback.addEventListener("change", function () {
+            const reader = new FileReader();
+            reader.addEventListener("load", () => {
+                let uploaded_image = reader.result;
+                const displayImage = document.querySelectorAll(".display_image")[1]
+                displayImage.style.backgroundImage = `url(${uploaded_image})`
+            });
+            reader.readAsDataURL(this.files[0]);
+        })
+    </script>
+</body>
+
+</html>

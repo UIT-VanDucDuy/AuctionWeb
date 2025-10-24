@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "account")
 public class Account {
+    public enum Role {
+        ADMIN, USER, SELLER
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -15,8 +19,12 @@ public class Account {
     @Column(length = 255, nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 30)
-    private String role;
+    private Role role;
+
+    @Column(name = "active")
+    private Boolean active = true;
 
     public Account() {
     }
@@ -45,11 +53,19 @@ public class Account {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 }

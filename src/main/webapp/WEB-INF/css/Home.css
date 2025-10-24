@@ -1,0 +1,113 @@
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(252, 252, 252);
+}
+
+.container {
+  display: flex;
+  font-size: 1.3em;
+  flex-direction: column;
+}
+
+.header {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 22% 22%;
+  align-items: center;
+  position: fixed;
+  background-color: white;
+  z-index: 1;
+  padding: 0.5vw;
+  padding-left: 2vh;
+}
+
+.main {
+  background-image: url("static/image/Group\ 22.png"),
+    url("static/image/nen1.jpg");
+  margin-top: 90px;
+  background-size: cover;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.main_item {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 3em;
+}
+
+.main2 {
+  background-color: rgb(243, 243, 243);
+  height: 80vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  padding-top: 80px;
+  padding-left: 200px;
+  padding-right: 200px;
+  grid-gap: 10px;
+  background-image: url("static/image/LandingPage\ \(1\).png");
+}
+
+.main3 {
+  height: 100vh;
+  padding-left: 3ch;
+  padding-right: 3ch;
+  padding-top: 4ch;
+  padding-bottom: 9ch;
+  background-color: rgb(243, 243, 243);
+}
+
+.main3_item {
+  background-image: url("static/image/handshake1.jpg");
+  height: 100vh;
+  background-size: 100%;
+  background-position: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 10px;
+  padding-top: 5ch;
+  padding-left: 6ch;
+  padding-right: 4ch;
+  background-color: rgb(243, 243, 243);
+  box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
+}
+
+.main4 {
+  padding-top: 5ch;
+  padding-bottom: 5ch;
+  padding-left: 3ch;
+  padding-right: 3ch;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 30px;
+  border: #686666;
+  border-color: red;
+}
+
+button {
+  background-color: burlywood;
+  font-size: large;
+  border: none;
+  border-radius: 5px;
+  padding: 6px;
+  width: 8cm;
+}
+
+a {
+  list-style: none;
+  color: black;
+  text-decoration: none;
+}
+.main4 > div > a {
+  font-size: 17px;
+  color: #686666;
+}

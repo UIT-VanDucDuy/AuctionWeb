@@ -13,6 +13,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.math.BigDecimal;
 
 @Component
 public class BidWebSocketHandler extends TextWebSocketHandler {
@@ -43,7 +44,7 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
             BidHistory bid = objectMapper.readValue(message.getPayload(), BidHistory.class);
             
             // Validate bid
-            if (bid.getAmount() <= 0) {
+            if (bid.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
                 WebSocketMessage errorMsg = new WebSocketMessage("ERROR", "Số tiền đấu giá không hợp lệ!");
                 sendMessageToSession(session, errorMsg);
                 return;
@@ -56,7 +57,7 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
                 // Nếu lưu thành công thì broadcast cho tất cả client
                 broadcastNewBid(bid);
                 logger.info("Bid saved and broadcasted: Auction ID {}, Amount {}", 
-                           bid.getAuctionId(), bid.getAmount());
+                           bid.getAuction().getId(), bid.getAmount());
             } else {
                 WebSocketMessage errorMsg = new WebSocketMessage("ERROR", "Không thể lưu đấu giá. Vui lòng thử lại!");
                 sendMessageToSession(session, errorMsg);
@@ -84,7 +85,7 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
 
     public void broadcastNewBid(BidHistory bid) throws Exception {
         WebSocketMessage message = new WebSocketMessage("BID", bid);
-        message.setAuctionId(bid.getAuctionId());
+        message.setAuctionId(bid.getAuction().getId());
         broadcastMessage(message);
     }
 
