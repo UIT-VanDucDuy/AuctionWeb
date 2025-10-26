@@ -1,7 +1,7 @@
 package com.example.auctionweb.service;
 
 import com.example.auctionweb.entity.BidHistory;
-import com.example.auctionweb.repository.IBidHistoryRepository;
+import com.example.auctionweb.repository.BidHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,14 +9,19 @@ import java.util.List;
 @Service
 public class BidHistoryService implements IBidHistoryService {
     @Autowired
-    private IBidHistoryRepository bidHistoryRepository;
+    private BidHistoryRepository bidHistoryRepository;
     @Override
     public List<BidHistory> findAll() {
-        return bidHistoryRepository.findAll();
+        return bidHistoryRepository.findAllByOrderByTimeDesc();
     }
 
     @Override
-    public boolean add(BidHistory bidHistory) {
-        return bidHistoryRepository.add(bidHistory);
+    public BidHistory add(BidHistory bidHistory) {
+        return bidHistoryRepository.save(bidHistory);
+    }
+
+    @Override
+    public List<BidHistory> findByAuctionId(int id) {
+        return bidHistoryRepository.findBidHistoriesByAuctionId(id);
     }
 }

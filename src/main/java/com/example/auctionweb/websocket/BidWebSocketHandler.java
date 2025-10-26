@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -19,10 +22,18 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(BidWebSocketHandler.class);
     private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final ObjectMapper objectMapper;
 
     @Autowired
     private IBidHistoryService bidHistoryService;
+
+    public BidWebSocketHandler() {
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
+
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -48,15 +59,18 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
                 sendMessageToSession(session, errorMsg);
                 return;
             }
-
-
             // Lưu vào DB
-            boolean saved = bidHistoryService.add(bid);
-            if (saved) {
-                // Nếu lưu thành công thì broadcast cho tất cả client
+            boolean success;
+            BidHistory savedBid = bidHistoryService.add(bid);
+            if (savedBid != null && savedBid.getId() != null) {
+                success = true;
+            } else {
+                success = false;
+            }
+            if (success) {
                 broadcastNewBid(bid);
                 logger.info("Bid saved and broadcasted: Auction ID {}, Amount {}", 
-                           bid.getAuctionId(), bid.getAmount());
+                           bid.getAuction().getId(), bid.getAmount());
             } else {
                 WebSocketMessage errorMsg = new WebSocketMessage("ERROR", "Không thể lưu đấu giá. Vui lòng thử lại!");
                 sendMessageToSession(session, errorMsg);
@@ -84,7 +98,7 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
 
     public void broadcastNewBid(BidHistory bid) throws Exception {
         WebSocketMessage message = new WebSocketMessage("BID", bid);
-        message.setAuctionId(bid.getAuctionId());
+        message.setAuctionId(bid.getAuction().getId());
         broadcastMessage(message);
     }
 
@@ -108,7 +122,6 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
         logger.info("Broadcasted message to {} clients", sentCount);
     }
 
-    // 🟢 Method để gửi message cho một session cụ thể
     public void sendMessageToSession(WebSocketSession session, WebSocketMessage message) throws Exception {
         if (session.isOpen()) {
             String json = objectMapper.writeValueAsString(message);
@@ -116,7 +129,6 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    // 🟢 Method để lấy số lượng clients đang kết nối
     public int getConnectedClientsCount() {
         return sessions.size();
     }

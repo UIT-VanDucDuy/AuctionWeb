@@ -1,8 +1,7 @@
 package com.example.auctionweb.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,22 +11,31 @@ public class BidHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @ManyToOne
     @JoinColumn(name = "auction_id", nullable = false)
-    private int auctionId;
+    private Auction auction;
 
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private int userId;
+    private User user;
 
     @Column(precision = 15, scale = 2, nullable = false)
-    private int amount;
+    private int  amount;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column
     private LocalDateTime time;
-
     @Column(name = "winner_flag")
     private Boolean winnerFlag;
-
     public BidHistory() {
+        this.time = LocalDateTime.now();
+    }
+
+    public BidHistory(Auction auction, User user, int  amount) {
+        this.auction = auction;
+        this.user = user;
+        this.amount = amount;
+        this.time = LocalDateTime.now();
     }
 
     public Integer getId() {
@@ -38,28 +46,28 @@ public class BidHistory {
         this.id = id;
     }
 
-    public int getAuctionId() {
-        return auctionId;
-    }
-
-    public void setAuctionId(int auctionId) {
-        this.auctionId = auctionId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public int getAmount() {
+    public int  getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(int  amount) {
         this.amount = amount;
+    }
+
+    public Auction getAuction() {
+        return auction;
+    }
+
+    public void setAuction(Auction auction) {
+        this.auction = auction;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public LocalDateTime getTime() {

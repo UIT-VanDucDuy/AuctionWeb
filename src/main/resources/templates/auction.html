@@ -129,49 +129,29 @@
             <div style="grid-column: 1/3;font-size: 24px;">Thông tin phiên đấu giá và sản phẩm :</div>
 <!--            <div style="font-size: 25px;">Đã đấu giá thành công cho </div>-->
 <!--            <div style="font-size: 25px;">{{goods_profile.owner}}</div>-->
-            <div>Mã tài sản:</div>
-            <div>ff-1030</div>
             <div>Thời gian mở đăng ký:</div>
             <div>12/10/2022 08:00:00</div>
             <div>Thời gian kết thúc đăng ký: </div>
             <div>21/10/2022 17:00:00</div>
             <div>Phí đăng ký tham gia đấu giá:</div>
             <div>200.000 VNĐ</div>
-            <div>Bước giá:</div>
-            <div>1.000.000 VNĐ</div>
-            <div>Số bước tối đa/lần trả:</div>
-            <div>10 bước giá, 40 phút cuối bước giá không giới hạn</div>
-            <div>Tiền đặt trước:</div>
-            <div>20.000.000 VNĐ</div>
-            <div>Phương thức đấu giá:</div>
-            <div>Trả giá lên và liên tục</div>
             <div>Tên chủ tài sản:</div>
-            <div>{{goods_profile.user}}</div>
-            <div>Nơi xem tài sản:</div>
-            <div>{{goods_profile.diachi}}</div>
-            <div>Thời gian xem tài sản:</div>
-            <div>{{goods_profile.time}}</div>
+            <div th:text="${auctionInfo.getProduct().getSeller().name}"></div>
             <div>Tổ chức đấu giá tài sản</div>
             <div>Công ty trách nhiệm hữu hạn một thành viên</div>
             <div>Đấu giá viên:</div>
             <div>Nguyễn Văn A</div>
             <div>Thời gian bắt đầu trả giá:</div>
-            <div>{{goods_profile.startingdate}}</div>
+            <div th:text="${auctionInfo.getStartTime()}"></div>
             <div>Thời gian kết thúc trả giá:</div>
-            <div>{{goods_profile.endingdate}}</div>
-            <div style="font-size: 24px; grid-column:1/3 ;">Giá khởi điểm: 300.000.000 VND</div>
+            <div th:text="${auctionInfo.getEndTime()}"></div>
+            <div style="font-size: 24px">Giá khởi điểm: </div>
+            <div style="font-size: 24px" th:text="${auctionInfo.getStartingPrice()}"></div>
             <div style="font-size: 24px;grid-column:1/3 ;">Giá cao nhất hiện tại: 400.000.000 VND
             </div>
-
-            <form style="grid-column:1/3 ;" class="Daugia" action="/Goods/{{goods_profile.id}}" method="POST">
-                <div style="font-size: 24px;">
-                    <input style="grid-column:1/3;width: 27ch;" type="number" step="1000000" name="price"
-                           min="{{goods_profile.price_now}}" placeholder="Số tiền ...">
-                    VND
-                </div>
-                <br>
-                <input type="hidden" name="username" value="{user_profile.username}">
-                <input type="hidden" name="name" value="{goods_profile.name}">
+            <form style="grid-column:1/3;" class="Daugia" action="/Goods/{{goods_profile.id}}" method="POST" onsubmit="sendBid(); return false;">
+                <input type="number" step="100" name="price" id="amount"
+                       min="" placeholder="Số tiền ..."> 000 VND
                 <button type="submit">Đấu giá</button>
             </form>
         </div>
@@ -182,12 +162,7 @@
 <div>
     <ul class="nav nav-tabs mb-4 custom-tabs d-flex align-content-center ps-3 " id="auctionTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="similar-tab" data-bs-toggle="tab" data-bs-target="#similar" type="button" role="tab" aria-controls="similar" aria-selected="true">
-                Những mặt hàng tương tự
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">
+            <button class="nav-link active" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="true">
                 Lịch sử ra giá
             </button>
         </li>
@@ -195,36 +170,16 @@
 
     <!-- Tab content -->
     <div class="tab-content mb-4" id="auctionTabsContent">
-        <!-- TAB 1: Những mặt hàng tương tự -->
-        <div class="tab-pane fade show active" id="similar" role="tabpanel" aria-labelledby="similar-tab">
-            <div class="row g-4">
-                <div th:each="goods, iterStat : ${goods_list}" th:if="${iterStat.index} < 4" class="col-md-3 col-sm-6">
-                    <div class="card h-100 shadow-sm">
-                        <a th:href="@{/Goods/{id}(id=${goods.id})}">
-                            <img th:src="${goods.image}" class="card-img-top" alt="Hình sản phẩm">
-                        </a>
-                        <div class="card-body">
-                            <a th:href="@{/Goods/{id}(id=${goods.id})}" class="text-decoration-none">
-                                <h5 class="card-title fw-bold" th:text="${goods.name}">Tên sản phẩm</h5>
-                            </a>
-                            <p class="mb-1">Giá khởi điểm:</p>
-                            <p class="fw-bold text-primary" th:text="${goods.price + ' VND'}">0 VND</p>
-                            <p class="text-muted mb-0">Thời gian kết thúc: <span th:text="${goods.endingdate}">--/--/----</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- TAB 2: Lịch sử ra giá -->
-        <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+        <div class="tab-pane fade show active"  role="tabpanel" aria-labelledby="history-tab">
             <div class="card shadow">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">Lịch sử ra giá gần đây</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
+                        <table class="table table-hover mb-0 align-middle" id="history">
                             <thead class="table-light">
                             <tr>
                                 <th>#</th>
@@ -235,12 +190,12 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr th:each="history, iterStat : ${history_list}" th:if="${iterStat.index} < 10" th:classappend="${goods_profile.user == history.user} ? 'table-warning'">
-                                <td th:text="${iterStat.index + 1}">1</td>
-                                <td th:text="${history.user}">username</td>
+                            <tr th:each="history, iterStat : ${auctionInfo.getBidHistories()}" th:if="${iterStat.index} < 10">
+                                <td th:text="${iterStat.index + 1}"></td>
+                                <td th:text="${history.user.id}"></td>
                                 <td>Đã trả giá</td>
-                                <td th:text="${history.price + ' VND'}">0 VND</td>
-                                <td th:text="${history.datetime}">2025-10-06 18:00</td>
+                                <td th:text="${history.amount + '.000 VND'}"></td>
+                                <td th:text="${history.time}"></td>
                             </tr>
                             </tbody>
                         </table>
@@ -248,19 +203,13 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>
-
 
 <div class="timkiem">
     <div>Nhanh tay tìm kiếm vật phẩm bạn cần nào !</div>
     <div></div>
-<!--    <form action="/Search/" method="POST">-->
-<!--        <input type="text" id="searched" name="searched" placeholder="Tìm kiếm...">-->
-<!--        <input type="hidden" id="types" name="types">-->
-<!--        <button><i class="fa-solid fa-magnifying-glass"></i></button>-->
-<!--    </form>-->
-
 </div>
 <div class="main4">
     <div style="display:flex;flex-direction:column">
@@ -306,15 +255,12 @@
     document.addEventListener("DOMContentLoaded", function() {
         function updateDateTime() {
             const now = new Date();
-
             const day = now.getDate().toString().padStart(2, '0');
             const month = (now.getMonth() + 1).toString().padStart(2, '0');
             const year = now.getFullYear();
-
             const hours = now.getHours().toString().padStart(2, '0');
             const minutes = now.getMinutes().toString().padStart(2, '0');
             const seconds = now.getSeconds().toString().padStart(2, '0');
-
             document.getElementById("current_date").textContent =
                 `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
         }
@@ -322,7 +268,42 @@
         updateDateTime();               // hiển thị ngay khi load
         setInterval(updateDateTime, 1000); // cập nhật mỗi giây
     });
-</script>
+    const socket = new WebSocket("ws://localhost:8080/ws/bid");
+
+    socket.onopen = () => {
+        console.log("Connected to WebSocket");
+    };
+
+    socket.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+
+        if (msg.type === "BID" && msg.data) {
+            const data = msg.data;
+            const table = document.getElementById("history").getElementsByTagName("tbody")[0];
+            const amountInput = document.getElementById("amount");
+            const row = table.insertRow(0);
+            row.innerHTML = `
+                <td>*</td>
+                <td>${data.user.id}</td>
+                <td>Đã trả giá</td>
+                <td>${data.amount}.000 VND</td>
+                <td>${data.datetime || ''}</td>
+            `;
+        } else if (msg.type === "ERROR") {
+            alert("ERROR" + msg.data);
+        } else if (msg.type === "SUCCESS") {
+            console.log("SUCCESS    " + msg.data);
+        }
+    };
+
+    function sendBid() {
+        const bid = {
+            auctionId: 1,
+            userId: 1,
+            amount: parseInt(document.getElementById("amount").value)
+        };
+        socket.send(JSON.stringify(bid));
+    }
 
 </script>
 
@@ -455,7 +436,6 @@
     /*---------------header-------------------*/
 
     a {
-        align-items;
         list-style: none;
         color: black;
         text-decoration: none;
@@ -599,5 +579,4 @@
     }
 </style>
 </body>
-
 </html>

@@ -20,7 +20,6 @@ import java.util.List;
 public class AdminController {
     @Autowired
     private AuctionRegistrationRepository registrationRepository;
-
     @Autowired
     private AccountRepository accountRepository;
 

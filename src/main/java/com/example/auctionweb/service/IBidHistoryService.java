@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface IBidHistoryService {
     List<BidHistory> findAll();
-    boolean add(BidHistory bidHistory);
+    BidHistory add(BidHistory bidHistory);
+    List<BidHistory> findByAuctionId(int id);
 }
