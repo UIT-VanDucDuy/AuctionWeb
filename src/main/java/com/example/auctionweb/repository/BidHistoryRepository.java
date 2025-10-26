@@ -9,5 +9,5 @@ public interface BidHistoryRepository extends JpaRepository<BidHistory, Integer>
     List<BidHistory> findAll();
     BidHistory save(BidHistory bidHistory);
     List<BidHistory> findAllByOrderByTimeDesc();
-    List<BidHistory> findBidHistoriesByAuctionId(int id);
+    List<BidHistory> findBidHistoriesByAuctionIdOrderByTimeDesc(int auctionId);
 }

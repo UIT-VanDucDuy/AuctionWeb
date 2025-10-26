@@ -1,8 +1,14 @@
 package com.example.auctionweb.websocket;
 
+import com.example.auctionweb.dto.BidHistoryDto;
 import com.example.auctionweb.dto.WebSocketMessage;
+import com.example.auctionweb.entity.Auction;
 import com.example.auctionweb.entity.BidHistory;
+import com.example.auctionweb.entity.User;
+import com.example.auctionweb.service.AuctionService;
+import com.example.auctionweb.service.IAuctionService;
 import com.example.auctionweb.service.IBidHistoryService;
+import com.example.auctionweb.service.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +33,11 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
 
     @Autowired
     private IBidHistoryService bidHistoryService;
+    @Autowired
+    private IAuctionService auctionService;
+    @Autowired
+    private IUserService userService;
+
 
     public BidWebSocketHandler() {
         objectMapper = new ObjectMapper();
@@ -51,14 +62,11 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
         
         try {
             // Parse JSON từ client thành BidHistory
-            BidHistory bid = objectMapper.readValue(message.getPayload(), BidHistory.class);
-            
-            // Validate bid
-            if (bid.getAmount() <= 0) {
-                WebSocketMessage errorMsg = new WebSocketMessage("ERROR", "Số tiền đấu giá không hợp lệ!");
-                sendMessageToSession(session, errorMsg);
-                return;
-            }
+            BidHistoryDto bidDto = objectMapper.readValue(message.getPayload(), BidHistoryDto.class);
+            Auction auction = auctionService.getAuctionById(bidDto.getAuctionId());
+            User user = userService.findUserById(bidDto.getUserId());
+            BidHistory bid = new BidHistory(auction,user,bidDto.getAmount());
+
             // Lưu vào DB
             boolean success;
             BidHistory savedBid = bidHistoryService.add(bid);
@@ -98,7 +106,7 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
 
     public void broadcastNewBid(BidHistory bid) throws Exception {
         WebSocketMessage message = new WebSocketMessage("BID", bid);
-        message.setAuctionId(bid.getAuction().getId());
+        message.setAuction(bid.getAuction());
         broadcastMessage(message);
     }
 

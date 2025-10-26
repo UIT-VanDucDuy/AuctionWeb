@@ -22,6 +22,6 @@ public class BidHistoryService implements IBidHistoryService {
 
     @Override
     public List<BidHistory> findByAuctionId(int id) {
-        return bidHistoryRepository.findBidHistoriesByAuctionId(id);
+        return bidHistoryRepository.findBidHistoriesByAuctionIdOrderByTimeDesc(id);
     }
 }

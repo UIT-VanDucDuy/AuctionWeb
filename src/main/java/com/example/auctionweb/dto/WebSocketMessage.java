@@ -1,5 +1,6 @@
 package com.example.auctionweb.dto;
 
+import com.example.auctionweb.entity.Auction;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +14,7 @@ public class WebSocketMessage {
     private String type; // "BID", "NOTIFICATION", "ERROR", "SUCCESS"
     private Object data;
     private String message;
-    private int auctionId;
+    private Auction auction;
     private String timestamp;
 
     public WebSocketMessage(String type, Object data) {

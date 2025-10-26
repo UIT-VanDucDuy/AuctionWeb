@@ -27,13 +27,6 @@ public class AuctionController {
         modelAndView.addObject("auctionInfo", auctionService.getAuctionInfoById(id));
         return modelAndView;
     }
-//    @GetMapping("")
-//    public ModelAndView showList(@ModelAttribute("bidHistory") BidHistory bidHistory,
-//                                 Model model){
-//        ModelAndView modelAndView = new ModelAndView("auction");
-//        modelAndView.addObject("history_list", bidHistoryService.findAll());
-//        return modelAndView;
-//    }
     @PostMapping("")
     public String save(@ModelAttribute("bidHistory") BidHistory bidHistory,
                        RedirectAttributes redirectAttributes) {

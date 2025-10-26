@@ -20,7 +20,6 @@ public class AuctionDto {
     private LocalDateTime endTime;
     private BigDecimal startingPrice;
     private List<BidHistory> bidHistories;
-
     public AuctionDto(Integer id, Product product, LocalDateTime startTime, LocalDateTime endTime, BigDecimal startingPrice, List<BidHistory> bidHistories) {
         this.id = id;
         this.product = product;
