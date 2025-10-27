@@ -5,7 +5,6 @@ import com.example.auctionweb.dto.WebSocketMessage;
 import com.example.auctionweb.entity.Auction;
 import com.example.auctionweb.entity.BidHistory;
 import com.example.auctionweb.entity.User;
-import com.example.auctionweb.service.AuctionService;
 import com.example.auctionweb.service.IAuctionService;
 import com.example.auctionweb.service.IBidHistoryService;
 import com.example.auctionweb.service.IUserService;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 import java.util.List;
@@ -69,7 +67,7 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
 
             // Lưu vào DB
             boolean success;
-            BidHistory savedBid = bidHistoryService.add(bid);
+            BidHistory savedBid = bidHistoryService.save(bid);
             if (savedBid != null && savedBid.getId() != null) {
                 success = true;
             } else {

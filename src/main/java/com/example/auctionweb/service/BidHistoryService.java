@@ -16,7 +16,7 @@ public class BidHistoryService implements IBidHistoryService {
     }
 
     @Override
-    public BidHistory add(BidHistory bidHistory) {
+    public BidHistory save(BidHistory bidHistory) {
         return bidHistoryRepository.save(bidHistory);
     }
 
@@ -24,4 +24,5 @@ public class BidHistoryService implements IBidHistoryService {
     public List<BidHistory> findByAuctionId(int id) {
         return bidHistoryRepository.findBidHistoriesByAuctionIdOrderByTimeDesc(id);
     }
+
 }

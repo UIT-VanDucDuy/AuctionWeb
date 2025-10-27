@@ -208,51 +208,76 @@
 
     </div>
 </div>
+<footer class="bg-white text-black pt-5 pb-3">
+    <div class=" border-top border-secondary pt-3 mt-3">
+        <div class="row">
+            <!-- Logo và chứng nhận -->
+            <div class="col-md-3 mb-4">
+                <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/logoLacViet.png" alt="Conven Cinema" WIDTH="300PX">
+            </div>
 
-<div class="timkiem">
-    <div>Nhanh tay tìm kiếm vật phẩm bạn cần nào !</div>
-    <div></div>
-</div>
-<div class="main4">
-    <div style="display:flex;flex-direction:column">
-        <img style="width: 350px;" src="{%static 'image/logoLacViet.png'%}" alt="">
-        Đăng ký email để nhận tin tức mới nhất từ chúng tôi
-    </div>
-    <div style="display:flex;flex-direction:column">
-        Thông tin liên hệ:
-        <div></div>
-        &nbsp;
-        <a class="click">20521251@bm.uit.edu.vn</a>&nbsp;
-        <a class="click">0818666***</a>&nbsp;
-        <a class="click">0979334***</a>&nbsp;
-    </div>
-    <div style="display:flex;flex-direction:column">
-        Về chúng tôi :
-        <div></div>
-        &nbsp;
-        <a class="click" href="#">Giới thiệu</a>&nbsp;
-        <a class="click" href="#">Quy chế hoạt động</a>&nbsp;
-        <a class="click" href="#">Cơ chế giải quyết tranh chấp</a>&nbsp;
-    </div>
-    <div style="display:flex;flex-direction:column">
-        Chính sách :
-        <div></div>
-        &nbsp;
-        <a class="click" href="#"> Văn bản pháp quy</a>&nbsp;
-        <a class="click" href="#">Chính sách bảo mật thông tin</a>&nbsp;
+            <!-- Cột: Về Coven Cinema -->
+            <div class=" footer col-md-2 mb-4">
+                <h6>About Coven Cinema</h6>
+                <ul class="list-unstyled small">
+                    <li>Introduction</li>
+                    <li>Contact Us </li>
+                    <li>Privacy</li>
+                    <li>Help Center</li>
+                </ul>
+            </div>
 
+            <!-- Cột: Dịch vụ -->
+            <div class="footer col-md-2 mb-4">
+                <h6>Service</h6>
+                <ul class="list-unstyled small">
+                    <li>Account</li>
+                    <li>Only on Coven Cinema</li>
+                    <li>Buy Package</li>
+                    <li>Guarantee</li>
+                </ul>
+            </div>
+
+            <!-- Cột: Quy định -->
+            <div class="footer col-md-2 mb-4">
+                <h6>Quy định</h6>
+                <ul class="list-unstyled small">
+                    <li>Terms of Use</li>
+                    <li>Payment policy</li>
+                    <li>Data privacy policy</li>
+                    <li>Coven Cinema's Commitment</li>
+                </ul>
+            </div>
+
+            <!-- Cột: Liên hệ -->
+            <div class="footer col-md-3 mb-4">
+                <h6>Follow Us</h6>
+                <p class="small mb-1"><i class="bi bi-telephone"></i> 0999999999</p>
+                <p class="small mb-1"><i class="bi bi-envelope"></i> covencinema@hotro.com</p>
+                <p class="small mb-1">Follow us on:</p>
+                <a href="#"><i class="fa-brands fa-facebook text-white me-3"></i></a>
+                <a href="#"><i class="fa-brands fa-youtube text-white me-3"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram text-white me-3"></i></a>
+            </div>
+        </div>
+
+        <!-- Thông tin pháp lý -->
+        <div class="border-top border-secondary pt-3 mt-3 small text-secondary">
+            <p>
+                Coven Cinema Joint Stock Company – Representative: Mr.Văn Đức Duy. Head office:  295 Nguyen Tat Thanh, Hai Chau District, Da Nang City <br>
+                Contact address: 295 Nguyen Tat Thanh, Hai Chau District, Da Nang City <br>
+                Contact Number: 024 7300 2222. Email: hotrokhachhang@fpt.com or hotrofptplay@fpt.com
+            </p>
+        </div>
     </div>
-    <div></div>
-    <div>Công ty đấu giá ****</div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div>Công ty đấu giá ****</div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div>Công ty đấu giá ****</div>
-</div>
+
+    <!-- Nút cuộn lên đầu -->
+    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+            class="btn btn-warning rounded-circle position-fixed bottom-0 end-0 m-4 scroll-top-btn">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+</footer>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript">
     var auctionInfo = /*[[${auctionInfo}]]*/ {};
@@ -269,8 +294,8 @@
                 `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
         }
 
-        updateDateTime();               // hiển thị ngay khi load
-        setInterval(updateDateTime, 1000); // cập nhật mỗi giây
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
     });
     const socket = new WebSocket("ws://localhost:8080/ws/bid");
 
