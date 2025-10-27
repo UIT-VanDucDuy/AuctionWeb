@@ -1,7 +1,5 @@
 package com.example.auctionweb.controller;
-import com.example.auctionweb.dto.AuctionDto;
 import com.example.auctionweb.entity.BidHistory;
-import com.example.auctionweb.service.AuctionService;
 import com.example.auctionweb.service.IAuctionService;
 import com.example.auctionweb.service.IBidHistoryService;
 import com.example.auctionweb.websocket.BidWebSocketHandler;
@@ -31,7 +29,7 @@ public class AuctionController {
     public String save(@ModelAttribute("bidHistory") BidHistory bidHistory,
                        RedirectAttributes redirectAttributes) {
         boolean success;
-        BidHistory savedBid = bidHistoryService.add(bidHistory);
+        BidHistory savedBid = bidHistoryService.save(bidHistory);
         if (savedBid != null && savedBid.getId() != null) {
             success = true;
         } else {
