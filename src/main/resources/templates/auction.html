@@ -76,41 +76,86 @@
         <!-- Tab content -->
         <div class="tab-content mb-4" id="auctionTabsContent">
 
-            <!-- TAB 2: Lịch sử ra giá -->
-            <div class="tab-pane fade show active"  role="tabpanel" aria-labelledby="history-tab">
-                <div class="card shadow">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Lịch sử ra giá gần đây</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0 align-middle" id="history">
-                                <thead class="table-light">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Người dùng</th>
-                                    <th>Hành động</th>
-                                    <th>Giá</th>
-                                    <th>Thời gian</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="history, iterStat : ${auctionInfo.getBidHistories()}" th:if="${iterStat.index} < 10">
-                                    <td th:text="${iterStat.index + 1}"></td>
-                                    <td th:text="${history.user.id}"></td>
-                                    <td>Đã trả giá</td>
-                                    <td th:text="${history.amount + '.000 VND'}"></td>
-                                    <td th:text="${history.time}"></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
+        <!-- TAB 2: Lịch sử ra giá -->
+        <div class="tab-pane fade show active"  role="tabpanel" aria-labelledby="history-tab">
+            <div class="card shadow">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Lịch sử ra giá gần đây</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle" id="history">
+                            <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Người dùng</th>
+                                <th>Hành động</th>
+                                <th>Giá</th>
+                                <th>Thời gian</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="history, iterStat : ${auctionInfo.getBidHistories()}" th:if="${iterStat.index} < 10">
+                                <td th:text="${iterStat.index + 1}"></td>
+                                <td th:text="${history.user.id}"></td>
+                                <td>Đã trả giá</td>
+                                <td th:text="${history.amount + '.000 VND'}"></td>
+                                <td th:text="${history.time}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-
         </div>
+
     </div>
+</div>
+
+<div class="timkiem">
+    <div>Nhanh tay tìm kiếm vật phẩm bạn cần nào !</div>
+    <div></div>
+</div>
+<div class="main4">
+    <div style="display:flex;flex-direction:column">
+        <img style="width: 350px;" src="{%static 'image/logoLacViet.png'%}" alt="">
+        Đăng ký email để nhận tin tức mới nhất từ chúng tôi
+    </div>
+    <div style="display:flex;flex-direction:column">
+        Thông tin liên hệ:
+        <div></div>
+        &nbsp;
+        <a class="click">20521251@bm.uit.edu.vn</a>&nbsp;
+        <a class="click">0818666***</a>&nbsp;
+        <a class="click">0979334***</a>&nbsp;
+    </div>
+    <div style="display:flex;flex-direction:column">
+        Về chúng tôi :
+        <div></div>
+        &nbsp;
+        <a class="click" href="#">Giới thiệu</a>&nbsp;
+        <a class="click" href="#">Quy chế hoạt động</a>&nbsp;
+        <a class="click" href="#">Cơ chế giải quyết tranh chấp</a>&nbsp;
+    </div>
+    <div style="display:flex;flex-direction:column">
+        Chính sách :
+        <div></div>
+        &nbsp;
+        <a class="click" href="#"> Văn bản pháp quy</a>&nbsp;
+        <a class="click" href="#">Chính sách bảo mật thông tin</a>&nbsp;
+
+    </div>
+    <div></div>
+    <div>Công ty đấu giá ****</div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div>Công ty đấu giá ****</div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div>Công ty đấu giá ****</div>
+</div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript">
     var auctionInfo = /*[[${auctionInfo}]]*/ {};
@@ -185,6 +230,78 @@
 </script>
 
 <style>
+
+    .primary-navigation li {
+        justify-content: center;
+        list-style: none;
+        margin: 0 auto;
+        display: inline-flex;
+        position: relative;
+        text-decoration: none;
+        height: 1.75cm;
+        align-items: center;
+    }
+
+    .primary-navigation li ul {
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        padding-left: 0;
+        top: 50px;
+        left: 0px;
+        display: none;
+        background: white;
+    }
+
+    .primary-navigation li ul::before {
+        content: '';
+        top: -10px;
+        position: absolute;
+        width: 100%;
+        z-index: 10;
+        height: 20px;
+        background-color: transparent;
+    }
+
+    .primary-navigation li:hover>ul,
+    .primary-navigation li ul:hover {
+        visibility: visible;
+        opacity: 1;
+        display: block;
+        min-width: 250px;
+        text-align: left;
+        padding-top: 10px;
+        box-shadow: 0px 3px 5px -1px #ccc;
+    }
+
+    .primary-navigation li ul li {
+        clear: both;
+        width: 100%;
+        text-align: left;
+        margin-bottom: 20px;
+        padding-left: 5px;
+        border-style: none;
+        text-decoration: none;
+        height: 100%;
+
+    }
+
+    .primary-navigation li ul li a {
+        text-align: center;
+        display: flex;
+        transition: all 1s ease;
+        padding-left: 10px;
+    }
+
+    .primary-navigation li ul li a:hover {
+        padding-left: 20px;
+        border-left: 3px solid #ffffff;
+        transition: all 0.3s ease;
+        color: #b41712;
+        height: 100%;
+        text-align: left;
+    }
+
     .Daugia {
         display: flex;
         flex-direction: column;

@@ -30,9 +30,6 @@ public class WebSecurityConfig {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//        String newPassword = encoder.encode("123");
-//        System.out.println(newPassword);
         return bCryptPasswordEncoder;
     }
 
