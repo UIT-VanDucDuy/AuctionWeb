@@ -23,6 +23,11 @@ public class Notification {
 
     public Notification() {
     }
+    public Notification(User user, String notification) {
+        this.user = user;
+        this.notification = notification;
+        this.time = LocalDateTime.now();
+    }
 
     public Integer getId() {
         return id;

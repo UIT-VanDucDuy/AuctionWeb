@@ -3,6 +3,7 @@ package com.example.auctionweb.service;
 import com.example.auctionweb.dto.AuctionDto;
 import com.example.auctionweb.entity.Auction;
 import com.example.auctionweb.entity.BidHistory;
+import com.example.auctionweb.entity.Notification;
 import com.example.auctionweb.entity.Product;
 import com.example.auctionweb.repository.AuctionRepository;
 import com.example.auctionweb.websocket.BidWebSocketHandler;
@@ -17,6 +18,8 @@ public class AuctionService implements IAuctionService {
     private AuctionRepository auctionRepository;
     @Autowired
     private BidHistoryService bidHistoryService;
+    @Autowired
+    private INotificationService notificationService;
     @Override
     public Auction getAuctionById(int id) {
         return auctionRepository.findById(id).get();
@@ -40,6 +43,10 @@ public class AuctionService implements IAuctionService {
             BidHistory top = bidHistoryService.findTopByAuction(a);
             if (top != null) a.setWinner(top.getUser());
             auctionRepository.save(a);
+            Notification notificationSeller = new Notification(a.getProduct().getSeller(),"Bán thành công sản phẩm ID:" + a.getProduct().getId().toString());
+            notificationService.save(notificationSeller);
+            Notification notificationNewOwner = new Notification(a.getWinner(),"Đấu giá thành công sản phẩm ID:" + a.getProduct().getId().toString());
+            notificationService.save(notificationNewOwner);
             // gửi thông báo qua WebSocket tới tất cả client
             //bidWebSocketHandler.broadcastMessage("AUCTION_END");
         }
