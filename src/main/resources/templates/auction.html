@@ -86,35 +86,34 @@
                             </div>
                         </div>
 
-                        <!-- 4. Form Đấu giá -->
-<!--                        <form class="mt-4" onsubmit="sendBid(); return false;" th:if="${auctionInfo.status == 'ONGOING'}">-->
-<!--                            <label for="amount" class="form-label font-weight-bold">Nhập số tiền đấu giá của bạn:</label>-->
-<!--                            <div class="input-group input-group-lg mb-3">-->
-<!--                                <input type="number" id="amount" class="form-control"-->
-<!--                                       placeholder="Số tiền tối thiểu...">-->
-<!--                                <span class="input-group-text font-weight-bold text-secondary">VND</span>-->
-<!--                                <div id="bid-error-message" class="invalid-feedback d-none"></div>-->
-<!--                            </div>-->
-<!--                            <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn">-->
-<!--                                <i class="fas fa-gavel me-2"></i> Đấu giá ngay-->
-<!--                            </button>-->
-<!--                        </form>-->
+<!--                         4. Form Đấu giá -->
+                        <form class="mt-4 d-none" id="formSubmit" onsubmit="sendBid(); return false;" >
+                            <label for="amount" class="form-label font-weight-bold">Nhập số tiền đấu giá của bạn:</label>
+                            <div class="input-group input-group-lg mb-3">
+                                <input type="number" id="amount" class="form-control"
+                                       placeholder="Số tiền tối thiểu...">
+                                <span class="input-group-text font-weight-bold text-secondary">VND</span>
+                                <div id="bid-error-message" class="invalid-feedback d-none"></div>
+                            </div>
+                            <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn">
+                                <i class="fas fa-gavel me-2"></i> Đấu giá ngay
+                            </button>
+                        </form>
                         <!-- 5. Người thắng cuộc -->
-                        <div class="mt-4 p-4 bg-success-subtle border-start border-5 border-success rounded shadow-sm"
-                             th:if="${auctionInfo.status == 'FINISHED'}">
+                        <div class="mt-4 p-4 bg-success-subtle border-start border-5 border-success rounded shadow-sm" id="divWinner">
                             <h5 class="text-success font-weight-bold mb-3">
                                 <i class="fas fa-trophy me-2"></i> PHIÊN ĐẤU GIÁ ĐÃ KẾT THÚC
                             </h5>
                             <p class="mb-1 text-dark">
                                 <strong class="text-secondary-dark">Người thắng cuộc:</strong>
-                                <span class="text-primary font-weight-bold h5"
+                                <span class="text-primary font-weight-bold h5" id="winnerName"
                                       th:text="${auctionInfo.bidHistories.get(0).user.name}">
                             </span>
                             </p>
                             <p class="mb-0 text-dark">
                                 <strong class="text-secondary-dark">Giá thắng cuộc:</strong>
                                 <!-- Hiển thị giá cao nhất -->
-                                <span class="text-danger font-weight-bold h5"
+                                <span class="text-danger font-weight-bold h5" id="winnerPrice"
                                       th:text="${#strings.replace(auctionInfo.highestBidPrice, '.00', '')} + ' VNĐ'">
                             </span>
                             </p>
@@ -241,6 +240,37 @@
 
     socket.onmessage = (event) => {
         const msg = JSON.parse(event.data);
+        if (msg.type === "AUCTION_END" && msg.data) {
+            $.ajax({
+                url: `http://localhost:8080/api/auctionInfo/${auctionInfo.id}`,
+                dataType: "json",
+                method: "GET",
+                success: function(updatedAuction) {
+                    auctionInfo = updatedAuction;
+
+                    if (auctionInfo.status === "FINISHED") {
+                        // Ẩn form đấu giá
+                        const bidForm = document.getElementById("formSubmit");
+                        if (bidForm) bidForm.style.display = "none";
+
+                        // Hiển thị phần người thắng
+                        const winnerDiv = document.getElementById("divWinner");
+                        if (winnerDiv) winnerDiv.style.display = "block";
+
+                        // Cập nhật tên người thắng
+                        const winnerName = document.getElementById("winnerName");
+                        if (winnerName) winnerName.textContent = auctionInfo.bidHistories[0].user.name;
+
+                        // Cập nhật giá thắng
+                        const winningPrice = document.getElementById("winnerPrice");
+                        if (winningPrice) {
+                            winningPrice.textContent =
+                                new Intl.NumberFormat('vi-VN').format(auctionInfo.highestBidPrice) + " VNĐ";
+                        }
+                    }
+                }
+            });
+        }
         if (msg.type === "BID" && msg.data) {
             $.ajax({
                 url: `http://localhost:8080/api/auctionInfo/${auctionInfo.id}`,
