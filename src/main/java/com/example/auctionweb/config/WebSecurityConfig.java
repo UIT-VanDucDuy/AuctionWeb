@@ -73,23 +73,31 @@ public class WebSecurityConfig {
 //        http.csrf((csrf) -> csrf
 //                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 //                );
-        // các đường dẫn không phải login
-        http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/", "/blog", "/login","/logout", "/logoutSuccessful", "/403").permitAll());
-        // cấp quyền cho user
-        http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/blog/create").hasRole("USER"));
 
+        // Hợp nhất tất cả các quy tắc phân quyền vào MỘT khối
         http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/admin").hasRole("ADMIN"));
-        // cấp quyền cho user và admin
-        http.authorizeHttpRequests((authorize) -> authorize
-                .requestMatchers("/", "/auction/1").hasAnyRole("USER", "ADMIN"));
+
+                // 1. Các file static (Luôn luôn cho phép)
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/vendor/**").permitAll()
+
+                // 2. Các trang công khai (Không cần đăng nhập)
+                .requestMatchers("/login", "/logout", "/logoutSuccessful", "/403").permitAll()
+
+                // 3. Các trang của ADMIN (Quy tắc cụ thể)
+                .requestMatchers("/admin", "/admin/**").hasAuthority("ADMIN") // Dùng hasAuthority
+
+                // 4. Các trang của USER (Ý định MỚI của bạn)
+                // Đã gộp /home, /auction/**, /blog/create vào đây
+                .requestMatchers("/home", "/auction/**", "/blog/create").hasAuthority("USER") // Dùng hasAuthority
+                // 5. Tất cả các yêu cầu còn lại phải được xác thực (đăng nhập)
+                // (Nếu bạn muốn /home và /auction là public, hãy chuyển chúng lên mục số 2)
+                .anyRequest().authenticated()
+        );
         // cấu hình form login
         http.formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/process-login") // đường dẫn trùng với url form login
-                .defaultSuccessUrl("/")//
+                .defaultSuccessUrl("/home")//
                 .failureUrl("/login")
                 .usernameParameter("username")//trùng với tên trong form đăng nhập
                 .passwordParameter("password")// trung với tên trong form đăng nhập

@@ -1,664 +1,404 @@
 <!DOCTYPE html>
-
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
-    <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <title>Home</title>
-    <script src="../static/js/header.js"></script>
-    <link rel="stylesheet" href="../static/css/header.css">
+    <title>Trang Chủ Lạc Việt Auction (Bootstrap)</title>
+    <!-- Tải Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Tải Font Awesome -->
+    <script src="https://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
+    <!-- Tải Font Inter cho giao diện hiện đại -->
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700,900&display=swap" rel="stylesheet">
+    <script th:src="@{/js/header.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 
-<body class="container-fluid">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<body>
+
+<!-- ============================================== -->
+<!-- HEADER & NAVIGATION -->
+<!-- ============================================== -->
 <div th:replace="~{/layout/header::header}"></div>
 
-<div class="main1">
-    <div class="main1_item1">Tài sản sắp được đấu giá</div>
-    &nbsp;
-    <div class="main1_item2">
-        <div class="TinTuc">
-            <a href="/auction/"><img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bua4.jpg" alt=""></a>
-            <a href="/Goods/{{goods.id}}">Vật phẩm đấu giá</a>
-            <p> </p>
-            <div>Giá khởi điểm:</div>
-            <span style="font-size: 20px;">500.000 VND</span>
-            <div>Thời gian kết thúc: 10/12/2025</div>
-        </div>
-    </div>
-</div>
-<div class="main2">
-    <div class="grid-container">
-        <div class="item1"
-             style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/tai_san_cong.jpg) ;">
-            <div>TÀI SẢN</div>
-            <div>THANH LÝ</div>
-            <div style="font-size:18px ;">Tài sản (1)</div>
-            &nbsp;
-            <button><a href="/Search/Tài sản thanh lý">Xem thêm</a></button>
-        </div>
-        <div class="item2"
-             style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_co.jpg) ;">
-            <div>XE CỘ</div>
-            <div style="font-size:18px ;">Tài sản ({{list3_length}})</div>
-            &nbsp;
-            <button><a href="/Search/Phương tiện xe cộ">Xem thêm</a></button>
-        </div>
-        <div class="item3"
-             style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/nghe_thuat.jpg) ;">
-            <div>NGHỆ THUẬT</div>
-            <div style="font-size:18px ;">Tài sản ({{list4_length}})</div>
-            &nbsp;
-            <button><a href="/Search/Sưu tầm - Nghệ thuật">Xem thêm</a></button>
-        </div>
-        <div class="item4"
-             style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/batdongsan.jpg) ;">
-            <div>BẤT ĐỘNG SẢN</div>
-            <div style="font-size:18px ;">Tài sản ({{list2_length}})</div>
-            &nbsp;
-            <button><a href="/Search/Bất động sản - Quyền sử dụng đất">Xem thêm</a></button>
-        </div>
-        <div class="item5"
-             style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/hang_hieu.jpg) ;">
-            <DIV>HÀNG HIỆU</DIV>
-            <div style="font-size:18px ;">Tài sản ({{list5_length}})</div>
-            &nbsp;
-            <button><a href="/Search/Hàng hiệu">Xem thêm</a></button>
-        </div>
-        <div class="item6"
-             style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/TaiSanKhac.jpg) ;">
-            <div>TÀI SẢN KHÁC</div>
-            <div style="font-size:18px ;">Tài sản ({{list6_length}})</div>
-            &nbsp;
-            <button><a href="/Search/Khác">Xem thêm</a></button>
-        </div>
-    </div>
-</div>
-<div class="main3">
-    <div class="grid-container2">
-        <div style="  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-            url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/tai_san_cong.jpg);"
-             class="i1">
-            <div style="font-size: 25px;">TÀI SẢN THANH LÝ</div>
-            <div>tài sản({{list1_length}})</div>
-            &nbsp;
-            <button><a href="/Search/Tài sản thanh lý">Xem thêm</a></button>
-        </div>
-        <div class="i2">
-            <a href="/Goods/{{goods.id}}">
-                <img style="width:155px;height:155px;"
-                     src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/2.jpg" alt="">
-            </a>
-            &nbsp;
-            <div>
-                <a href="/Goods/{{goods.id}}">Gỗ thông chất lượng cao</a>
-                <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: Nguyễn Thị Bán
+<!-- ============================================== -->
+<!-- MAIN CONTENT -->
+<!-- ============================================== -->
+<main class="container py-5">
+
+    <!-- 1. TÀI SẢN SẮP ĐƯỢC ĐẤU GIÁ (Main 1) -->
+    <section class="mb-5 bg-white p-4 rounded-lg shadow-sm">
+        <h2 class="h3 fw-bold text-primary-red mb-4 pb-2 border-bottom border-primary-red">Tài sản sắp được đấu giá</h2>
+
+        <!-- Danh sách tài sản (Grid 5 cột trên desktop) -->
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4">
+            <!-- MOCK Item 1 -->
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm auction-card-item">
+                    <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bua4.jpg" class="card-img-top" alt="Vật phẩm đấu giá" onerror="this.onerror=null;this.src='https://placehold.co/600x400/b41712/ffffff?text=V%E1%BA%ADt+Ph%E1%BA%A9m';">
+                    <div class="card-body p-3">
+                        <a href="/Goods/1" class="card-title h6 fw-bold text-dark text-decoration-none hover-red d-block mb-2">Vật phẩm đấu giá (Mã #001)</a>
+                        <div class="text-muted small">Giá khởi điểm:</div>
+                        <span class="fs-5 fw-bolder text-primary-red">500.000 VND</span>
+                        <div class="text-muted small mt-1">Kết thúc: 10/12/2025</div>
+                    </div>
                 </div>
-                &nbsp;
-                <div style="color: rgb(68,68,68);">Giá khởi điểm: 500.000 VND</div>
-                <div style="color: rgb(68,68,68);">Thời gian kết thúc: 1/12/2025</div>
             </div>
-        </div>
-        <div class="i2">
-            <a href="/Goods/{{goods.id}}">
-                <img style="width:155px;height:155px;"
-                     src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/2.jpg" alt="">
-            </a>
-            &nbsp;
-            <div>
-                <a href="/Goods/{{goods.id}}">Gỗ thông chất lượng cao</a>
-                <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: Nguyễn Thị Bán
+            <!-- MOCK Item 2 -->
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm auction-card-item">
+                    <img src="https://placehold.co/600x400/0d9488/ffffff?text=Xe+C%E1%BB%99" class="card-img-top" alt="Xe Mô Tô" onerror="this.onerror=null;this.src='https://placehold.co/600x400/0d9488/ffffff?text=Xe+C%E1%BB%99';">
+                    <div class="card-body p-3">
+                        <a href="/Goods/2" class="card-title h6 fw-bold text-dark text-decoration-none hover-red d-block mb-2">Xe Mô Tô Cổ Điển</a>
+                        <div class="text-muted small">Giá khởi điểm:</div>
+                        <span class="fs-5 fw-bolder text-primary-red">15.000.000 VND</span>
+                        <div class="text-muted small mt-1">Kết thúc: 15/11/2025</div>
+                    </div>
                 </div>
-                &nbsp;
-                <div style="color: rgb(68,68,68);">Giá khởi điểm: 500.000 VND</div>
-                <div style="color: rgb(68,68,68);">Thời gian kết thúc: 1/12/2025</div>
             </div>
-        </div>
-        <div class="i2">
-            <a href="/Goods/{{goods.id}}">
-                <img style="width:155px;height:155px;"
-                     src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/2.jpg" alt="">
-            </a>
-            &nbsp;
-            <div>
-                <a href="/Goods/{{goods.id}}">Gỗ thông chất lượng cao</a>
-                <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: Nguyễn Thị Bán
+            <!-- MOCK Item 3 -->
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm auction-card-item">
+                    <img src="https://placehold.co/600x400/9b59b6/ffffff?text=Ngh%E1%BB%87+Thu%E1%BA%ADt" class="card-img-top" alt="Bức Tranh" onerror="this.onerror=null;this.src='https://placehold.co/600x400/9b59b6/ffffff?text=Ngh%E1%BB%87+Thu%E1%BA%ADt';">
+                    <div class="card-body p-3">
+                        <a href="/Goods/3" class="card-title h6 fw-bold text-dark text-decoration-none hover-red d-block mb-2">Bức Tranh Sơn Dầu</a>
+                        <div class="text-muted small">Giá khởi điểm:</div>
+                        <span class="fs-5 fw-bolder text-primary-red">5.000.000 VND</span>
+                        <div class="text-muted small mt-1">Kết thúc: 05/12/2025</div>
+                    </div>
                 </div>
-                &nbsp;
-                <div style="color: rgb(68,68,68);">Giá khởi điểm: 500.000 VND</div>
-                <div style="color: rgb(68,68,68);">Thời gian kết thúc: 1/12/2025</div>
             </div>
-        </div>
-        <div class="i2">
-            <a href="/Goods/{{goods.id}}">
-                <img style="width:155px;height:155px;"
-                     src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/2.jpg" alt="">
-            </a>
-            &nbsp;
-            <div>
-                <a href="/Goods/{{goods.id}}">Gỗ thông chất lượng cao</a>
-                <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: Nguyễn Thị Bán
+            <!-- MOCK Item 4 -->
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm auction-card-item">
+                    <img src="https://placehold.co/600x400/3498db/ffffff?text=H%C3%A0ng+Hi%E1%BB%87u" class="card-img-top" alt="Túi Xách" onerror="this.onerror=null;this.src='https://placehold.co/600x400/3498db/ffffff?text=H%C3%A0ng+Hi%E1%BB%87u';">
+                    <div class="card-body p-3">
+                        <a href="/Goods/4" class="card-title h6 fw-bold text-dark text-decoration-none hover-red d-block mb-2">Túi Xách Da Cao Cấp</a>
+                        <div class="text-muted small">Giá khởi điểm:</div>
+                        <span class="fs-5 fw-bolder text-primary-red">12.000.000 VND</span>
+                        <div class="text-muted small mt-1">Kết thúc: 20/12/2025</div>
+                    </div>
                 </div>
-                &nbsp;
-                <div style="color: rgb(68,68,68);">Giá khởi điểm: 500.000 VND</div>
-                <div style="color: rgb(68,68,68);">Thời gian kết thúc: 1/12/2025</div>
             </div>
-        </div>
-    </div>
-</div>
-<div class="main3">
-    <div class="grid-container2">
-        <div style="  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-            url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/BDS.jpg);"
-             class="i1">
-
-            <div style="font-size: 25px;">BẤT ĐỘNG SẢN</div>
-            <div style="font-size: 25px;">QUYỀN SD ĐẤT</div>
-
-            <div>tài sản({{list2_length}})</div>
-            &nbsp;
-            <button><a href="/Search/Bất động sản - Quyền sử dụng đất">Xem thêm</a></button>
-        </div>
-        <div class="i2">
-            <a href="/Goods/{{goods.id}}">
-                <img style="width:155px;height:155px ;" src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bua2.jpg"
-                                               alt="">
-            </a>
-            &nbsp;
-            <div>
-                <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
-                <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: {{goods.user}}
+            <!-- MOCK Item 5 -->
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm auction-card-item">
+                    <img src="https://placehold.co/600x400/e67e22/ffffff?text=B%C4%90S" class="card-img-top" alt="Lô Đất" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e67e22/ffffff?text=B%C4%90S';">
+                    <div class="card-body p-3">
+                        <a href="/Goods/5" class="card-title h6 fw-bold text-dark text-decoration-none hover-red d-block mb-2">Lô Đất Mặt Tiền</a>
+                        <div class="text-muted small">Giá khởi điểm:</div>
+                        <span class="fs-5 fw-bolder text-primary-red">2.5 Tỷ VND</span>
+                        <div class="text-muted small mt-1">Kết thúc: 25/12/2025</div>
+                    </div>
                 </div>
-                &nbsp;
-                <div style="color: rgb(68,68,68);">Giá khởi điểm: {{goods.price}}</div>
-                <div style="color: rgb(68,68,68);">Thời gian kết thúc: {{goods.endingdate}}</div>
             </div>
         </div>
-        <div class="i2">
-            <a href="/Goods/{{goods.id}}">
-                <img style="width:155px;height:155px ;" src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bua2.jpg"
-                     alt="">
-            </a>
-            &nbsp;
-            <div>
-                <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
-                <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: {{goods.user}}
+    </section>
+
+    <!-- 2. DANH MỤC TIÊU BIỂU (Main 2) -->
+    <section class="mb-5">
+        <h2 class="h3 fw-bold text-dark mb-4 pb-2 border-bottom">Danh mục nổi bật</h2>
+
+        <!-- Category Grid V2 (Sử dụng card icon đơn giản, đồng bộ) -->
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
+
+            <!-- 1. TÀI SẢN THANH LÝ -->
+            <div class="col">
+                <a href="/Search/Tài sản thanh lý" class="category-card-v2 p-4 text-center shadow-sm">
+                    <i class="fa-solid fa-gavel category-card-icon"></i>
+                    <div class="category-card-title">TÀI SẢN THANH LÝ</div>
+                    <div class="category-card-count">({{list1_length}} tài sản)</div>
+                </a>
+            </div>
+
+            <!-- 2. XE CỘ -->
+            <div class="col">
+                <a href="/Search/Phương tiện xe cộ" class="category-card-v2 p-4 text-center shadow-sm">
+                    <i class="fa-solid fa-car category-card-icon"></i>
+                    <div class="category-card-title">XE CỘ</div>
+                    <div class="category-card-count">({{list3_length}} tài sản)</div>
+                </a>
+            </div>
+
+            <!-- 3. NGHỆ THUẬT -->
+            <div class="col">
+                <a href="/Search/Sưu tầm - Nghệ thuật" class="category-card-v2 p-4 text-center shadow-sm">
+                    <i class="fa-solid fa-feather-pointed category-card-icon"></i>
+                    <div class="category-card-title">NGHỆ THUẬT</div>
+                    <div class="category-card-count">({{list4_length}} tài sản)</div>
+                </a>
+            </div>
+
+            <!-- 4. BẤT ĐỘNG SẢN -->
+            <div class="col">
+                <a href="/Search/Bất động sản - Quyền sử dụng đất" class="category-card-v2 p-4 text-center shadow-sm">
+                    <i class="fa-solid fa-building category-card-icon"></i>
+                    <div class="category-card-title">BẤT ĐỘNG SẢN</div>
+                    <div class="category-card-count">({{list2_length}} tài sản)</div>
+                </a>
+            </div>
+
+            <!-- 5. HÀNG HIỆU -->
+            <div class="col">
+                <a href="/Search/Hàng hiệu" class="category-card-v2 p-4 text-center shadow-sm">
+                    <i class="fa-solid fa-gem category-card-icon"></i>
+                    <div class="category-card-title">HÀNG HIỆU</div>
+                    <div class="category-card-count">({{list5_length}} tài sản)</div>
+                </a>
+            </div>
+
+            <!-- 6. TÀI SẢN KHÁC -->
+            <div class="col">
+                <a href="/Search/Khác" class="category-card-v2 p-4 text-center shadow-sm">
+                    <i class="fa-solid fa-tag category-card-icon"></i>
+                    <div class="category-card-title">TÀI SẢN KHÁC</div>
+                    <div class="category-card-count">({{list6_length}} tài sản)</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. KHU VỰC DANH SÁCH SẢN PHẨM (Main 3 - REDESIGNED 2x2) -->
+
+    <!-- Khu vực Tài sản Thanh lý -->
+    <section class="mb-5">
+        <div class="row g-4">
+            <!-- Sidebar Tài sản Thanh lý -->
+            <div class="col-lg-3">
+                <div class="card h-100 listing-sidebar p-4 rounded-lg shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
+                        <div class="mb-3">
+                            <h3 class="fw-bolder fs-3 text-white">TÀI SẢN THANH LÝ</h3>
+                            <div class="small">tài sản({{list1_length}})</div>
+                        </div>
+                        <a href="/Search/Tài sản thanh lý" class="btn btn-outline-light rounded-pill px-4">Xem thêm</a>
+                    </div>
                 </div>
-                &nbsp;
-                <div style="color: rgb(68,68,68);">Giá khởi điểm: {{goods.price}}</div>
-                <div style="color: rgb(68,68,68);">Thời gian kết thúc: {{goods.endingdate}}</div>
             </div>
-        </div>
-        <div class="i2">
-            <a href="/Goods/{{goods.id}}">
-                <img style="width:155px;height:155px ;" src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bua2.jpg"
-                     alt="">
-            </a>
-            &nbsp;
-            <div>
-                <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
-                <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: {{goods.user}}
+
+            <!-- Danh sách sản phẩm (New Grid Layout 2x2) -->
+            <div class="col-lg-9">
+                <!-- Sử dụng row-cols-2 để tạo 2 cột trên mọi thiết bị -->
+                <div class="row row-cols-2 g-4">
+                    <!-- Item Mock 1 -->
+                    <div class="col">
+                        <div class="card auction-card-item h-100">
+                            <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/2.jpg" class="card-img-top" alt="Gỗ thông" onerror="this.onerror=null;this.src='https://placehold.co/600x180/3498db/ffffff?text=G%E1%BB%97+Thanh+L%C3%BD';">
+                            <div class="card-body p-3">
+                                <a href="/Goods/mock1" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Gỗ thông chất lượng cao</a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">500.000 VND</span></div>
+                                <div class="text-muted small">Kết thúc: 1/12/2025</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item Mock 2 -->
+                    <div class="col">
+                        <div class="card auction-card-item h-100">
+                            <img src="https://placehold.co/600x180/f39c12/ffffff?text=Laptop" class="card-img-top" alt="Laptop" onerror="this.onerror=null;this.src='https://placehold.co/600x180/f39c12/ffffff?text=Laptop';">
+                            <div class="card-body p-3">
+                                <a href="/Goods/mock2" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Laptop Thinkpad X1</a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">15.000.000 VND</span></div>
+                                <div class="text-muted small">Kết thúc: 15/12/2025</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item Mock 3 -->
+                    <div class="col">
+                        <div class="card auction-card-item h-100">
+                            <img src="https://placehold.co/600x180/34495e/ffffff?text=Gh%E1%BA%BF+Sofa" class="card-img-top" alt="Ghế Sofa" onerror="this.onerror=null;this.src='https://placehold.co/600x180/34495e/ffffff?text=Gh%E1%BA%BF+Sofa';">
+                            <div class="card-body p-3">
+                                <a href="/Goods/mock3" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Bộ Ghế Sofa Da</a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">8.000.000 VND</span></div>
+                                <div class="text-muted small">Kết thúc: 20/12/2025</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item Mock 4 -->
+                    <div class="col">
+                        <div class="card auction-card-item h-100">
+                            <img src="https://placehold.co/600x180/8e44ad/ffffff?text=Tivi+Sony" class="card-img-top" alt="Tivi Sony" onerror="this.onerror=null;this.src='https://placehold.co/600x180/8e44ad/ffffff?text=Tivi+Sony';">
+                            <div class="card-body p-3">
+                                <a href="/Goods/mock4" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Tivi Sony 65 inch</a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">10.000.000 VND</span></div>
+                                <div class="text-muted small">Kết thúc: 25/12/2025</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Đã xóa các mock items 5, 6, 7, 8 để duy trì bố cục 2x2 (4 items) -->
                 </div>
-                &nbsp;
-                <div style="color: rgb(68,68,68);">Giá khởi điểm: {{goods.price}}</div>
-                <div style="color: rgb(68,68,68);">Thời gian kết thúc: {{goods.endingdate}}</div>
             </div>
         </div>
-        <div class="i2">
-            <a href="/Goods/{{goods.id}}">
-                <img style="width:155px;height:155px ;" src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bua2.jpg"
-                     alt="">
-            </a>
-            &nbsp;
-            <div>
-                <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
-                <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: {{goods.user}}
+    </section>
+
+    <!-- Khu vực Bất động sản -->
+    <section class="mb-5">
+        <div class="row g-4">
+            <!-- Sidebar BĐS -->
+            <div class="col-lg-3">
+                <div class="card h-100 listing-sidebar bg-bds p-4 rounded-lg shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center text-center partner-content">
+                        <div class="mb-3">
+                            <h3 class="fw-bolder fs-3 text-white">BẤT ĐỘNG SẢN</h3>
+                            <h3 class="fw-bolder fs-5 text-white">QUYỀN SD ĐẤT</h3>
+                            <div class="small">tài sản({{list2_length}})</div>
+                        </div>
+                        <a href="/Search/Bất động sản - Quyền sử dụng đất" class="btn btn-outline-light rounded-pill px-4">Xem thêm</a>
+                    </div>
                 </div>
-                &nbsp;
-                <div style="color: rgb(68,68,68);">Giá khởi điểm: {{goods.price}}</div>
-                <div style="color: rgb(68,68,68);">Thời gian kết thúc: {{goods.endingdate}}</div>
             </div>
-        </div>
-    </div>
-</div>
-<div class="main3">
-    <div class="grid-container2">
-        <div style=" background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-            url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_co1.jpg);"
-             class="i1">
-            <div style="font-size: 30px;">XE CỘ</div>
-            <div>tài sản({{list3_length}})</div>
-            &nbsp;
-            <button><a href="/Search/Phương tiện xe cộ">Xem thêm</a></button>
-        </div>
-        <div class="i2">
-            <a href="/Goods/{{goods.id}}"><img style="width:155px;height:155px ;" src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_cu2.jpg"
-                                               alt=""></a>
-            &nbsp;
-            <div>
-                <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
-                <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: {{goods.user}}
+
+            <!-- Danh sách sản phẩm (New Grid Layout 2x2) -->
+            <div class="col-lg-9">
+                <!-- Sử dụng row-cols-2 để tạo 2 cột trên mọi thiết bị -->
+                <div class="row row-cols-2 g-4">
+                    <!-- Item Mock 1 -->
+                    <div class="col">
+                        <div class="card auction-card-item h-100">
+                            <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bua2.jpg" class="card-img-top" alt="Đất nền" onerror="this.onerror=null;this.src='https://placehold.co/600x180/b41712/ffffff?text=%C4%90%E1%BA%A5t+N%E1%BB%81n';">
+                            <div class="card-body p-3">
+                                <a href="/Goods/mock9" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Lô đất QSDĐ (Mã 005)</a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">2.5 Tỷ VND</span></div>
+                                <div class="text-muted small">Kết thúc: 05/02/2026</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item Mock 2 -->
+                    <div class="col">
+                        <div class="card auction-card-item h-100">
+                            <img src="https://placehold.co/600x180/27ae60/ffffff?text=Nh%C3%A0+Ph%E1%BB%91" class="card-img-top" alt="Nhà Phố" onerror="this.onerror=null;this.src='https://placehold.co/600x180/27ae60/ffffff?text=Nh%C3%A0+Ph%E1%BB%91';">
+                            <div class="card-body p-3">
+                                <a href="/Goods/mock10" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Nhà Phố Quận 7</a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">4.5 Tỷ VND</span></div>
+                                <div class="text-muted small">Kết thúc: 10/02/2026</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item Mock 3 -->
+                    <div class="col">
+                        <div class="card auction-card-item h-100">
+                            <img src="https://placehold.co/600x180/c0392b/ffffff?text=Bi%E1%BB%87t+Th%E1%BB%B1" class="card-img-top" alt="Biệt Thự" onerror="this.onerror=null;this.src='https://placehold.co/600x180/c0392b/ffffff?text=Bi%E1%BB%87t+Th%E1%BB%B1';">
+                            <div class="card-body p-3">
+                                <a href="/Goods/mock11" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Biệt Thự nghỉ dưỡng</a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">15 Tỷ VND</span></div>
+                                <div class="text-muted small">Kết thúc: 15/02/2026</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item Mock 4 -->
+                    <div class="col">
+                        <div class="card auction-card-item h-100">
+                            <img src="https://placehold.co/600x180/95a5a6/ffffff?text=%C4%90%E1%BA%A5t+N%E1%BB%81n" class="card-img-top" alt="Đất Nền" onerror="this.onerror=null;this.src='https://placehold.co/600x180/95a5a6/ffffff?text=%C4%90%E1%BA%A5t+N%E1%BB%81n';">
+                            <div class="card-body p-3">
+                                <a href="/Goods/mock12" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Đất Nền Dịch Vụ</a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">1.2 Tỷ VND</span></div>
+                                <div class="text-muted small">Kết thúc: 20/02/2026</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Đã xóa các mock items 5, 6, 7, 8 để duy trì bố cục 2x2 (4 items) -->
                 </div>
-                &nbsp;
-                <div style="color: rgb(68,68,68);">Giá khởi điểm: {{goods.price}}</div>
-                <div style="color: rgb(68,68,68);">Thời gian kết thúc: {{goods.endingdate}}</div>
             </div>
         </div>
-        <div class="i2">
-            <a href="/Goods/{{goods.id}}"><img style="width:155px;height:155px ;" src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_cu2.jpg"
-                                               alt=""></a>
-            &nbsp;
-            <div>
-                <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
-                <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: {{goods.user}}
+    </section>
+
+    <!-- Khu vực Xe Cộ -->
+    <section class="mb-5">
+        <div class="row g-4">
+            <!-- Sidebar Xe Cộ -->
+            <div class="col-lg-3">
+                <div class="card h-100 listing-sidebar bg-xeco p-4 rounded-lg shadow-sm">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center text-center partner-content">
+                        <div class="mb-3">
+                            <h3 class="fw-bolder fs-3 text-white">XE CỘ</h3>
+                            <div class="small">tài sản({{list3_length}})</div>
+                        </div>
+                        <a href="/Search/Phương tiện xe cộ" class="btn btn-outline-light rounded-pill px-4">Xem thêm</a>
+                    </div>
                 </div>
-                &nbsp;
-                <div style="color: rgb(68,68,68);">Giá khởi điểm: {{goods.price}}</div>
-                <div style="color: rgb(68,68,68);">Thời gian kết thúc: {{goods.endingdate}}</div>
             </div>
-        </div>
-        <div class="i2">
-            <a href="/Goods/{{goods.id}}"><img style="width:155px;height:155px ;" src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_cu2.jpg"
-                                               alt=""></a>
-            &nbsp;
-            <div>
-                <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
-                <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: {{goods.user}}
+
+            <!-- Danh sách sản phẩm (New Grid Layout 2x2) -->
+            <div class="col-lg-9">
+                <!-- Sử dụng row-cols-2 để tạo 2 cột trên mọi thiết bị -->
+                <div class="row row-cols-2 g-4">
+                    <!-- Item Mock 1 -->
+                    <div class="col">
+                        <div class="card auction-card-item h-100">
+                            <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_cu2.jpg" class="card-img-top" alt="Xe ô tô" onerror="this.onerror=null;this.src='https://placehold.co/600x180/3498db/ffffff?text=%C3%94+T%C3%B4';">
+                            <div class="card-body p-3">
+                                <a href="/Goods/mock17" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Ô tô Sedan hạng sang</a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">850.000.000 VND</span></div>
+                                <div class="text-muted small">Kết thúc: 15/03/2026</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item Mock 2 -->
+                    <div class="col">
+                        <div class="card auction-card-item h-100">
+                            <img src="https://placehold.co/600x180/8e44ad/ffffff?text=Moto" class="card-img-top" alt="Xe Mô tô" onerror="this.onerror=null;this.src='https://placehold.co/600x180/8e44ad/ffffff?text=Moto';">
+                            <div class="card-body p-3">
+                                <a href="/Goods/mock18" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Xe mô tô phân khối lớn</a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">500.000.000 VND</span></div>
+                                <div class="text-muted small">Kết thúc: 20/03/2026</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item Mock 3 -->
+                    <div class="col">
+                        <div class="card auction-card-item h-100">
+                            <img src="https://placehold.co/600x180/1abc9c/ffffff?text=Xe+T%E1%BA%A3i" class="card-img-top" alt="Xe Tải" onerror="this.onerror=null;this.src='https://placehold.co/600x180/1abc9c/ffffff?text=Xe+T%E1%BA%A3i';">
+                            <div class="card-body p-3">
+                                <a href="/Goods/mock19" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Xe tải Isuzu 2 tấn</a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">250.000.000 VND</span></div>
+                                <div class="text-muted small">Kết thúc: 25/03/2026</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item Mock 4 -->
+                    <div class="col">
+                        <div class="card auction-card-item h-100">
+                            <img src="https://placehold.co/600x180/f1c40f/ffffff?text=Xe+%C4%90%E1%BA%A1p" class="card-img-top" alt="Xe đạp" onerror="this.onerror=null;this.src='https://placehold.co/600x180/f1c40f/ffffff?text=Xe+%C4%90%E1%BA%A1p';">
+                            <div class="card-body p-3">
+                                <a href="/Goods/mock20" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Xe đạp thể thao</a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">5.000.000 VND</span></div>
+                                <div class="text-muted small">Kết thúc: 01/04/2026</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Đã xóa các mock items 5, 6, 7, 8 để duy trì bố cục 2x2 (4 items) -->
                 </div>
-                &nbsp;
-                <div style="color: rgb(68,68,68);">Giá khởi điểm: {{goods.price}}</div>
-                <div style="color: rgb(68,68,68);">Thời gian kết thúc: {{goods.endingdate}}</div>
             </div>
         </div>
-        <div class="i2">
-            <a href="/Goods/{{goods.id}}"><img style="width:155px;height:155px ;" src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_cu2.jpg"
-                                               alt=""></a>
-            &nbsp;
-            <div>
-                <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
-                <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: {{goods.user}}
+    </section>
+
+
+    <!-- 4. TRỞ THÀNH ĐỐI TÁC (Main 5) -->
+    <section class="mb-5">
+        <div class="partner-hero shadow-lg" style="background-image: url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/handshake1.jpg);">
+            <div class="container partner-content py-5 px-4">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h2 class="display-4 fw-bolder mb-3">Trở thành đối tác của Lạc Việt</h2>
+                        <p class="lead mb-4" style="color: #ccc;">
+                            Chúng tôi sẽ đồng hành cùng bạn để đấu giá các tác phẩm nghệ thuật và tài sản giá trị. Sứ mệnh của chúng tôi là xây dựng lên một cộng đồng đấu giá chuyên nghiệp và bền vững ở Việt Nam.
+                        </p>
+                        <a href="/Lienhe" class="btn btn-primary-red btn-lg rounded-pill fw-bold shadow-lg">Liên hệ bán tài sản ngay</a>
+                    </div>
                 </div>
-                &nbsp;
-                <div style="color: rgb(68,68,68);">Giá khởi điểm: {{goods.price}}</div>
-                <div style="color: rgb(68,68,68);">Thời gian kết thúc: {{goods.endingdate}}</div>
             </div>
         </div>
-    </div>
-</div>
-<div style="padding: 2ch;"></div>
-<div class="main5">
-    <div class="main5_item">
-        <div style="grid-column:1/2;font-size: 50px;">Trở thành đối tác của Lạc Việt</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div style="align-items: center;flex-direction: column;justify-items: center;display: flex;">
-            <div style="grid-row:1/3;font-size: 20px;color: grey;"><br>Trở thành đối tác của Lạc Việt.
-                Chúng tôi
-                sẽ đồng hành
-                cùng bạn để đấu giá các tác phẩm nghệ thuật.
-                Sứ mệnh của chúng tôi là xây dựng lên một cộng đồng đấu giá chuyên nghiệp và bền vững ở
-                Việt
-                Nam.
-            </div>
-            &nbsp;
-            <a href="/Lienhe"><button onclick="clickLHBTS()">liên hệ bán tài sản</button>
-            </a>
-        </div>
+    </section>
 
-    </div>
-    <div style="padding: 2ch;"></div>
-</div>
+</main>
 
-<style>
-        /*---------------main-------------------*/
-        .main1 {
-            padding-top: 4ch;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: rgb(255, 255, 255);
-        }
-
-        .main1_item1 {
-            border-color: rgb(0, 0, 0);
-            border-style: hidden hidden solid hidden;
-            border-width: 2px;
-            font-size: 26px;
-        }
-
-        .main1_item2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-            gap: 10px;
-        }
-
-        .TinTuc {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #ffffff;
-        }
-
-        .TinTuc>div {
-            background-color: white;
-        }
-
-        .TinTuc a {
-            font-size: 18px;
-            font-weight: bolder;
-        }
-
-        .TinTuc a img {
-            max-width: 100%;
-            height: 13em;
-        }
-
-        /*-------------main2--------------------*/
-        .main2 {
-            padding-top: 13ch;
-            padding-bottom: 3ch;
-        }
-
-        .item1 {
-            grid-area: header;
-            height: 312px;
-        }
-
-        .item2 {
-            grid-area: menu;
-        }
-
-        .item3 {
-            grid-area: main;
-        }
-
-        .item4 {
-            grid-area: right;
-            height: 433px;
-            background-image: url("static/image/handshake1.jpg");
-        }
-
-        .item5 {
-            grid-area: footer;
-            height: 312px;
-        }
-
-        .item6 {
-            grid-area: left;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-areas:
-                    "header menu main main"
-                    "right right main main"
-                    "right right footer left";
-            gap: 8px;
-            background-color: #ffffff;
-        }
-
-
-        .grid-container div {
-            background-color: rgb(245, 245, 245);
-            text-align: center;
-            font-size: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-size: cover;
-            justify-content: center;
-            color: white;
-            position: relative;
-            background-color: transparent;
-
-        }
-
-        .grid-container div button {
-            border-radius: 20px;
-            height: 2.5em;
-            width: 8em;
-            font-size: 18px;
-            border-color: #ffffff;
-            color: white;
-            background-color: transparent;
-        }
-
-        .grid-container div button:hover {
-            background-color: white;
-            color: #b41712;
-            font-size: 18px;
-        }
-
-        .grid-container div button a {
-            color: white;
-            font-size: 20px;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-radius: 5ch;
-        }
-
-        .grid-container div button a:hover {
-            background-color: white;
-            color: #b41712;
-            font-size: 20px;
-        }
-
-        /*----------------main3------------------*/
-        .i1 {
-            grid-row: 1/3;
-            color: #ffffff;
-            font-size: 30px;
-            background-size: cover;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .i1 div {
-            padding-top: 3px;
-            padding-bottom: 3px;
-        }
-
-        .i1 form button {
-            border-radius: 20px;
-            height: 2.5em;
-            width: 8em;
-            font-size: 18px;
-            border-color: #ffffff;
-            color: white;
-            background-color: transparent;
-        }
-
-        .i1 form button:hover {
-            border-radius: 20px;
-            height: 2.5em;
-            width: 8em;
-            font-size: 18px;
-            border-color: #ffffff;
-            border: 1px white;
-            color: #b41712;
-            background-color: #ffffff;
-        }
-
-        .i2 {
-            padding-top: 0.5em;
-            padding-bottom: 0.5em;
-            background-color: #ffffff;
-        }
-
-        .i2 div {
-            padding-left: 1ch;
-        }
-
-        .main3 {
-            padding-top: 6ch;
-            padding-bottom: 3ch;
-            background-color: rgb(245, 245, 245);
-        }
-
-        .grid-container2 {
-            display: grid;
-            grid-template-columns: 21% 38% 38%;
-            gap: 30px;
-            background-color: rgb(245, 245, 245);
-            padding-left: 25px;
-            padding-right: 25px;
-        }
-
-        .grid-container2>div {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            position: relative;
-        }
-
-        .grid-container2>div>div>a {
-            font-weight: bold;
-        }
-
-        .grid-container2 button {
-            border-radius: 20px;
-            height: 2.5em;
-            width: 8em;
-            font-size: 18px;
-            border-color: #ffffff;
-            color: white;
-            background-color: transparent;
-        }
-
-        .grid-container2 button:hover {
-            background-color: white;
-            color: #b41712;
-            font-size: 18px;
-        }
-
-        .grid-container2 button a {
-            color: white;
-            font-size: 20px;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-radius: 5ch;
-        }
-
-        .grid-container2 button a:hover {
-            background-color: white;
-            color: #b41712;
-            font-size: 20px;
-        }
-
-        /*------------main4------------*/
-        .main4 {
-            padding-top: 5ch;
-            padding-bottom: 5ch;
-            padding-left: 3ch;
-            padding-right: 3ch;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            grid-gap: 30px;
-            border: #686666;
-            border-color: red;
-            font-size: 22px;
-        }
-
-        .main4>div>a {
-            font-size: 17px;
-            color: #686666;
-        }
-
-        .timkiem {
-            display: grid;
-            grid-template-columns: 40% 40% 20%;
-            align-items: center;
-            justify-items: center;
-            height: 1.5cm;
-            background-color: #b41712;
-            color: white;
-            font-size: 20px;
-        }
-
-        /* Logged in */
-        /*-------------dropdowm-----------*/
-        .dropdown1 {
-            position: relative;
-            display: inline-block;
-            color: #0e0d0d;
-        }
-
-        .dropdown1-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 140px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            padding: 12px 16px;
-            z-index: 1;
-        }
-
-        .dropdown1:hover .dropdown1-content {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .dropdown1-content a:hover {
-            font-size: 18px;
-            color: #b41712;
-        }
-
-        /*--------------main 5 ---------------*/
-        .main5 {
-            height: 100vh;
-            padding-left: 3ch;
-            padding-right: 3ch;
-            padding-top: 4ch;
-            padding-bottom: 9ch;
-            background-color: rgb(243, 243, 243);
-        }
-
-        .main5_item {
-            background-image: url("https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/handshake1.jpg");
-            height: 100vh;
-            background-size: 100%;
-            background-position: 100%;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-gap: 10px;
-            padding-top: 5ch;
-            padding-left: 6ch;
-            padding-right: 4ch;
-            background-color: rgb(243, 243, 243);
-            box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
-        }
-
-        .main5_item div a button {
-            padding: 0.5em;
-            width: 10cm;
-            height: 1cm;
-            background-color: #b41712;
-            border: none;
-            border-radius: 100px;
-            color: white;
-            font-size: 18px;
-        }
-    </style>
-
-</body>
+<!-- ============================================== -->
+<!-- FOOTER -->
+<!-- ============================================== -->
 <div th:replace="~{/layout/footer::footer}"></div>
 
+
+<!-- Tải Bootstrap 5 JS Bundle (Popper included) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
 </html>

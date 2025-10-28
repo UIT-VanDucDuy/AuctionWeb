@@ -9,8 +9,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <title>Thông tin sản phẩm</title>
-    <script src="../static/js/header.js"></script>
-    <link rel="stylesheet" href="../static/css/header.css">
+    <script th:src="@{/js/header.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/auction.css}">
 </head>
 <div th:replace="~{/layout/header::header}"></div>
 <body class="container-fluid">
@@ -20,161 +21,199 @@
         <div style="padding-top:0.5em ;font-size: 25px;">Xe ô tô Ford cũ nhưng còn mới :))
         </div>
     </div>
-    <div class="main1">
-        <div class="gird-container">
-            <div class="img" style="grid-row: 1/4;">
-                <a href="#">
-                    <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_cu5.jpg" alt=""
-                         class="img-product">
-                </a>
-            </div>
-            <div class="i4">
-                <div style="grid-column: 1/3;font-size: 24px;">Thông tin phiên đấu giá và sản phẩm :</div>
-    <!--            <div style="font-size: 25px;">Đã đấu giá thành công cho </div>-->
-    <!--            <div style="font-size: 25px;">{{goods_profile.owner}}</div>-->
-                <div>Thời gian mở đăng ký:</div>
-                <div>12/10/2022 08:00:00</div>
-                <div>Thời gian kết thúc đăng ký: </div>
-                <div>21/10/2022 17:00:00</div>
-                <div>Phí đăng ký tham gia đấu giá:</div>
-                <div>200.000 VNĐ</div>
-                <div>Tên chủ tài sản:</div>
-                <div th:text="${auctionInfo.getProduct().getSeller().name}"></div>
-                <div>Tổ chức đấu giá tài sản</div>
-                <div>Công ty trách nhiệm hữu hạn một thành viên</div>
-                <div>Đấu giá viên:</div>
-                <div>Nguyễn Văn A</div>
-                <div>Thời gian bắt đầu trả giá:</div>
-                <div th:text="${auctionInfo.getStartTime()}"></div>
-                <div>Thời gian kết thúc trả giá:</div>
-                <div th:text="${auctionInfo.getEndTime()}"></div>
-                <div style="font-size: 24px">Giá khởi điểm: </div>
-                <div style="font-size: 24px" th:text="${auctionInfo.getStartingPrice()}"></div>
-                <div style="font-size: 24px;">Giá cao nhất hiện tại:</div>
-                <div style="font-size: 24px" th:text="${auctionInfo.getBidHistories().get(0).amount}"></div>
-                <form style="grid-column:1/3;" class="Daugia" onsubmit="sendBid(); return false;">
-                    <input type="number" step="100" id="amount"
-                           th:min="${#lists.isEmpty(auctionInfo.bidHistories) ? auctionInfo.startingPrice+100 : auctionInfo.bidHistories[0].amount+100}"
-                           placeholder="Số tiền ...">
-                    <button type="submit">Đấu giá</button>
-                </form>
+    <div class="main1 pt-4">
+        <div class="card shadow-lg border-0 rounded-3">
+            <div class="card-body p-4 p-lg-5">
+                <!-- Bố cục lưới Bootstrap (Ảnh 50% - Chi tiết 50%) -->
+                <div class="row g-4">
+                    <!-- Cột 1: Ảnh Sản phẩm -->
+                    <div class="col-lg-6 col-md-12 text-center">
+                        <a href="#">
+                            <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_cu5.jpg" alt="Ảnh sản phẩm đấu giá"
+                                 class="img-fluid rounded-3 product-main-img">
+                        </a>
+                    </div>
 
+                    <!-- Cột 2: Chi tiết Đấu giá -->
+                    <div class="col-lg-6 col-md-12">
+                        <h4 class="mb-4 pb-2 border-bottom text-primary-dark font-weight-bold">Thông tin phiên đấu giá và sản phẩm</h4>
+
+                        <!-- 1. Thông tin Đăng ký & Thời gian -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="font-weight-bold text-lg mb-3 text-secondary">Thông tin Đăng ký</h5>
+                            </div>
+                            <div class="col-6 mb-2"><strong class="text-secondary-dark">Thời gian mở ĐK:</strong></div>
+                            <div class="col-6 mb-2">12/10/2022 08:00:00</div>
+                            <div class="col-6 mb-2"><strong class="text-secondary-dark">Thời gian kết thúc ĐK:</strong></div>
+                            <div class="col-6 mb-2">21/10/2022 17:00:00</div>
+                            <div class="col-6 mb-2"><strong class="text-secondary-dark">Phí ĐK tham gia:</strong></div>
+                            <div class="col-6 mb-2 text-danger font-weight-bold">200.000 VNĐ</div>
+                        </div>
+
+                        <!-- 2. Thông tin Chủ tài sản & Tổ chức -->
+                        <div class="row mb-4 pt-3 border-top">
+                            <div class="col-12">
+                                <h5 class="font-weight-bold text-lg mb-3 text-secondary">Thông tin Chủ tài sản</h5>
+                            </div>
+                            <div class="col-6 mb-2"><strong class="text-secondary-dark">Tên chủ tài sản:</strong></div>
+                            <div class="col-6 mb-2" th:text="${auctionInfo.getProduct().getSeller().name}"></div>
+                            <div class="col-6 mb-2"><strong class="text-secondary-dark">Tổ chức đấu giá:</strong></div>
+                            <div class="col-6 mb-2">Công ty TNHH một thành viên</div>
+                            <div class="col-6 mb-2"><strong class="text-secondary-dark">Đấu giá viên:</strong></div>
+                            <div class="col-6 mb-2">Nguyễn Văn A</div>
+                        </div>
+
+                        <!-- 3. Thời gian và Giá (Được làm nổi bật) -->
+                        <div class="p-3 bg-light rounded-3 mt-4">
+                            <div class="row">
+                                <div class="col-6 mb-2"><strong class="text-secondary-dark">Bắt đầu trả giá:</strong></div>
+                                <div class="col-6 mb-2" th:text="${auctionInfo.getStartTime()}"></div>
+                                <div class="col-6 mb-3"><strong class="text-secondary-dark">Kết thúc trả giá:</strong></div>
+                                <div class="col-6 mb-3" th:text="${auctionInfo.getEndTime()}"></div>
+
+                                <!-- Giá khởi điểm -->
+                                <div class="col-6 font-weight-bold h5 text-success">Giá khởi điểm:</div>
+                                <div class="col-6 font-weight-bold h5 text-success"
+                                     th:text="${auctionInfo.getStartingPrice()} + ' VNĐ'"></div>
+
+                                <!-- Giá cao nhất hiện tại -->
+                                <div class="col-6 font-weight-bold h4 text-danger mt-2">Giá cao nhất hiện tại:</div>
+                                <div class="col-6 font-weight-bold h4 text-danger mt-2"
+                                     th:text="${auctionInfo.getBidHistories().get(0).amount} + '.000 VNĐ'"></div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Form Đấu giá -->
+                        <form class="mt-4" onsubmit="sendBid(); return false;">
+                            <label for="amount" class="form-label font-weight-bold">Nhập số tiền đấu giá của bạn:</label>
+
+                            <!-- ĐÃ SỬA: Thêm input-group và đơn vị VND -->
+                            <div class="input-group input-group-lg mb-3">
+                                <input type="number" step="100" id="amount" class="form-control"
+                                       th:min="${#lists.isEmpty(auctionInfo.bidHistories) ? auctionInfo.startingPrice+100 : auctionInfo.bidHistories[0].amount+100}"
+                                       placeholder="Số tiền tối thiểu...">
+                                <span class="input-group-text font-weight-bold text-secondary">VND</span>
+                            </div>
+
+                            <!-- ĐÃ SỬA: Thay btn-primary bằng btn-danger (cho màu đỏ) -->
+                            <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn">
+                                <i class="fas fa-gavel me-2"></i> Đấu giá ngay
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
-
     </div>
     <!-- Nav tabs -->
-    <div>
+    <div class="mt-8">
         <ul class="nav nav-tabs mb-4 custom-tabs d-flex align-content-center ps-3 " id="auctionTabs" role="tablist">
+            <!-- TAB 1: Lịch sử ra giá (Chuyển sang inactive) -->
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="true">
+                <button class="nav-link active" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">
                     Lịch sử ra giá
+                </button>
+            </li>
+            <!-- TAB 2: Chi tiết sản phẩm (Mặc định active) -->
+            <li class="nav-item" role="presentation">
+                <button class="nav-link " id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true">
+                    Chi tiết sản phẩm
+                </button>
+            </li>
+            <!-- TAB 3: Điều khoản & Quy định -->
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="terms-tab" data-bs-toggle="tab" data-bs-target="#terms" type="button" role="tab" aria-controls="terms" aria-selected="false">
+                    Điều khoản & Quy định
                 </button>
             </li>
         </ul>
 
         <!-- Tab content -->
         <div class="tab-content mb-4" id="auctionTabsContent">
-
-        <!-- TAB 2: Lịch sử ra giá -->
-        <div class="tab-pane fade show active"  role="tabpanel" aria-labelledby="history-tab">
-            <div class="card shadow">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">Lịch sử ra giá gần đây</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle" id="history">
-                            <thead class="table-light">
-                            <tr>
-                                <th>#</th>
-                                <th>Người dùng</th>
-                                <th>Hành động</th>
-                                <th>Giá</th>
-                                <th>Thời gian</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="history, iterStat : ${auctionInfo.getBidHistories()}" th:if="${iterStat.index} < 10">
-                                <td th:text="${iterStat.index + 1}"></td>
-                                <td th:text="${history.user.id}"></td>
-                                <td>Đã trả giá</td>
-                                <td th:text="${history.amount + '.000 VND'}"></td>
-                                <td th:text="${history.time}"></td>
-                            </tr>
-                            </tbody>
-                        </table>
+            <!-- CONTENT 1: Lịch sử ra giá (Chuyển sang inactive) -->
+            <div class="tab-pane fade show active" id="history" role="tabpanel" aria-labelledby="history-tab">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-gray-50 p-4">
+                        <h5 class="mb-0 text-xl font-semibold text-gray-800">Lịch sử ra giá gần đây</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 align-middle" id="bid-history-table">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Người dùng</th>
+                                    <th>Hành động</th>
+                                    <th>Giá</th>
+                                    <th>Thời gian</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="history, iterStat : ${auctionInfo.getBidHistories()}" th:if="${iterStat.index} < 10">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${history.user.id}"></td>
+                                    <td>Đã trả giá</td>
+                                    <td th:text="${history.amount + '.000 VND'}"></td>
+                                    <td th:text="${history.time}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+
+
+            <!-- CONTENT 2: Chi tiết sản phẩm (Mặc định active) -->
+            <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">
+                <div class="card shadow border-0">
+                    <div class="card-body p-5">
+                        <h5 class="card-title text-2xl font-semibold mb-4 text-gray-800">Mô tả và Thông số kỹ thuật</h5>
+                        <div class="prose max-w-none">
+                            <p class="mb-4">
+                                Đây là nơi hiển thị mô tả chi tiết từ hệ thống. Ví dụ: "Xe Ford cũ nhưng còn mới", đã được bảo dưỡng định kỳ và thay lốp mới. Đã có giấy tờ công chứng và sẵn sàng bàn giao ngay sau khi đấu giá thành công.
+                            </p>
+                            <h6 class="text-lg font-bold mt-4 mb-3 text-gray-700">Thông số chính:</h6>
+                            <ul class="list-disc list-inside space-y-2 pl-4">
+                                <li><span class="font-medium">Hãng xe:</span> Ford</li>
+                                <li><span class="font-medium">Năm sản xuất:</span> 2018</li>
+                                <li><span class="font-medium">Màu sắc:</span> Đen</li>
+                                <li><span class="font-medium">Số km đã đi:</span> 55,000 km</li>
+                                <li><span class="font-medium">Tình trạng hồ sơ:</span> Đã công chứng đầy đủ.</li>
+                                <li th:if="${auctionInfo.getProduct().description}"><span class="font-medium">Mô tả từ người bán:</span> <span th:text="${auctionInfo.getProduct().description}"></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- CONTENT 3: Điều khoản & Quy định -->
+            <div class="tab-pane fade" id="terms" role="tabpanel" aria-labelledby="terms-tab">
+                <div class="card shadow border-0">
+                    <div class="card-body p-5">
+                        <h5 class="card-title text-2xl font-semibold mb-4 text-gray-800">Quy tắc và Điều khoản Đấu giá</h5>
+                        <div class="prose max-w-none">
+                            <p class="text-gray-700 mb-4">Vui lòng đọc kỹ các điều khoản sau trước khi tham gia đấu giá:</p>
+                            <ol class="list-decimal list-inside space-y-3 pl-4 text-gray-600">
+                                <li>Người tham gia phải hoàn thành phí đăng ký trước thời gian kết thúc đăng ký.</li>
+                                <li>Mọi hành vi trả giá không nghiêm túc, sai lệch thông tin sẽ bị cấm tham gia các phiên đấu giá sau.</li>
+                                <li>Giá trả phải lớn hơn giá cao nhất hiện tại tối thiểu **100 VNĐ** (hoặc bước giá quy định).</li>
+                                <li>Người thắng cuộc có trách nhiệm hoàn thành thanh toán trong vòng 7 ngày làm việc.</li>
+                            </ol>
+                            <p class="text-sm text-red-600 mt-4">Bằng việc tham gia đấu giá, bạn đồng ý với tất cả các điều khoản và quy định của Công ty trách nhiệm hữu hạn một thành viên.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-
     </div>
-</div>
-
-<div class="timkiem">
-    <div>Nhanh tay tìm kiếm vật phẩm bạn cần nào !</div>
-    <div></div>
-</div>
-<div class="main4">
-    <div style="display:flex;flex-direction:column">
-        <img style="width: 350px;" src="{%static 'image/logoLacViet.png'%}" alt="">
-        Đăng ký email để nhận tin tức mới nhất từ chúng tôi
-    </div>
-    <div style="display:flex;flex-direction:column">
-        Thông tin liên hệ:
-        <div></div>
-        &nbsp;
-        <a class="click">20521251@bm.uit.edu.vn</a>&nbsp;
-        <a class="click">0818666***</a>&nbsp;
-        <a class="click">0979334***</a>&nbsp;
-    </div>
-    <div style="display:flex;flex-direction:column">
-        Về chúng tôi :
-        <div></div>
-        &nbsp;
-        <a class="click" href="#">Giới thiệu</a>&nbsp;
-        <a class="click" href="#">Quy chế hoạt động</a>&nbsp;
-        <a class="click" href="#">Cơ chế giải quyết tranh chấp</a>&nbsp;
-    </div>
-    <div style="display:flex;flex-direction:column">
-        Chính sách :
-        <div></div>
-        &nbsp;
-        <a class="click" href="#"> Văn bản pháp quy</a>&nbsp;
-        <a class="click" href="#">Chính sách bảo mật thông tin</a>&nbsp;
-
-    </div>
-    <div></div>
-    <div>Công ty đấu giá ****</div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div>Công ty đấu giá ****</div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div>Công ty đấu giá ****</div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript">
     var auctionInfo = /*[[${auctionInfo}]]*/ {};
-    document.addEventListener("DOMContentLoaded", function() {
-        function updateDateTime() {
-            const now = new Date();
-            const day = now.getDate().toString().padStart(2, '0');
-            const month = (now.getMonth() + 1).toString().padStart(2, '0');
-            const year = now.getFullYear();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
-            document.getElementById("current_date").textContent =
-                `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-        }
-
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-    });
     const socket = new WebSocket("ws://localhost:8080/ws/bid");
 
     socket.onopen = () => {
@@ -228,207 +267,6 @@
     }
 
 </script>
-
-<style>
-
-    .primary-navigation li {
-        justify-content: center;
-        list-style: none;
-        margin: 0 auto;
-        display: inline-flex;
-        position: relative;
-        text-decoration: none;
-        height: 1.75cm;
-        align-items: center;
-    }
-
-    .primary-navigation li ul {
-        visibility: hidden;
-        opacity: 0;
-        position: absolute;
-        padding-left: 0;
-        top: 50px;
-        left: 0px;
-        display: none;
-        background: white;
-    }
-
-    .primary-navigation li ul::before {
-        content: '';
-        top: -10px;
-        position: absolute;
-        width: 100%;
-        z-index: 10;
-        height: 20px;
-        background-color: transparent;
-    }
-
-    .primary-navigation li:hover>ul,
-    .primary-navigation li ul:hover {
-        visibility: visible;
-        opacity: 1;
-        display: block;
-        min-width: 250px;
-        text-align: left;
-        padding-top: 10px;
-        box-shadow: 0px 3px 5px -1px #ccc;
-    }
-
-    .primary-navigation li ul li {
-        clear: both;
-        width: 100%;
-        text-align: left;
-        margin-bottom: 20px;
-        padding-left: 5px;
-        border-style: none;
-        text-decoration: none;
-        height: 100%;
-
-    }
-
-    .primary-navigation li ul li a {
-        text-align: center;
-        display: flex;
-        transition: all 1s ease;
-        padding-left: 10px;
-    }
-
-    .primary-navigation li ul li a:hover {
-        padding-left: 20px;
-        border-left: 3px solid #ffffff;
-        transition: all 0.3s ease;
-        color: #b41712;
-        height: 100%;
-        text-align: left;
-    }
-
-    .Daugia {
-        display: flex;
-        flex-direction: column;
-        padding: 1em;
-        grid-template: 50% 50%;
-    }
-
-    .Daugia input {
-        padding: 0.5em;
-        border: none;
-        border-bottom: 1px solid #686666;
-        background-color: rgb(245, 245, 245);
-        font-size: 20px;
-    }
-
-    .Daugia button {
-        padding: 0.5em;
-        width: 4cm;
-        height: 1cm;
-        background-color: #b41712;
-        border: none;
-        border-radius: 100px;
-        color: white;
-        font-size: 18px;
-    }
-
-
-
-    /*------------item------------*/
-    .item {
-        border-color: rgb(185, 183, 183);
-        border-style: hidden hidden solid hidden;
-        border-width: 1px;
-    }
-
-    /*----------------main---------*/
-    .main1 {
-        padding-top: 2ch;
-    }
-
-    .gird-container {
-        display: grid;
-        grid-template-columns: 43% 55%;
-        gap: 1em;
-    }
-
-    .gird-container div a img {
-        max-width: 100%;
-        object-fit: cover;
-    }
-
-    .img {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .i4 {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .i4>div {
-        padding: 0.5em;
-        font-size: 18px;
-    }
-
-
-    /*------------main4------------*/
-    .main4 {
-        padding-top: 5ch;
-        padding-bottom: 5ch;
-        padding-left: 3ch;
-        padding-right: 3ch;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        grid-gap: 30px;
-        border: #686666;
-        border-color: red;
-        font-size: 22px;
-    }
-
-    .main4>div>a {
-        font-size: 17px;
-        color: #686666;
-    }
-
-    .timkiem {
-        display: flex;
-        align-content: center;
-        height: 1.5cm;
-        background-color: #b41712;
-        color: white;
-        font-size: 20px;
-    }
-
-
-    /*tab*/
-    .custom-tabs{
-        background-color: #b41712;
-        color: white;
-        font-size: 20px;
-        height: 1.5cm;
-    }
-    .nav-item{
-        height: 100%;
-    }
-    .custom-tabs .nav-link {
-        height: 100%;
-        border-radius: 0 !important; /* bỏ bo góc */
-        border: none;/* bỏ border mặc định */
-        color: #fff;           /* màu chữ bình thường */
-        font-weight: bold;
-        transition: background-color 0.3s, color 0.3s;
-     }
-
-    .custom-tabs .nav-link:hover .nav-link.active {
-        background-color: white; /* màu hover */
-        color: black;
-    }
-    .img-product{
-        height: 500px;
-        width: 650px;
-        object-fit: cover;
-        border-radius: 5px;
-    }
-</style>
 </body>
 <div th:replace="~{/layout/footer::footer}"></div>
 

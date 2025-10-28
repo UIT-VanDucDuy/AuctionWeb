@@ -1,107 +1,292 @@
-.dropdown-menu{
-    overflow: hidden;
-    align-content: center;
-}
-.dropdown-content a,
-.dropdown-menu .dropdown-item {
-    transition: all 0.3s ease;
-}
-
-.dropdown-content a:hover,
-.dropdown-menu .dropdown-item:hover {
-    background-color: #ffffff; /* nền sáng khi hover */
-    color: #b41712;            /* đổi màu chữ */
-    transform: translateX(5px); /* dịch sang phải nhẹ */
-}
-nav{
-    padding: 0 !important;
-    height:50px;
-}
-.navbar-nav .nav-item{
-    align-content: center;
-}
-/* Navbar items */
-.navbar-nav .nav-item .nav-link {
-    transition: all 0.3s ease;
-    color: white;
-    align-content: center;
+:root {
+    --main-red: #b41712;
+    --dark-text: #2c3e50;
+    --light-gray: #f8f9fa;
+    --border-color: #e0e0e0;
+    --border-radius-search: 0.5rem; /* Biến cho độ bo góc */
 }
 
-.navbar-nav .nav-item .nav-link:hover {
-    background-color: rgb(255, 255, 255); /* nền mờ khi hover */
-    color: #b41712;/* đổi màu chữ vàng */
-    border-radius: 5px;
-    height: 100%;
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--light-gray);
+    padding-top: 0 !important;
 }
-.h-100{
-    height: 100% !important;
+
+/* 1. TOP BAR STYLES */
+.top-bar {
+    background-color: var(--light-gray) !important;
+    font-size: 0.8rem;
 }
-.container-fluid {
-    height: 100%;
+
+/* New Notification Dropdown Style */
+.notification-dropdown {
+    position: relative; /* Dùng để chứa menu */
+    display: inline-block;
 }
-/*-------------dropdowm-----------*/
-.dropdown {
+
+.notification-bell-toggle i {
+    color: var(--dark-text);
+    transition: color 0.2s;
+}
+.notification-bell-toggle:hover i {
+    color: var(--main-red) !important;
+}
+.notification-dropdown .badge {
+    /* Vị trí tinh chỉnh */
+    right: -10px;
+    top: -5px;
+    z-index: 10;
+    min-width: 1.5em;
+    height: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-size: 0.6rem;
+}
+
+/* Notification Menu Customization */
+.notification-menu {
+    position: absolute;
+    right: 0; /* Căn phải so với chuông */
+    z-index: 1000;
+    min-width: 300px; /* Chiều rộng lớn hơn */
+    max-height: 400px; /* Giới hạn chiều cao */
+    overflow-y: auto; /* Cho phép cuộn */
+    padding: 0.5rem 0;
+    margin: 0.125rem 0 0;
+    font-size: 1rem;
+    color: var(--dark-text);
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+    display: none; /* Mặc định ẩn */
+}
+
+.notification-menu.show {
+    display: block; /* Hiện khi có class 'show' */
+}
+
+.notification-menu .dropdown-header {
+    padding: 0.5rem 1.5rem 0.25rem;
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0.5rem;
+    user-select: none; /* Không cho phép chọn text header */
+}
+
+.notification-item {
+    white-space: normal !important; /* Cho phép thông báo xuống dòng */
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.9rem;
+    line-height: 1.3;
+    transition: background-color 0.2s;
+    border-bottom: 1px solid var(--light-gray);
+}
+.notification-item:hover {
+    background-color: var(--light-gray);
+}
+
+
+/* Custom Dropdown (User Profile) */
+.custom-dropdown {
     position: relative;
     display: inline-block;
-    color: #0e0d0d;
+    cursor: pointer;
 }
 
-.dropdown-content {
-    display: none;
+.custom-dropdown-toggle {
+    padding: 0.5rem 0.75rem;
+    transition: color 0.2s;
+}
+
+.custom-dropdown-toggle:hover {
+    color: var(--main-red);
+}
+
+.custom-dropdown-menu {
     position: absolute;
-    background-color: #f9f9f9;
-    min-width: 140px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    padding: 12px 16px;
-    z-index: 1;
-}
-
-.dropdown:hover .dropdown-content {
-    display: flex;
-    flex-direction: column;
-}
-
-.dropdown-content a:hover {
-    font-size: 18px;
-    color: #b41712;
-}
-a {
+    right: 0;
+    z-index: 1000;
+    min-width: 12rem;
+    padding: 0.5rem 0;
+    margin: 0.125rem 0 0;
+    font-size: 1rem;
+    color: var(--dark-text);
+    text-align: left;
     list-style: none;
-    color: black;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+    display: none;
+}
+
+.custom-dropdown:hover .custom-dropdown-menu {
+    display: block;
+}
+
+.custom-dropdown-menu a {
+    display: block;
+    padding: 0.5rem 1.5rem;
+    clear: both;
+    font-weight: 400;
+    color: var(--dark-text);
     text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.2s, color 0.2s;
 }
 
-.input1 {
-    border-bottom-left-radius: 15px;
-    border-top-left-radius: 15px;
-    height: 1cm;
-    padding: 0 0.5em;
-    border: 1px solid #ccc;           /* viền rõ ràng */
-    background-color: #fff;           /* màu nền sáng để nổi bật */
-    box-shadow: 2px 2px 6px rgba(0,0,0,0.1); /* shadow nhẹ */
-    outline: none;                     /* bỏ viền focus mặc định */
-    transition: all 0.3s ease;        /* hiệu ứng mượt khi focus */
+.custom-dropdown-menu a:hover {
+    color: #fff;
+    text-decoration: none;
+    background-color: var(--main-red);
 }
 
-.input2 {
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
-    border: 1px solid #c5c5c5;        /* viền hợp lý */
-    height: 1cm;
-    width: 10cm;                        /* responsive theo container */
-    max-width: 400px;                   /* giới hạn tối đa nếu muốn */
-    padding: 0 0.5em;                   /* padding vừa phải để text không dính viền */
-    background-color: #fff;             /* nền trắng nổi bật */
-    box-shadow: 2px 2px 6px rgba(0,0,0,0.1), 0 0 10px rgba(0,0,0,0.05); /* shadow hợp lệ */
-    outline: none;                       /* bỏ viền focus mặc định */
-    transition: all 0.3s ease;
+/* 2. LOGO & SEARCH STYLES */
+/* Đã thêm class logo-search-section vào div này trong HTML để dễ tính toán chiều cao */
+.logo-search-section {
+    background-color: white;
 }
 
-.searchbutton {
-    background-color: rgb(66, 65, 65);
-    color: #ffffff;
+.header-logo {
+    max-height: 55px;
+    width: auto;
+}
+
+.custom-search-form {
+    max-width: 700px;
+    margin: 0 auto;
+}
+@media (min-width: 768px) {
+    .custom-search-form {
+        margin: 0;
+    }
+}
+
+.input-category, .input-search-text {
+    border: 1px solid var(--border-color);
+    box-shadow: none !important;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+}
+
+/* BO GÓC DANH MỤC */
+.input-category {
+    max-width: 150px;
+    border-radius: var(--border-radius-search) 0 0 var(--border-radius-search) !important;
+    border-right: none;
+}
+
+.input-search-text {
+    flex-grow: 1;
+    border-radius: 0 !important;
+    border-right: none;
+}
+
+.search-button {
+    background-color: var(--main-red);
+    border-color: var(--main-red);
+    color: white;
+    padding: 0.75rem 1.25rem;
+    transition: background-color 0.2s, border-color 0.2s;
+    border-radius: 0 var(--border-radius-search) var(--border-radius-search) 0 !important;
+}
+
+.search-button:hover {
+    background-color: #a01511;
+    border-color: #a01511;
+}
+
+/* Mobile adjustments for search inputs */
+@media (max-width: 767.98px) {
+    .input-category {
+        max-width: 120px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+    .input-search-text {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+    .search-button {
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* 3. MAIN MENU STYLES - XỬ LÝ FIXED BẰNG JS */
+.custom-main-nav {
+    background-color: var(--main-red) !important;
+    height: 50px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* Đã loại bỏ sticky/fixed mặc định */
+    position: relative;
+    z-index: 3;
+    width: 100%;
+}
+
+/* CLASS ĐƯỢC THÊM BẰNG JAVASCRIPT KHI CUỘN ĐẾN ĐIỂM CẦN FIXED */
+.custom-main-nav.is-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1020; /* Luôn đảm bảo thanh nav nằm trên cùng */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Thêm bóng khi fixed */
+}
+
+.custom-main-nav .nav-link {
+    color: white !important;
+    font-weight: 600;
+    padding: 0.75rem 1.2rem;
+    border-bottom: 3px solid transparent;
+    transition: background-color 0.2s, border-bottom-color 0.2s;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.custom-main-nav .nav-link:hover,
+.custom-main-nav .nav-item.dropdown:hover > .nav-link {
+    background-color: #9d140e;
+    border-bottom-color: #fff;
+}
+
+.custom-dropdown-menu-lg {
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border: none;
-    border-radius: 20px;
-    width: 1cm;
-    height: 1cm;
+}
+
+.custom-dropdown-menu-lg .dropdown-item:hover {
+    background-color: var(--main-red);
+    color: white;
+}
+
+/* Mobile Menu Customization */
+@media (max-width: 991.98px) {
+    .custom-main-nav {
+        height: auto;
+    }
+    .custom-main-nav .nav-link {
+        padding: 0.5rem 1rem;
+        border-bottom: none;
+        justify-content: start;
+    }
+    .custom-main-nav .nav-link:hover {
+        border-bottom: none;
+    }
+    .navbar-toggler {
+        border-color: rgba(255, 255, 255, 0.5);
+        color: white;
+        padding: 0.5rem 0.75rem;
+    }
 }
