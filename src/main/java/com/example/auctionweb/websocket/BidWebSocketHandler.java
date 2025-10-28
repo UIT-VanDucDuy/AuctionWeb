@@ -107,6 +107,11 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
         message.setAuction(bid.getAuction());
         broadcastMessage(message);
     }
+    public void broadcastFinishAuction(Auction auction) throws Exception {
+        WebSocketMessage message = new WebSocketMessage("AUCTION_END", auction);
+        message.setAuction(auction);
+        broadcastMessage(message);
+    }
 
     // 🟢 Method để broadcast message cho tất cả clients
     public void broadcastMessage(WebSocketMessage message) throws Exception {

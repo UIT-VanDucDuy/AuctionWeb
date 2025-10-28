@@ -6,5 +6,5 @@ import com.example.auctionweb.entity.Auction;
 public interface IAuctionService {
     Auction getAuctionById(int id);
     AuctionDto getAuctionInfoById(int productId);
-    void finishExpiredAuctions();
+    void finishExpiredAuctions() throws Exception;
 }

@@ -8,8 +8,10 @@ import com.example.auctionweb.entity.Product;
 import com.example.auctionweb.repository.AuctionRepository;
 import com.example.auctionweb.websocket.BidWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 @Service
@@ -20,6 +22,9 @@ public class AuctionService implements IAuctionService {
     private BidHistoryService bidHistoryService;
     @Autowired
     private INotificationService notificationService;
+    @Autowired
+    @Lazy
+    private BidWebSocketHandler bidWebSocketHandler;
     @Override
     public Auction getAuctionById(int id) {
         return auctionRepository.findById(id).get();
@@ -29,13 +34,21 @@ public class AuctionService implements IAuctionService {
     public AuctionDto getAuctionInfoById(int id) {
         Auction auction = auctionRepository.findById(id).get();
         List<BidHistory> bidHistories = bidHistoryService.findByAuction(auction);
+        BigDecimal highestBidPrice;
+
+        if(bidHistories.isEmpty()){
+            highestBidPrice = auction.getStartingPrice();
+        }else {
+            highestBidPrice = bidHistoryService.findTopByAuction(auction).getAmount();
+        }
         return new AuctionDto(auction,bidHistories,
-                bidHistoryService.findTopByAuction(auction).getAmount());
+                highestBidPrice);
     }
 
     @Override
-    public void finishExpiredAuctions() {
-        List<Auction> auctions = auctionRepository.findAllByStatusAndEndTimeBefore("ONGOING", LocalDateTime.now());
+    public void finishExpiredAuctions() throws Exception {
+        LocalDateTime now = LocalDateTime.now();
+        List<Auction> auctions = auctionRepository.findAllByStatusAndEndTimeBefore("ONGOING",now);
         for (Auction a : auctions) {
             a.setStatus("FINISHED");
             // tìm bid cao nhất
@@ -47,7 +60,7 @@ public class AuctionService implements IAuctionService {
             Notification notificationNewOwner = new Notification(a.getWinner(),"Đấu giá thành công sản phẩm ID:" + a.getProduct().getId().toString());
             notificationService.save(notificationNewOwner);
             // gửi thông báo qua WebSocket tới tất cả client
-            //bidWebSocketHandler.broadcastMessage("AUCTION_END");
+            bidWebSocketHandler.broadcastFinishAuction(a);
         }
     }
 }
