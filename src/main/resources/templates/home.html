@@ -166,7 +166,7 @@
         <div class="row g-4">
             <!-- Sidebar Tài sản Thanh lý -->
             <div class="col-lg-3">
-                <div class="card h-100 listing-sidebar p-4 rounded-lg shadow-sm">
+                <div class="card h-100 listing-sidebar p-4 rounded-lg shadow-sm bg-tstl">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
                         <div class="mb-3">
                             <h3 class="fw-bolder fs-3 text-white">TÀI SẢN THANH LÝ</h3>
@@ -375,18 +375,28 @@
 
     <!-- 4. TRỞ THÀNH ĐỐI TÁC (Main 5) -->
     <section class="mb-5">
-        <div class="partner-hero shadow-lg" style="background-image: url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/handshake1.jpg);">
-            <div class="container partner-content py-5 px-4">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <h2 class="display-4 fw-bolder mb-3">Trở thành đối tác của Lạc Việt</h2>
-                        <p class="lead mb-4" style="color: #ccc;">
-                            Chúng tôi sẽ đồng hành cùng bạn để đấu giá các tác phẩm nghệ thuật và tài sản giá trị. Sứ mệnh của chúng tôi là xây dựng lên một cộng đồng đấu giá chuyên nghiệp và bền vững ở Việt Nam.
-                        </p>
-                        <a href="/Lienhe" class="btn btn-primary-red btn-lg rounded-pill fw-bold shadow-lg">Liên hệ bán tài sản ngay</a>
-                    </div>
+        <div class="position-relative overflow-hidden rounded-3xl shadow-2xl" style="height: 650px;">
+            <!-- Background Image --><img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/handshake1.jpg"
+                                          alt="Đối tác Lạc Việt Auction"
+                                          class="position-absolute top-0 start-0 w-100 h-100 object-cover"
+                                          style="filter: brightness(0.7); z-index: 1;">
+
+            <!-- Overlay and Content --><div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
+                                             style="background: linear-gradient(to right, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%); z-index: 2;">
+            <div class="container text-white px-4 py-5">
+                <div class="col-lg-8">
+                    <h2 class="display-4 fw-bolder mb-3 text-shadow-lg" style="letter-spacing: -1px;">
+                        Trở thành đối tác của Lạc Việt
+                    </h2>
+                    <p class="lead mb-4" style="color: #e0e0e0; max-width: 600px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                        Chúng tôi sẽ đồng hành cùng bạn để đấu giá các tác phẩm nghệ thuật và tài sản giá trị. Sứ mệnh của chúng tôi là xây dựng lên một cộng đồng đấu giá chuyên nghiệp và bền vững ở Việt Nam.
+                    </p>
+                    <a href="/Lienhe" class="btn btn-light btn-lg rounded-pill fw-bold shadow-lg text-primary-red pulse-effect">
+                        Liên hệ bán tài sản ngay
+                    </a>
                 </div>
             </div>
+        </div>
         </div>
     </section>
 
