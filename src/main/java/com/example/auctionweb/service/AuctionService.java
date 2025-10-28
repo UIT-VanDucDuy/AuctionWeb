@@ -29,9 +29,8 @@ public class AuctionService implements IAuctionService {
     public AuctionDto getAuctionInfoById(int id) {
         Auction auction = auctionRepository.findById(id).get();
         List<BidHistory> bidHistories = bidHistoryService.findByAuction(auction);
-        return new AuctionDto(auction.getId(),auction.getProduct(),auction.getStartTime(),
-                auction.getEndTime(),auction.getStartingPrice(),bidHistories,
-                bidHistoryService.findTopByAuction(auction).getAmount(),auction.getStatus());
+        return new AuctionDto(auction,bidHistories,
+                bidHistoryService.findTopByAuction(auction).getAmount());
     }
 
     @Override

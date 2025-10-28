@@ -15,23 +15,17 @@ public class Auction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     @OneToOne
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
-
     @Column(name = "start_time")
     private LocalDateTime startTime;
-
     @Column(name = "end_time")
     private LocalDateTime endTime;
-
     @Column(name = "starting_price", precision = 15, scale = 2)
     private BigDecimal startingPrice;
-
     @Column(name = "status")
     private String status;
-
     @OneToOne
     @JoinColumn(name = "winner")
     private User winner;

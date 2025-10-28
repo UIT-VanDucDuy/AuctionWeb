@@ -59,7 +59,7 @@
                                 <h5 class="font-weight-bold text-lg mb-3 text-secondary">Thông tin Chủ tài sản</h5>
                             </div>
                             <div class="col-6 mb-2"><strong class="text-secondary-dark">Tên chủ tài sản:</strong></div>
-                            <div class="col-6 mb-2" th:text="${auctionInfo.getProduct().getSeller().name}"></div>
+                            <div class="col-6 mb-2" th:text="${auctionInfo.auction.product.seller.name}"></div>
                             <div class="col-6 mb-2"><strong class="text-secondary-dark">Tổ chức đấu giá:</strong></div>
                             <div class="col-6 mb-2">Công ty TNHH một thành viên</div>
                             <div class="col-6 mb-2"><strong class="text-secondary-dark">Đấu giá viên:</strong></div>
@@ -71,14 +71,14 @@
                             <div class="row">
                                 <div class="col-6 mb-2"><strong class="text-secondary-dark">Bắt đầu trả giá:</strong></div>
                                 <div class="col-6 mb-2"
-                                     th:text="${#temporals.format(auctionInfo.startTime, 'dd/MM/yyyy HH:mm:ss')}"></div>
+                                     th:text="${#temporals.format(auctionInfo.auction.startTime, 'dd/MM/yyyy HH:mm:ss')}"></div>
                                 <div class="col-6 mb-3"><strong class="text-secondary-dark">Kết thúc trả giá:</strong></div>
                                 <div class="col-6 mb-2"
-                                     th:text="${#temporals.format(auctionInfo.endTime, 'dd/MM/yyyy HH:mm:ss')}"></div>
+                                     th:text="${#temporals.format(auctionInfo.auction.endTime, 'dd/MM/yyyy HH:mm:ss')}"></div>
                                 <!-- Giá khởi điểm -->
                                 <div class="col-6 font-weight-bold h5 text-success">Giá khởi điểm:</div>
                                 <div class="col-6 font-weight-bold h5 text-success"
-                                     th:text="${#strings.replace(auctionInfo.getStartingPrice(), '.00', '')} + ' VNĐ'"></div>
+                                     th:text="${#strings.replace(auctionInfo.auction.getStartingPrice(), '.00', '')} + ' VNĐ'"></div>
                                 <!-- Giá cao nhất hiện tại (ĐÃ GIỮ ID highestPrice) -->
                                 <div class="col-6 font-weight-bold h4 text-danger mt-2">Giá cao nhất hiện tại:</div>
                                 <div class="col-6 font-weight-bold h4 text-danger mt-2" id="highestPrice"
@@ -87,7 +87,7 @@
                         </div>
 
 <!--                         4. Form Đấu giá -->
-                        <form class="mt-4 d-none" id="formSubmit" onsubmit="sendBid(); return false;" >
+                        <form class="mt-4" id="formSubmit" onsubmit="sendBid(); return false;" th:if="${auctionInfo.auction.status == 'ONGOING'}">
                             <label for="amount" class="form-label font-weight-bold">Nhập số tiền đấu giá của bạn:</label>
                             <div class="input-group input-group-lg mb-3">
                                 <input type="number" id="amount" class="form-control"
@@ -100,14 +100,15 @@
                             </button>
                         </form>
                         <!-- 5. Người thắng cuộc -->
-                        <div class="mt-4 p-4 bg-success-subtle border-start border-5 border-success rounded shadow-sm" id="divWinner">
+                        <div class="mt-4 p-4 bg-success-subtle border-start border-5 border-success rounded shadow-sm" id="divWinner"
+                             th:if="${auctionInfo.auction.status == 'FINISHED'}">
                             <h5 class="text-success font-weight-bold mb-3">
                                 <i class="fas fa-trophy me-2"></i> PHIÊN ĐẤU GIÁ ĐÃ KẾT THÚC
                             </h5>
                             <p class="mb-1 text-dark">
                                 <strong class="text-secondary-dark">Người thắng cuộc:</strong>
                                 <span class="text-primary font-weight-bold h5" id="winnerName"
-                                      th:text="${auctionInfo.bidHistories.get(0).user.name}">
+                                      th:text="${auctionInfo.auction.winner.name}">
                             </span>
                             </p>
                             <p class="mb-0 text-dark">
@@ -198,7 +199,7 @@
                                 <li><span class="font-medium">Màu sắc:</span> Đen</li>
                                 <li><span class="font-medium">Số km đã đi:</span> 55,000 km</li>
                                 <li><span class="font-medium">Tình trạng hồ sơ:</span> Đã công chứng đầy đủ.</li>
-                                <li th:if="${auctionInfo.getProduct().description}"><span class="font-medium">Mô tả từ người bán:</span> <span th:text="${auctionInfo.getProduct().description}"></span></li>
+                                <li th:if="${auctionInfo.auction.getProduct().description}"><span class="font-medium">Mô tả từ người bán:</span> <span th:text="${auctionInfo.auction.getProduct().description}"></span></li>
                             </ul>
                         </div>
                     </div>
@@ -242,13 +243,13 @@
         const msg = JSON.parse(event.data);
         if (msg.type === "AUCTION_END" && msg.data) {
             $.ajax({
-                url: `http://localhost:8080/api/auctionInfo/${auctionInfo.id}`,
+                url: `http://localhost:8080/api/auctionInfo/${auctionInfo.auction.id}`,
                 dataType: "json",
                 method: "GET",
                 success: function(updatedAuction) {
                     auctionInfo = updatedAuction;
 
-                    if (auctionInfo.status === "FINISHED") {
+                    if (auctionInfo.auction.status === "FINISHED") {
                         // Ẩn form đấu giá
                         const bidForm = document.getElementById("formSubmit");
                         if (bidForm) bidForm.style.display = "none";
@@ -259,7 +260,7 @@
 
                         // Cập nhật tên người thắng
                         const winnerName = document.getElementById("winnerName");
-                        if (winnerName) winnerName.textContent = auctionInfo.bidHistories[0].user.name;
+                        if (winnerName) winnerName.textContent = auctionInfo.auction.winner.name;
 
                         // Cập nhật giá thắng
                         const winningPrice = document.getElementById("winnerPrice");
@@ -273,7 +274,7 @@
         }
         if (msg.type === "BID" && msg.data) {
             $.ajax({
-                url: `http://localhost:8080/api/auctionInfo/${auctionInfo.id}`,
+                url: `http://localhost:8080/api/auctionInfo/${auctionInfo.auction.id}`,
                 dataType: "json",
                 method: "GET",
                 success: function(updatedAuction) {
@@ -336,8 +337,8 @@
 
         // Fallback: nếu highestBidPrice không có, kiểm tra giá khởi điểm
         // Giả định giá khởi điểm là chuỗi đã được định dạng và cũng cần được phân tích cú pháp
-        if (highestBidValue === 0 && auctionInfo.startingPrice) {
-            const startingPriceString = String(auctionInfo.startingPrice).replace(/[^0-9]/g, '');
+        if (highestBidValue === 0 && auctionInfo.auction.startingPrice) {
+            const startingPriceString = String(auctionInfo.auction.startingPrice).replace(/[^0-9]/g, '');
             highestBidValue = parseInt(startingPriceString) || 0;
         }
 
@@ -364,7 +365,7 @@
 
         // --- CHỈ GỬI ĐI KHI KHÔNG CÓ LỖI ---
         const bid = {
-            auctionId: auctionInfo.id,
+            auctionId: auctionInfo.auction.id,
             userId: user.id,
             amount: amount,
         };
