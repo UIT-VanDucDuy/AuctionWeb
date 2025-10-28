@@ -2,8 +2,13 @@ package com.example.auctionweb.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+@Getter
+@Setter
 @Entity
 @Table(name = "bidhistory")
 public class BidHistory {
@@ -20,7 +25,7 @@ public class BidHistory {
     private User user;
 
     @Column(precision = 15, scale = 2, nullable = false)
-    private int  amount;
+    private BigDecimal amount;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column
@@ -31,58 +36,10 @@ public class BidHistory {
         this.time = LocalDateTime.now();
     }
 
-    public BidHistory(Auction auction, User user, int  amount) {
+    public BidHistory(Auction auction, User user, BigDecimal  amount) {
         this.auction = auction;
         this.user = user;
         this.amount = amount;
         this.time = LocalDateTime.now();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public int  getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int  amount) {
-        this.amount = amount;
-    }
-
-    public Auction getAuction() {
-        return auction;
-    }
-
-    public void setAuction(Auction auction) {
-        this.auction = auction;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public LocalDateTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalDateTime time) {
-        this.time = time;
-    }
-
-    public Boolean getWinnerFlag() {
-        return winnerFlag;
-    }
-
-    public void setWinnerFlag(Boolean winnerFlag) {
-        this.winnerFlag = winnerFlag;
     }
 }

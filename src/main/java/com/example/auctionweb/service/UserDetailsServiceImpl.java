@@ -27,10 +27,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         System.out.println("Found User: " + account);
         GrantedAuthority authority = new SimpleGrantedAuthority(account.getRole());
-
         return new User(
                 account.getUsername(),
-                account.getPassword(), // đã mã hóa bằng BCrypt
+                account.getPassword(),
                 Collections.singleton(authority)
         );
     }

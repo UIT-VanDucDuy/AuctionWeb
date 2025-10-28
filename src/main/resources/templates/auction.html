@@ -21,7 +21,7 @@
         <div style="padding-top:0.5em ;font-size: 25px;">Xe ô tô Ford cũ nhưng còn mới :))
         </div>
     </div>
-    <div class="main1 pt-4">
+    <div class="main1 pt-4 pb-4">
         <div class="card shadow-lg border-0 rounded-3">
             <div class="card-body p-4 p-lg-5">
                 <!-- Bố cục lưới Bootstrap (Ảnh 50% - Chi tiết 50%) -->
@@ -75,28 +75,23 @@
                                 <!-- Giá khởi điểm -->
                                 <div class="col-6 font-weight-bold h5 text-success">Giá khởi điểm:</div>
                                 <div class="col-6 font-weight-bold h5 text-success"
-                                     th:text="${auctionInfo.getStartingPrice()} + ' VNĐ'"></div>
-
-                                <!-- Giá cao nhất hiện tại -->
+                                     th:text="${#strings.replace(auctionInfo.getStartingPrice(), '.00', '')} + ' VNĐ'"></div>
+                                <!-- Giá cao nhất hiện tại (ĐÃ GIỮ ID highestPrice) -->
                                 <div class="col-6 font-weight-bold h4 text-danger mt-2">Giá cao nhất hiện tại:</div>
-                                <div class="col-6 font-weight-bold h4 text-danger mt-2"
-                                     th:text="${auctionInfo.getBidHistories().get(0).amount} + '.000 VNĐ'"></div>
+                                <div class="col-6 font-weight-bold h4 text-danger mt-2" id="highestPrice"
+                                     th:text="${#strings.replace(auctionInfo.getHighestBidPrice(), '.00', '')} + ' VNĐ'"></div>
                             </div>
                         </div>
 
                         <!-- 4. Form Đấu giá -->
                         <form class="mt-4" onsubmit="sendBid(); return false;">
                             <label for="amount" class="form-label font-weight-bold">Nhập số tiền đấu giá của bạn:</label>
-
-                            <!-- ĐÃ SỬA: Thêm input-group và đơn vị VND -->
                             <div class="input-group input-group-lg mb-3">
-                                <input type="number" step="100" id="amount" class="form-control"
-                                       th:min="${#lists.isEmpty(auctionInfo.bidHistories) ? auctionInfo.startingPrice+100 : auctionInfo.bidHistories[0].amount+100}"
+                                <input type="number" id="amount" class="form-control"
                                        placeholder="Số tiền tối thiểu...">
                                 <span class="input-group-text font-weight-bold text-secondary">VND</span>
+                                <div id="bid-error-message" class="invalid-feedback d-none"></div>
                             </div>
-
-                            <!-- ĐÃ SỬA: Thay btn-primary bằng btn-danger (cho màu đỏ) -->
                             <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn">
                                 <i class="fas fa-gavel me-2"></i> Đấu giá ngay
                             </button>
@@ -154,8 +149,8 @@
                                     <td th:text="${iterStat.index + 1}"></td>
                                     <td th:text="${history.user.id}"></td>
                                     <td>Đã trả giá</td>
-                                    <td th:text="${history.amount + '.000 VND'}"></td>
-                                    <td th:text="${history.time}"></td>
+                                    <td th:text="${#strings.replace(history.amount, '.00', '')} + ' VND'"></td>
+                                    <td th:text="${#temporals.format(history.time, 'HH:mm:ss dd/MM/yyyy')}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -214,6 +209,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript">
     var auctionInfo = /*[[${auctionInfo}]]*/ {};
+    var user = /*[[${user}]]*/ {};
     const socket = new WebSocket("ws://localhost:8080/ws/bid");
 
     socket.onopen = () => {
@@ -222,7 +218,6 @@
 
     socket.onmessage = (event) => {
         const msg = JSON.parse(event.data);
-
         if (msg.type === "BID" && msg.data) {
             $.ajax({
                 url: `http://localhost:8080/api/auctionInfo/${auctionInfo.id}`,
@@ -231,16 +226,30 @@
                 success: function(updatedAuction) {
                     console.log("Cập nhật auctionInfo thành công:", updatedAuction);
                     // Cập nhật lịch sử đấu giá
+                    auctionInfo = updatedAuction;
                     const tbody = $("#history tbody");
                     tbody.empty();
                     updatedAuction.bidHistories.slice(0, 10).forEach((bid, index) => {
+                        const date = new Date(bid.time);
+                        const formattedTime = date.toLocaleString('vi-VN', {
+                            hour12: false,
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                        });
+
+                        // ✅ format số tiền
+                        const formattedAmount = new Intl.NumberFormat('vi-VN').format(bid.amount);
                         const row = `
                         <tr>
                             <td>${index + 1}</td>
                             <td>${bid.user.id}</td>
                             <td>Đã trả giá</td>
-                            <td>${bid.amount}.000 VND</td>
-                            <td>${bid.time}</td>
+                            <td>${formattedAmount} VND</td>
+                            <td>${formattedTime}</td>
                         </tr>
                     `;
                         tbody.append(row);
@@ -258,12 +267,63 @@
     };
 
     function sendBid() {
+        // Khai báo các biến cần thiết (Đã sửa lỗi ReferenceError)
+        const amountInput = document.getElementById("amount");
+        const amount = parseInt(amountInput.value);
+        const errorDisplay = document.getElementById('bid-error-message');
+        const numberFormatter = new Intl.NumberFormat('vi-VN');
+
+        let highestBidValue = 0;
+
+        if (auctionInfo.highestBidPrice) {
+            // Loại bỏ các ký tự không phải số (ví dụ: dấu phân cách hàng nghìn)
+            const priceString = String(auctionInfo.highestBidPrice).replace(/[^0-9]/g, '');
+            highestBidValue = parseInt(priceString) || 0;
+        }
+
+        // Fallback: nếu highestBidPrice không có, kiểm tra giá khởi điểm
+        // Giả định giá khởi điểm là chuỗi đã được định dạng và cũng cần được phân tích cú pháp
+        if (highestBidValue === 0 && auctionInfo.startingPrice) {
+            const startingPriceString = String(auctionInfo.startingPrice).replace(/[^0-9]/g, '');
+            highestBidValue = parseInt(startingPriceString) || 0;
+        }
+
+
+        // Đặt lại trạng thái lỗi trước khi kiểm tra
+        errorDisplay.classList.add('d-none');
+        amountInput.classList.remove("is-invalid");
+
+        // Validation 1: Số tiền phải là số dương
+        if (isNaN(amount) || amount <= 0) {
+            errorDisplay.textContent = "Số tiền đấu giá không hợp lệ. Vui lòng nhập số dương.";
+            errorDisplay.classList.remove('d-none');
+            amountInput.classList.add("is-invalid");
+            return false;
+        }
+
+        // Validation 2: Số tiền đấu giá phải lớn hơn giá cao nhất hiện tại (cả hai đều là VND đầy đủ)
+        if (amount <= highestBidValue + 100000) {
+            const formattedHighestBid = numberFormatter.format(highestBidValue);
+
+            errorDisplay.textContent = `Giá phải lớn hơn giá ${formattedHighestBid} VND cao nhất hiện tại 100.000 VND`;
+            errorDisplay.classList.remove('d-none');
+            amountInput.classList.add("is-invalid");
+            return false;
+        }
+
+        // --- CHỈ GỬI ĐI KHI KHÔNG CÓ LỖI ---
         const bid = {
-            auctionId: 1 ,
-            userId: 4 ,
-            amount: parseInt(document.getElementById("amount").value)
+            auctionId: auctionInfo.id,
+            userId: user.id,
+            amount: amount,
         };
-        socket.send(JSON.stringify(bid));
+        try {
+            socket.send(JSON.stringify(bid));
+            console.log("Đã gửi đấu giá:", bid);
+            // Có thể thêm logic thông báo "Đang chờ xác nhận từ server..."
+        } catch (error) {
+            console.error("Lỗi khi gửi dữ liệu qua WebSocket:", error);
+        }
     }
 
 </script>

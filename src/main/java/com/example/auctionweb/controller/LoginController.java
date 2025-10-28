@@ -13,7 +13,7 @@ public class LoginController {
         return "login";
     }
     @RequestMapping(value = "/logoutSuccessful", method = RequestMethod.GET)
-    public String logoutSuccessfulPage(Model model) {
-        return "login";
+    public String logoutSuccessfulPage() {
+        return "redirect:/home";
     }
 }

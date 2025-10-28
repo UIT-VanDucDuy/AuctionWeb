@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="vi">
 
 <head>
     <meta charset="UTF-8">
@@ -33,7 +33,7 @@
             <div class="col-12 col-md-7 d-flex justify-content-center justify-content-md-end align-items-center">
 
                 <!-- Notification Bell (Chuông thông báo) -->
-                <div class="notification-dropdown position-relative me-4">
+                <div class="notification-dropdown position-relative me-4" sec:authorize="isAuthenticated()">
                         <span id="notificationToggle" class="notification-bell-toggle d-flex align-items-center" style="cursor: pointer;">
                             <i class="fa-regular fa-bell fs-5" style="color: var(--dark-text);"></i>
                             <!-- Badge số lượng thông báo chưa đọc -->
@@ -43,7 +43,7 @@
                         </span>
 
                     <!-- Notification Menu Content (Dropdown) -->
-                    <div id="notificationMenu" class="notification-menu">
+                    <div id="notificationMenu" class="notification-menu" >
                         <h6 class="dropdown-header">Thông báo mới (<span id="menuNotificationCount">5</span>)</h6>
                         <a class="dropdown-item notification-item" href="#">
                             <span class="fw-bold">Đấu giá thành công!</span> Tài sản A đã thuộc về bạn.
@@ -62,10 +62,10 @@
                     </div>
                 </div>
 
-                <div class="custom-dropdown">
+                <div class="custom-dropdown" sec:authorize="isAuthenticated()">
                         <span class="d-flex gap-1 align-items-center fw-bold custom-dropdown-toggle">
                             <i class="fa-regular fa-user"></i>
-                            <span class="d-none d-sm-inline">Văn Đức Duy</span>
+                            <span class="d-none d-sm-inline" th:text="${user.name}"></span>
                             <i class="fa-solid fa-caret-down ms-1"></i>
                         </span>
                     <div class="custom-dropdown-menu">
@@ -74,6 +74,14 @@
                         <a href="/Changeyourpassword">Đổi mật khẩu</a>
                         <a href="/logout">Đăng xuất</a>
                     </div>
+                </div>
+                <div class="custom-dropdown" sec:authorize="!isAuthenticated()">
+                        <span class="d-flex gap-1 align-items-center fw-bold custom-dropdown-toggle">
+                            <span class="d-none d-sm-inline">
+                                <a href="/login" class="nav-link">Đăng nhập</a>
+                            </span>
+                        </span>
+
                 </div>
             </div>
         </div>
@@ -105,7 +113,7 @@
                     <!-- Text Input -->
                     <input class="form-control input-search-text" type="text" id="searched" name="searched" placeholder="Tìm kiếm tài sản...">
 
-                    <!-- Search Button (Bo góc phải) -->
+                    <!-- Search Button -->
                     <button class="btn btn-primary search-button" type="submit">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>

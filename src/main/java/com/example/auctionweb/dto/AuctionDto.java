@@ -20,6 +20,7 @@ public class AuctionDto {
     private LocalDateTime endTime;
     private BigDecimal startingPrice;
     private List<BidHistory> bidHistories;
+    private BigDecimal highestBidPrice;
     public AuctionDto(Integer id, Product product, LocalDateTime startTime, LocalDateTime endTime, BigDecimal startingPrice, List<BidHistory> bidHistories) {
         this.id = id;
         this.product = product;
@@ -27,5 +28,10 @@ public class AuctionDto {
         this.endTime = endTime;
         this.startingPrice = startingPrice;
         this.bidHistories = bidHistories;
+        if (bidHistories == null || bidHistories.isEmpty()) {
+            this.highestBidPrice = startingPrice;
+        }else {
+            this.highestBidPrice = bidHistories.get(0).getAmount();
+        }
     }
 }

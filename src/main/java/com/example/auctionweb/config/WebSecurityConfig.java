@@ -81,14 +81,14 @@ public class WebSecurityConfig {
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/vendor/**").permitAll()
 
                 // 2. Các trang công khai (Không cần đăng nhập)
-                .requestMatchers("/login", "/logout", "/logoutSuccessful", "/403").permitAll()
+                .requestMatchers("/home","/login","/403").permitAll()
 
                 // 3. Các trang của ADMIN (Quy tắc cụ thể)
                 .requestMatchers("/admin", "/admin/**").hasAuthority("ADMIN") // Dùng hasAuthority
 
                 // 4. Các trang của USER (Ý định MỚI của bạn)
                 // Đã gộp /home, /auction/**, /blog/create vào đây
-                .requestMatchers("/home", "/auction/**", "/blog/create").hasAuthority("USER") // Dùng hasAuthority
+                .requestMatchers("/auction/**", "/blog/create").hasAuthority("USER") // Dùng hasAuthority
                 // 5. Tất cả các yêu cầu còn lại phải được xác thực (đăng nhập)
                 // (Nếu bạn muốn /home và /auction là public, hãy chuyển chúng lên mục số 2)
                 .anyRequest().authenticated()
@@ -103,7 +103,7 @@ public class WebSecurityConfig {
                 .passwordParameter("password")// trung với tên trong form đăng nhập
         );
         // cấu hình logout
-        http.logout(form -> form.logoutUrl("/logout").logoutSuccessUrl("/logoutSuccessful"));
+        http.logout(form -> form.logoutUrl("/logout").logoutSuccessUrl("/home"));
 
         // cấu hình trả về trang 403 khi không có quyền (role) truy cập
         http.exceptionHandling(ex -> ex.accessDeniedPage("/403"));
