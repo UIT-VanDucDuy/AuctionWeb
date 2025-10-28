@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
 
 <head>
     <meta charset="UTF-8">
@@ -69,8 +71,8 @@
                             <i class="fa-solid fa-caret-down ms-1"></i>
                         </span>
                     <div class="custom-dropdown-menu">
-                        <a href="/User">Thông tin cá nhân</a>
-                        <a href="/User">Lịch sử giao dịch</a>
+                        <a href="/User" sec:authorize="hasAuthority('USER')">Thông tin cá nhân</a>
+                        <a href="/admin" sec:authorize="hasAuthority('ADMIN')">Quản lý hệ thống</a>
                         <a href="/Changeyourpassword">Đổi mật khẩu</a>
                         <a href="/logout">Đăng xuất</a>
                     </div>
@@ -92,7 +94,7 @@
         <div class="row align-items-center g-3">
             <!-- Logo -->
             <div class="col-12 col-md-3 text-center text-md-start">
-                <a href="/">
+                <a href="/home">
                     <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/logoLacViet.png" class="img-fluid header-logo" alt="Logo Lạc Việt">
                 </a>
             </div>

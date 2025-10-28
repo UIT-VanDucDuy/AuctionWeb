@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
 
 <head>
     <meta charset="UTF-8">
@@ -21,7 +23,7 @@
         <div style="padding-top:0.5em ;font-size: 25px;">Xe ô tô Ford cũ nhưng còn mới :))
         </div>
     </div>
-    <div class="main1 pt-4 pb-4">
+    <div class="main1 pb-4">
         <div class="card shadow-lg border-0 rounded-3">
             <div class="card-body p-4 p-lg-5">
                 <!-- Bố cục lưới Bootstrap (Ảnh 50% - Chi tiết 50%) -->
@@ -48,7 +50,7 @@
                             <div class="col-6 mb-2"><strong class="text-secondary-dark">Thời gian kết thúc ĐK:</strong></div>
                             <div class="col-6 mb-2">21/10/2022 17:00:00</div>
                             <div class="col-6 mb-2"><strong class="text-secondary-dark">Phí ĐK tham gia:</strong></div>
-                            <div class="col-6 mb-2 text-danger font-weight-bold">200.000 VNĐ</div>
+                            <div class="col-6 mb-2 text-danger font-weight-bold">10% Giá khởi điểm</div>
                         </div>
 
                         <!-- 2. Thông tin Chủ tài sản & Tổ chức -->
@@ -65,13 +67,14 @@
                         </div>
 
                         <!-- 3. Thời gian và Giá (Được làm nổi bật) -->
-                        <div class="p-3 bg-light rounded-3 mt-4">
+                        <div class="p-3 bg-light rounded-3 mt-4" >
                             <div class="row">
                                 <div class="col-6 mb-2"><strong class="text-secondary-dark">Bắt đầu trả giá:</strong></div>
-                                <div class="col-6 mb-2" th:text="${auctionInfo.getStartTime()}"></div>
+                                <div class="col-6 mb-2"
+                                     th:text="${#temporals.format(auctionInfo.startTime, 'dd/MM/yyyy HH:mm:ss')}"></div>
                                 <div class="col-6 mb-3"><strong class="text-secondary-dark">Kết thúc trả giá:</strong></div>
-                                <div class="col-6 mb-3" th:text="${auctionInfo.getEndTime()}"></div>
-
+                                <div class="col-6 mb-2"
+                                     th:text="${#temporals.format(auctionInfo.endTime, 'dd/MM/yyyy HH:mm:ss')}"></div>
                                 <!-- Giá khởi điểm -->
                                 <div class="col-6 font-weight-bold h5 text-success">Giá khởi điểm:</div>
                                 <div class="col-6 font-weight-bold h5 text-success"
@@ -84,18 +87,38 @@
                         </div>
 
                         <!-- 4. Form Đấu giá -->
-                        <form class="mt-4" onsubmit="sendBid(); return false;">
-                            <label for="amount" class="form-label font-weight-bold">Nhập số tiền đấu giá của bạn:</label>
-                            <div class="input-group input-group-lg mb-3">
-                                <input type="number" id="amount" class="form-control"
-                                       placeholder="Số tiền tối thiểu...">
-                                <span class="input-group-text font-weight-bold text-secondary">VND</span>
-                                <div id="bid-error-message" class="invalid-feedback d-none"></div>
-                            </div>
-                            <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn">
-                                <i class="fas fa-gavel me-2"></i> Đấu giá ngay
-                            </button>
-                        </form>
+<!--                        <form class="mt-4" onsubmit="sendBid(); return false;" th:if="${auctionInfo.status == 'ONGOING'}">-->
+<!--                            <label for="amount" class="form-label font-weight-bold">Nhập số tiền đấu giá của bạn:</label>-->
+<!--                            <div class="input-group input-group-lg mb-3">-->
+<!--                                <input type="number" id="amount" class="form-control"-->
+<!--                                       placeholder="Số tiền tối thiểu...">-->
+<!--                                <span class="input-group-text font-weight-bold text-secondary">VND</span>-->
+<!--                                <div id="bid-error-message" class="invalid-feedback d-none"></div>-->
+<!--                            </div>-->
+<!--                            <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn">-->
+<!--                                <i class="fas fa-gavel me-2"></i> Đấu giá ngay-->
+<!--                            </button>-->
+<!--                        </form>-->
+                        <!-- 5. Người thắng cuộc -->
+                        <div class="mt-4 p-4 bg-success-subtle border-start border-5 border-success rounded shadow-sm"
+                             th:if="${auctionInfo.status == 'FINISHED'}">
+                            <h5 class="text-success font-weight-bold mb-3">
+                                <i class="fas fa-trophy me-2"></i> PHIÊN ĐẤU GIÁ ĐÃ KẾT THÚC
+                            </h5>
+                            <p class="mb-1 text-dark">
+                                <strong class="text-secondary-dark">Người thắng cuộc:</strong>
+                                <span class="text-primary font-weight-bold h5"
+                                      th:text="${auctionInfo.bidHistories.get(0).user.name}">
+                            </span>
+                            </p>
+                            <p class="mb-0 text-dark">
+                                <strong class="text-secondary-dark">Giá thắng cuộc:</strong>
+                                <!-- Hiển thị giá cao nhất -->
+                                <span class="text-danger font-weight-bold h5"
+                                      th:text="${#strings.replace(auctionInfo.highestBidPrice, '.00', '')} + ' VNĐ'">
+                            </span>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -147,7 +170,7 @@
                                 <tbody>
                                 <tr th:each="history, iterStat : ${auctionInfo.getBidHistories()}" th:if="${iterStat.index} < 10">
                                     <td th:text="${iterStat.index + 1}"></td>
-                                    <td th:text="${history.user.id}"></td>
+                                    <td th:text="${history.user.name}"></td>
                                     <td>Đã trả giá</td>
                                     <td th:text="${#strings.replace(history.amount, '.00', '')} + ' VND'"></td>
                                     <td th:text="${#temporals.format(history.time, 'HH:mm:ss dd/MM/yyyy')}"></td>
@@ -246,7 +269,7 @@
                         const row = `
                         <tr>
                             <td>${index + 1}</td>
-                            <td>${bid.user.id}</td>
+                            <td>${bid.user.name}</td>
                             <td>Đã trả giá</td>
                             <td>${formattedAmount} VND</td>
                             <td>${formattedTime}</td>
@@ -302,10 +325,8 @@
         }
 
         // Validation 2: Số tiền đấu giá phải lớn hơn giá cao nhất hiện tại (cả hai đều là VND đầy đủ)
-        if (amount <= highestBidValue + 100000) {
-            const formattedHighestBid = numberFormatter.format(highestBidValue);
-
-            errorDisplay.textContent = `Giá phải lớn hơn giá ${formattedHighestBid} VND cao nhất hiện tại 100.000 VND`;
+        if (amount < highestBidValue + 100000) {
+            errorDisplay.textContent = `Giá phải lớn hơn giá cao nhất hiện tại ít nhất 100.000 VND`;
             errorDisplay.classList.remove('d-none');
             amountInput.classList.add("is-invalid");
             return false;

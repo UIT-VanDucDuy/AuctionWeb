@@ -21,17 +21,17 @@ public class AuctionDto {
     private BigDecimal startingPrice;
     private List<BidHistory> bidHistories;
     private BigDecimal highestBidPrice;
-    public AuctionDto(Integer id, Product product, LocalDateTime startTime, LocalDateTime endTime, BigDecimal startingPrice, List<BidHistory> bidHistories) {
+    private String status;
+
+    public AuctionDto(int id, Product product, LocalDateTime startTime, LocalDateTime endTime,
+                      BigDecimal startingPrice, List<BidHistory> bidHistories, BigDecimal highestBidPrice, String status) {
         this.id = id;
         this.product = product;
         this.startTime = startTime;
         this.endTime = endTime;
         this.startingPrice = startingPrice;
         this.bidHistories = bidHistories;
-        if (bidHistories == null || bidHistories.isEmpty()) {
-            this.highestBidPrice = startingPrice;
-        }else {
-            this.highestBidPrice = bidHistories.get(0).getAmount();
-        }
+        this.highestBidPrice = highestBidPrice;
+        this.status = status;
     }
 }

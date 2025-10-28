@@ -1,10 +1,14 @@
 package com.example.auctionweb.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "auction")
 public class Auction {
@@ -25,46 +29,13 @@ public class Auction {
     @Column(name = "starting_price", precision = 15, scale = 2)
     private BigDecimal startingPrice;
 
+    @Column(name = "status")
+    private String status;
+
+    @OneToOne
+    @JoinColumn(name = "winner")
+    private User winner;
+
     public Auction() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
-    public BigDecimal getStartingPrice() {
-        return startingPrice;
-    }
-
-    public void setStartingPrice(BigDecimal startingPrice) {
-        this.startingPrice = startingPrice;
     }
 }
