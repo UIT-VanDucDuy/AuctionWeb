@@ -44,7 +44,7 @@
         </td>
     </tr>
     <tr>
-        <td th:if="${#lists.isEmpty(bidHistoryList)}" colspan="8" th:text="${'Không có giá trị nào'}"></td>
+        <td th:if="${bidHistoryList.isEmpty()}" colspan="8" th:text="${'Không có giá trị nào'}"></td>
     </tr>
     </tbody>
 </table>

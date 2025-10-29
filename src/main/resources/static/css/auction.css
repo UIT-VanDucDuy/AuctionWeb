@@ -1,0 +1,57 @@
+/*tab*/
+/* Custom Tab Styling */
+.custom-tabs {
+    /* Loại bỏ background mặc định trên UL để chỉ áp dụng cho link */
+    background-color: transparent;
+    border-bottom: 3px solid #E5E7EB; /* Tạo đường viền mảnh dưới cùng */
+    padding-left: 0 !important; /* Đảm bảo không có padding thừa */
+    margin-bottom: 1rem !important;
+}
+
+.custom-tabs .nav-item {
+    margin-right: 0.5rem; /* Khoảng cách giữa các tab */
+}
+
+.custom-tabs .nav-link {
+    /* Đặt style cơ bản cho link */
+    font-size: 1.1rem;
+    font-weight: 600; /* Semi-bold */
+    color: #6B7280; /* Màu chữ xám nhẹ */
+    border: none;
+    border-bottom: 3px solid transparent; /* Đường viền ẩn */
+    padding: 0.75rem 1.25rem;
+    background-color: transparent;
+    transition: all 0.3s ease-in-out; /* Hiệu ứng chuyển động mượt mà */
+
+    /* Đảm bảo bo góc nhẹ nhàng */
+    border-radius: 6px 6px 0 0;
+}
+
+/* Hiệu ứng Hover: nổi bật nhẹ */
+.custom-tabs .nav-link:hover {
+    color: #b41712; /* Đổi màu chữ khi hover */
+    border-bottom-color: #FEE2E2; /* Hiện viền mỏng khi hover */
+    background-color: #F3F4F6; /* Background xám nhạt khi hover */
+}
+
+/* Trạng thái Active: nổi bật hoàn toàn */
+.custom-tabs .nav-link.active {
+    color: #b41712; /* Màu chữ chính (Đỏ) */
+    background-color: #FFFFFF; /* Nền trắng */
+    border-bottom-color: #b41712; /* Đường viền dưới màu đỏ nổi bật */
+    font-weight: 700; /* Bold hơn */
+
+    /* Ghi đè để tab Active trông như đang "nổi" lên trên */
+    border-left: 1px solid #E5E7EB;
+    border-top: 1px solid #E5E7EB;
+    border-right: 1px solid #E5E7EB;
+    margin-bottom: -3px; /* Đẩy lên để che đường border-bottom chung của UL */
+}
+
+
+.img-product{
+    height: 500px;
+    width: 650px;
+    object-fit: cover;
+    border-radius: 5px;
+}

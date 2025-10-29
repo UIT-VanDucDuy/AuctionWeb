@@ -1,5 +1,6 @@
 package com.example.auctionweb.repository;
 
+import com.example.auctionweb.entity.Auction;
 import com.example.auctionweb.entity.BidHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -9,5 +10,6 @@ public interface BidHistoryRepository extends JpaRepository<BidHistory, Integer>
     List<BidHistory> findAll();
     BidHistory save(BidHistory bidHistory);
     List<BidHistory> findAllByOrderByTimeDesc();
-    List<BidHistory> findBidHistoriesByAuctionId(int id);
+    List<BidHistory> findBidHistoriesByAuctionOrderByTimeDesc(Auction auction);
+    BidHistory findTopByAuctionOrderByAmountDesc(Auction auction);
 }
