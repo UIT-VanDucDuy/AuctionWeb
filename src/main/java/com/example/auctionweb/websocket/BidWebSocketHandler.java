@@ -20,6 +20,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.math.BigDecimal;
 
 @Component
 public class BidWebSocketHandler extends TextWebSocketHandler {

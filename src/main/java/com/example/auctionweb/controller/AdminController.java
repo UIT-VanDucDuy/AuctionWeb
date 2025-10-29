@@ -25,6 +25,12 @@ public class AdminController {
     private UserRepository userRepository;
 
     @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private AccountRepository accountRepository;
 
     @Autowired
