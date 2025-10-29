@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface AuctionRegistrationRepository extends JpaRepository<AuctionRegistration, Integer> {
     List<AuctionRegistration> findByStatus(RegistrationStatus status);
+    long countByStatus(RegistrationStatus status);
 }
 
 

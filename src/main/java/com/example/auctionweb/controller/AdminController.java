@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,17 +38,25 @@ public class AdminController {
     // Dashboard
     @GetMapping("")
     public String dashboardRoot(Model model) {
-        model.addAttribute("pendingAuctions", registrationRepository.findByStatus(RegistrationStatus.PENDING).size());
-        model.addAttribute("pendingProducts", productRepository.findByStatus(ProductStatus.PENDING).size());
-        model.addAttribute("totalUsers", userRepository.findAll().size());
+        long pendingAuctionRegistrations = registrationRepository.countByStatus(RegistrationStatus.PENDING);
+        long pendingProductRegistrations = productRepository.countByStatus(ProductStatus.PENDING);
+        long totalUsers = userRepository.count();
+        
+        model.addAttribute("pendingAuctions", pendingAuctionRegistrations);
+        model.addAttribute("pendingProducts", pendingProductRegistrations);
+        model.addAttribute("totalUsers", totalUsers);
         return "admin/management";
     }
 
     @GetMapping("/management")
     public String dashboard(Model model) {
-        model.addAttribute("pendingAuctions", registrationRepository.findByStatus(RegistrationStatus.PENDING).size());
-        model.addAttribute("pendingProducts", productRepository.findByStatus(ProductStatus.PENDING).size());
-        model.addAttribute("totalUsers", userRepository.findAll().size());
+        long pendingAuctionRegistrations = registrationRepository.countByStatus(RegistrationStatus.PENDING);
+        long pendingProductRegistrations = productRepository.countByStatus(ProductStatus.PENDING);
+        long totalUsers = userRepository.count();
+        
+        model.addAttribute("pendingAuctions", pendingAuctionRegistrations);
+        model.addAttribute("pendingProducts", pendingProductRegistrations);
+        model.addAttribute("totalUsers", totalUsers);
         return "admin/management";
     }
 
@@ -148,31 +157,54 @@ public class AdminController {
     }
 
     // Users management page
+    // Users list - Chỉ hiển thị USER và SELLER, ẩn ADMIN
     @GetMapping("/users")
     public String listUsers(Model model) {
-        List<User> users = userRepository.findAll();
+        List<User> allUsers = userRepository.findAll();
+        
+        // Lọc bỏ tài khoản ADMIN - Admin không cần quản lý admin
+        List<User> users = allUsers.stream()
+                .filter(user -> user.getAccount() != null && user.getAccount().getRole() != Account.Role.ADMIN)
+                .toList();
+        
         model.addAttribute("users", users);
         return "admin/users";
     }
 
     @PostMapping("/users/{id}/activate")
-    public String activateUser(@PathVariable Integer id) {
+    public String activateUser(@PathVariable Integer id,    RedirectAttributes redirectAttributes) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null && user.getAccount() != null) {
             Account acc = user.getAccount();
+            
+            // Không cho phép kích hoạt tài khoản ADMIN (vì admin không nên bị khóa)
+            if (acc.getRole() == Account.Role.ADMIN) {
+                redirectAttributes.addFlashAttribute("error", "Không thể thao tác với tài khoản Admin!");
+                return "redirect:/admin/users";
+            }
+            
             acc.setActive(true);
             accountRepository.save(acc);
+            redirectAttributes.addFlashAttribute("success", "Đã kích hoạt tài khoản thành công!");
         }
         return "redirect:/admin/users";
     }
 
     @PostMapping("/users/{id}/deactivate")
-    public String deactivateUser(@PathVariable Integer id) {
+    public String deactivateUser(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null && user.getAccount() != null) {
             Account acc = user.getAccount();
+            
+            // KHÔNG CHO PHÉP KHÓA TÀI KHOẢN ADMIN - Bảo vệ quan trọng!
+            if (acc.getRole() == Account.Role.ADMIN) {
+                redirectAttributes.addFlashAttribute("error", "Không thể khóa tài khoản Admin!");
+                return "redirect:/admin/users";
+            }
+            
             acc.setActive(false);
             accountRepository.save(acc);
+            redirectAttributes.addFlashAttribute("success", "Đã khóa tài khoản thành công!");
         }
         return "redirect:/admin/users";
     }

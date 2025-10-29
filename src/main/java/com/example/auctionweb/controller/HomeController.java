@@ -12,7 +12,7 @@ public class HomeController {
     @Autowired
     private IBidHistoryService bidHistoryService;
 
-    @GetMapping(value = "/home")
+    @GetMapping(value = {"/", "/home"})
     public String showHome(Model model){
         model.addAttribute("bidHistoryList", bidHistoryService.findAll());
         return "home1";

@@ -1,0 +1,178 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    HƯỚNG DẪN SỬ DỤNG ADMIN PANEL                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📁 CẤU TRÚC ADMIN PANEL
+═══════════════════════════════════════════════════════════════════════════════
+
+1. CONTROLLERS
+   📄 src/main/java/com/example/auctionweb/controller/AdminController.java
+   - Xử lý tất cả các chức năng admin
+   - Endpoints:
+     * GET  /admin                           - Dashboard tổng quan
+     * GET  /admin/management                - Dashboard (alias)
+     * GET  /admin/auction-registrations     - Danh sách đăng ký đấu giá
+     * POST /admin/auction-registrations/{id}/approve  - Duyệt đăng ký đấu giá
+     * POST /admin/auction-registrations/{id}/reject   - Từ chối đăng ký đấu giá
+     * GET  /admin/product-registrations     - Danh sách đăng ký sản phẩm
+     * POST /admin/product-registrations/{id}/approve  - Duyệt sản phẩm
+     * POST /admin/product-registrations/{id}/reject   - Từ chối sản phẩm
+     * GET  /admin/users                     - Danh sách users
+     * POST /admin/users/{id}/activate       - Kích hoạt tài khoản
+     * POST /admin/users/{id}/deactivate     - Khóa tài khoản
+
+2. VIEWS (TEMPLATES)
+   📂 src/main/resources/templates/admin/
+   ├── management.html              - Dashboard tổng quan
+   ├── auction-registrations.html   - Quản lý đăng ký đấu giá
+   ├── product-registrations.html   - Quản lý đăng ký sản phẩm
+   └── users.html                   - Quản lý users
+
+3. STATIC RESOURCES
+   📂 src/main/resources/static/
+   ├── css/
+   │   └── admin-style.css         - Style chung cho admin panel
+   └── js/
+       └── admin-common.js          - JavaScript functions chung
+
+═══════════════════════════════════════════════════════════════════════════════
+🎨 GIAO DIỆN ADMIN PANEL
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ Sidebar với gradient tím (667eea → 764ba2)
+✓ Live Clock - Cập nhật thời gian thực mỗi giây
+✓ Bootstrap 5.3.0 + Bootstrap Icons
+✓ Responsive design - tương thích mobile
+✓ Hover effects & smooth transitions
+✓ Status badges với màu sắc riêng:
+  - PENDING   → Vàng cam (warning)
+  - APPROVED  → Xanh lá (success)
+  - REJECTED  → Đỏ (danger)
+  - SOLD      → Xám (secondary)
+
+═══════════════════════════════════════════════════════════════════════════════
+🔧 CHỨC NĂNG CHÍNH
+═══════════════════════════════════════════════════════════════════════════════
+
+1. DASHBOARD (/admin)
+   ✓ Thống kê tổng quan:
+     - Số đăng ký đấu giá chờ duyệt
+     - Số sản phẩm chờ duyệt
+     - Tổng số người dùng
+   ✓ Quick links đến các chức năng quản lý
+   ✓ Thao tác nhanh (WebSocket Demo, Notifications)
+
+2. QUẢN LÝ ĐĂNG KÝ ĐẤU GIÁ (/admin/auction-registrations)
+   ✓ Lọc theo trạng thái: PENDING, APPROVED, REJECTED, ALL
+   ✓ Hiển thị thông tin:
+     - Tên user
+     - Tên cuộc đấu giá
+     - Thời gian bắt đầu/kết thúc
+     - Trạng thái
+   ✓ Actions:
+     - Duyệt (Approve) → Gửi notification cho user
+     - Từ chối (Reject) → Gửi notification cho user
+
+3. QUẢN LÝ ĐĂNG KÝ SẢN PHẨM (/admin/product-registrations)
+   ✓ Lọc theo trạng thái: PENDING, APPROVED, REJECTED, SOLD, ALL
+   ✓ Hiển thị:
+     - Hình ảnh sản phẩm
+     - Tên sản phẩm
+     - Mô tả
+     - Giá khởi điểm
+     - Trạng thái
+   ✓ Actions:
+     - Duyệt (Approve) → Gửi notification
+     - Từ chối (Reject) → Gửi notification
+
+4. QUẢN LÝ USERS (/admin/users)
+   ✓ Search theo tên, email, phone
+   ✓ Thống kê:
+     - Tổng users
+     - Đang hoạt động
+     - Bị khóa
+   ✓ Hiển thị:
+     - Avatar (chữ cái đầu tên)
+     - Thông tin tài khoản (username, role, status)
+     - Thông tin cá nhân (email, phone, địa chỉ)
+   ✓ Actions:
+     - Kích hoạt tài khoản (Activate)
+     - Khóa tài khoản (Deactivate)
+
+═══════════════════════════════════════════════════════════════════════════════
+🔔 REAL-TIME NOTIFICATIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+Khi admin thực hiện hành động (approve/reject), hệ thống sẽ:
+1. Lưu notification vào database
+2. Broadcast qua WebSocket đến user đang online
+3. User nhận thông báo real-time tại /notifications.html
+
+WebSocket Handler: NotificationWebSocketHandler.java
+Endpoint: ws://localhost:8080/ws/notification
+
+═══════════════════════════════════════════════════════════════════════════════
+📊 DATABASE REPOSITORIES
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ AuctionRegistrationRepository
+  - findByStatus(RegistrationStatus)
+  - countByStatus(RegistrationStatus)
+
+✓ ProductRepository
+  - findByStatus(ProductStatus)
+  - countByStatus(ProductStatus)
+
+✓ UserRepository (extends JpaRepository)
+
+✓ AccountRepository (extends JpaRepository)
+
+✓ NotificationRepository (extends JpaRepository)
+
+═══════════════════════════════════════════════════════════════════════════════
+🚀 CÁCH SỬ DỤNG
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Khởi động ứng dụng:
+   .\gradlew.bat clean bootRun
+
+2. Truy cập admin panel:
+   http://localhost:8080/admin
+
+3. Navigation:
+   - Dashboard: /admin hoặc /admin/management
+   - Đăng ký đấu giá: /admin/auction-registrations
+   - Đăng ký sản phẩm: /admin/product-registrations
+   - Quản lý users: /admin/users
+
+4. Xem notifications real-time:
+   http://localhost:8080/notifications.html
+
+═══════════════════════════════════════════════════════════════════════════════
+✨ ĐẶC ĐIỂM NỔI BẬT
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ Giao diện hiện đại với Bootstrap 5
+✓ Responsive - tương thích mọi thiết bị
+✓ Live Clock - đồng hồ thời gian thực
+✓ WebSocket notifications
+✓ Search & Filter functionality
+✓ Smooth animations & transitions
+✓ Color-coded status badges
+✓ Confirmation dialogs cho actions quan trọng
+✓ Flash messages cho feedback
+
+═══════════════════════════════════════════════════════════════════════════════
+📝 GHI CHÚ
+═══════════════════════════════════════════════════════════════════════════════
+
+- Tất cả templates đều dùng Thymeleaf engine
+- Template prefix: classpath:/templates/
+- Static resources prefix: /static/
+- Đồng hồ cập nhật mỗi 1 giây (1000ms interval)
+- WebSocket connection auto-reconnect
+- Bootstrap 5.3.0 CDN
+- Bootstrap Icons 1.10.0 CDN
+
+═══════════════════════════════════════════════════════════════════════════════
+
