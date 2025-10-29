@@ -1,10 +1,14 @@
 package com.example.auctionweb.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
+@Getter
+@Setter
 @Entity
 @Table(name = "bidhistory")
 public class BidHistory {
@@ -23,13 +27,13 @@ public class BidHistory {
     @Column(precision = 15, scale = 2, nullable = false)
     private BigDecimal amount;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column
     private LocalDateTime time;
-
     @Column(name = "winner_flag")
     private Boolean winnerFlag;
-
     public BidHistory() {
+        this.time = LocalDateTime.now();
     }
 
     public Integer getId() {
@@ -52,6 +56,9 @@ public class BidHistory {
         return user;
     }
 
+    public BidHistory(Auction auction, User user, BigDecimal  amount) {
+        this.auction = auction;
+        this.user = user;
     public void setUser(User user) {
         this.user = user;
     }
@@ -62,21 +69,6 @@ public class BidHistory {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
-    }
-
-    public LocalDateTime getTime() {
-        return time;
-    }
-
-    public void setTime(LocalDateTime time) {
-        this.time = time;
-    }
-
-    public Boolean getWinnerFlag() {
-        return winnerFlag;
-    }
-
-    public void setWinnerFlag(Boolean winnerFlag) {
-        this.winnerFlag = winnerFlag;
+        this.time = LocalDateTime.now();
     }
 }

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Thông tin sản phẩm</title>
+    <script th:src="@{/js/header.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/auction.css}">
+</head>
+<div th:replace="~{/layout/header::header}"></div>
+<body class="container-fluid">
+    <div class="item" style="padding:1em ;">
+        <a style="color: gray;" href="/Auction">Trang chủ/</a>
+        <a style="color: gray;">Tài sản đấu giá</a>
+        <div style="padding-top:0.5em ;font-size: 25px;">Xe ô tô Ford cũ nhưng còn mới :))
+        </div>
+    </div>
+    <div class="main1 pb-4">
+        <div class="card shadow-lg border-0 rounded-3">
+            <div class="card-body p-4 p-lg-5">
+                <!-- Bố cục lưới Bootstrap (Ảnh 50% - Chi tiết 50%) -->
+                <div class="row g-4">
+                    <!-- Cột 1: Ảnh Sản phẩm -->
+                    <div class="col-lg-6 col-md-12 text-center">
+                        <a href="#">
+                            <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_cu5.jpg" alt="Ảnh sản phẩm đấu giá"
+                                 class="img-fluid rounded-3 product-main-img">
+                        </a>
+                    </div>
+
+                    <!-- Cột 2: Chi tiết Đấu giá -->
+                    <div class="col-lg-6 col-md-12">
+                        <h4 class="mb-4 pb-2 border-bottom text-primary-dark font-weight-bold">Thông tin phiên đấu giá và sản phẩm</h4>
+
+                        <!-- 1. Thông tin Đăng ký & Thời gian -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="font-weight-bold text-lg mb-3 text-secondary">Thông tin Đăng ký</h5>
+                            </div>
+                            <div class="col-6 mb-2"><strong class="text-secondary-dark">Thời gian mở ĐK:</strong></div>
+                            <div class="col-6 mb-2">12/10/2022 08:00:00</div>
+                            <div class="col-6 mb-2"><strong class="text-secondary-dark">Thời gian kết thúc ĐK:</strong></div>
+                            <div class="col-6 mb-2">21/10/2022 17:00:00</div>
+                            <div class="col-6 mb-2"><strong class="text-secondary-dark">Phí ĐK tham gia:</strong></div>
+                            <div class="col-6 mb-2 text-danger font-weight-bold">10% Giá khởi điểm</div>
+                        </div>
+
+                        <!-- 2. Thông tin Chủ tài sản & Tổ chức -->
+                        <div class="row mb-4 pt-3 border-top">
+                            <div class="col-12">
+                                <h5 class="font-weight-bold text-lg mb-3 text-secondary">Thông tin Chủ tài sản</h5>
+                            </div>
+                            <div class="col-6 mb-2"><strong class="text-secondary-dark">Tên chủ tài sản:</strong></div>
+                            <div class="col-6 mb-2" th:text="${auctionInfo.auction.product.seller.name}"></div>
+                            <div class="col-6 mb-2"><strong class="text-secondary-dark">Tổ chức đấu giá:</strong></div>
+                            <div class="col-6 mb-2">Công ty TNHH một thành viên</div>
+                            <div class="col-6 mb-2"><strong class="text-secondary-dark">Đấu giá viên:</strong></div>
+                            <div class="col-6 mb-2">Nguyễn Văn A</div>
+                        </div>
+
+                        <!-- 3. Thời gian và Giá (Được làm nổi bật) -->
+                        <div class="p-3 bg-light rounded-3 mt-4" >
+                            <div class="row">
+                                <div class="col-6 mb-2"><strong class="text-secondary-dark">Bắt đầu trả giá:</strong></div>
+                                <div class="col-6 mb-2"
+                                     th:text="${#temporals.format(auctionInfo.auction.startTime, 'dd/MM/yyyy HH:mm:ss')}"></div>
+                                <div class="col-6 mb-3"><strong class="text-secondary-dark">Kết thúc trả giá:</strong></div>
+                                <div class="col-6 mb-2"
+                                     th:text="${#temporals.format(auctionInfo.auction.endTime, 'dd/MM/yyyy HH:mm:ss')}"></div>
+                                <!-- Giá khởi điểm -->
+                                <div class="col-6 font-weight-bold h5 text-success">Giá khởi điểm:</div>
+                                <div class="col-6 font-weight-bold h5 text-success"
+                                     th:text="${#strings.replace(auctionInfo.auction.getStartingPrice(), '.00', '')} + ' VNĐ'"></div>
+                                <!-- Giá cao nhất hiện tại (ĐÃ GIỮ ID highestPrice) -->
+                                <div class="col-6 font-weight-bold h4 text-danger mt-2">Giá cao nhất hiện tại:</div>
+                                <div class="col-6 font-weight-bold h4 text-danger mt-2" id="highestPrice"
+                                     th:text="${#strings.replace(auctionInfo.getHighestBidPrice(), '.00', '')} + ' VNĐ'"></div>
+                            </div>
+                        </div>
+
+<!--                         4. Form Đấu giá -->
+                        <form class="mt-4" id="formSubmit" onsubmit="sendBid(); return false;" th:if="${auctionInfo.auction.status == 'ONGOING'}">
+                            <label for="amount" class="form-label font-weight-bold">Nhập số tiền đấu giá của bạn:</label>
+                            <div class="input-group input-group-lg mb-3">
+                                <input type="number" id="amount" class="form-control"
+                                       placeholder="Số tiền tối thiểu...">
+                                <span class="input-group-text font-weight-bold text-secondary">VND</span>
+                                <div id="bid-error-message" class="invalid-feedback d-none"></div>
+                            </div>
+                            <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn">
+                                <i class="fas fa-gavel me-2"></i> Đấu giá ngay
+                            </button>
+                        </form>
+                        <!-- 5. Người thắng cuộc -->
+                        <div class="mt-4 p-4 bg-success-subtle border-start border-5 border-success rounded shadow-sm" id="divWinner"
+                             th:if="${auctionInfo.auction.status == 'FINISHED'}">
+                            <h5 class="text-success font-weight-bold mb-3">
+                                <i class="fas fa-trophy me-2"></i> PHIÊN ĐẤU GIÁ ĐÃ KẾT THÚC
+                            </h5>
+                            <p class="mb-1 text-dark">
+                                <strong class="text-secondary-dark">Người thắng cuộc:</strong>
+                                <span class="text-primary font-weight-bold h5" id="winnerName"
+                                      th:text="${auctionInfo.auction.winner.name}">
+                            </span>
+                            </p>
+                            <p class="mb-0 text-dark">
+                                <strong class="text-secondary-dark">Giá thắng cuộc:</strong>
+                                <!-- Hiển thị giá cao nhất -->
+                                <span class="text-danger font-weight-bold h5" id="winnerPrice"
+                                      th:text="${#strings.replace(auctionInfo.highestBidPrice, '.00', '')} + ' VNĐ'">
+                            </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Nav tabs -->
+    <div class="mt-8">
+        <ul class="nav nav-tabs mb-4 custom-tabs d-flex align-content-center ps-3 " id="auctionTabs" role="tablist">
+            <!-- TAB 1: Lịch sử ra giá (Chuyển sang inactive) -->
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">
+                    Lịch sử ra giá
+                </button>
+            </li>
+            <!-- TAB 2: Chi tiết sản phẩm (Mặc định active) -->
+            <li class="nav-item" role="presentation">
+                <button class="nav-link " id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true">
+                    Chi tiết sản phẩm
+                </button>
+            </li>
+            <!-- TAB 3: Điều khoản & Quy định -->
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="terms-tab" data-bs-toggle="tab" data-bs-target="#terms" type="button" role="tab" aria-controls="terms" aria-selected="false">
+                    Điều khoản & Quy định
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab content -->
+        <div class="tab-content mb-4" id="auctionTabsContent">
+            <!-- CONTENT 1: Lịch sử ra giá (Chuyển sang inactive) -->
+            <div class="tab-pane fade show active" id="history" role="tabpanel" aria-labelledby="history-tab">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-gray-50 p-4">
+                        <h5 class="mb-0 text-xl font-semibold text-gray-800">Lịch sử ra giá gần đây</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 align-middle" id="bid-history-table">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Người dùng</th>
+                                    <th>Hành động</th>
+                                    <th>Giá</th>
+                                    <th>Thời gian</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="history, iterStat : ${auctionInfo.getBidHistories()}" th:if="${iterStat.index} < 10">
+                                    <td th:text="${iterStat.index + 1}"></td>
+                                    <td th:text="${history.user.name}"></td>
+                                    <td>Đã trả giá</td>
+                                    <td th:text="${#strings.replace(history.amount, '.00', '')} + ' VND'"></td>
+                                    <td th:text="${#temporals.format(history.time, 'HH:mm:ss dd/MM/yyyy')}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- CONTENT 2: Chi tiết sản phẩm (Mặc định active) -->
+            <div class="tab-pane fade" id="details" role="tabpanel" aria-labelledby="details-tab">
+                <div class="card shadow border-0">
+                    <div class="card-body p-5">
+                        <h5 class="card-title text-2xl font-semibold mb-4 text-gray-800">Mô tả và Thông số kỹ thuật</h5>
+                        <div class="prose max-w-none">
+                            <p class="mb-4">
+                                Đây là nơi hiển thị mô tả chi tiết từ hệ thống. Ví dụ: "Xe Ford cũ nhưng còn mới", đã được bảo dưỡng định kỳ và thay lốp mới. Đã có giấy tờ công chứng và sẵn sàng bàn giao ngay sau khi đấu giá thành công.
+                            </p>
+                            <h6 class="text-lg font-bold mt-4 mb-3 text-gray-700">Thông số chính:</h6>
+                            <ul class="list-disc list-inside space-y-2 pl-4">
+                                <li><span class="font-medium">Hãng xe:</span> Ford</li>
+                                <li><span class="font-medium">Năm sản xuất:</span> 2018</li>
+                                <li><span class="font-medium">Màu sắc:</span> Đen</li>
+                                <li><span class="font-medium">Số km đã đi:</span> 55,000 km</li>
+                                <li><span class="font-medium">Tình trạng hồ sơ:</span> Đã công chứng đầy đủ.</li>
+                                <li th:if="${auctionInfo.auction.getProduct().description}"><span class="font-medium">Mô tả từ người bán:</span> <span th:text="${auctionInfo.auction.getProduct().description}"></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENT 3: Điều khoản & Quy định -->
+            <div class="tab-pane fade" id="terms" role="tabpanel" aria-labelledby="terms-tab">
+                <div class="card shadow border-0">
+                    <div class="card-body p-5">
+                        <h5 class="card-title text-2xl font-semibold mb-4 text-gray-800">Quy tắc và Điều khoản Đấu giá</h5>
+                        <div class="prose max-w-none">
+                            <p class="text-gray-700 mb-4">Vui lòng đọc kỹ các điều khoản sau trước khi tham gia đấu giá:</p>
+                            <ol class="list-decimal list-inside space-y-3 pl-4 text-gray-600">
+                                <li>Người tham gia phải hoàn thành phí đăng ký trước thời gian kết thúc đăng ký.</li>
+                                <li>Mọi hành vi trả giá không nghiêm túc, sai lệch thông tin sẽ bị cấm tham gia các phiên đấu giá sau.</li>
+                                <li>Giá trả phải lớn hơn giá cao nhất hiện tại tối thiểu **100 VNĐ** (hoặc bước giá quy định).</li>
+                                <li>Người thắng cuộc có trách nhiệm hoàn thành thanh toán trong vòng 7 ngày làm việc.</li>
+                            </ol>
+                            <p class="text-sm text-red-600 mt-4">Bằng việc tham gia đấu giá, bạn đồng ý với tất cả các điều khoản và quy định của Công ty trách nhiệm hữu hạn một thành viên.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:inline="javascript">
+    var auctionInfo = /*[[${auctionInfo}]]*/ {};
+    var user = /*[[${user}]]*/ {};
+    const socket = new WebSocket("ws://localhost:8080/ws/bid");
+
+    socket.onopen = () => {
+        console.log("Connected to WebSocket");
+    };
+
+    socket.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        if (msg.type === "AUCTION_END" && msg.data) {
+            $.ajax({
+                url: `http://localhost:8080/api/auctionInfo/${auctionInfo.auction.id}`,
+                dataType: "json",
+                method: "GET",
+                success: function(updatedAuction) {
+                    auctionInfo = updatedAuction;
+
+                    if (auctionInfo.auction.status === "FINISHED") {
+                        // Ẩn form đấu giá
+                        const bidForm = document.getElementById("formSubmit");
+                        if (bidForm) bidForm.style.display = "none";
+
+                        // Hiển thị phần người thắng
+                        const winnerDiv = document.getElementById("divWinner");
+                        if (winnerDiv) winnerDiv.style.display = "block";
+
+                        // Cập nhật tên người thắng
+                        const winnerName = document.getElementById("winnerName");
+                        if (winnerName) winnerName.textContent = auctionInfo.auction.winner.name;
+
+                        // Cập nhật giá thắng
+                        const winningPrice = document.getElementById("winnerPrice");
+                        if (winningPrice) {
+                            winningPrice.textContent =
+                                new Intl.NumberFormat('vi-VN').format(auctionInfo.highestBidPrice) + " VNĐ";
+                        }
+                    }
+                }
+            });
+        }
+        if (msg.type === "BID" && msg.data) {
+            $.ajax({
+                url: `http://localhost:8080/api/auctionInfo/${auctionInfo.auction.id}`,
+                dataType: "json",
+                method: "GET",
+                success: function(updatedAuction) {
+                    console.log("Cập nhật auctionInfo thành công:", updatedAuction);
+                    // Cập nhật lịch sử đấu giá
+                    auctionInfo = updatedAuction;
+                    const tbody = $("#history tbody");
+                    tbody.empty();
+                    updatedAuction.bidHistories.slice(0, 10).forEach((bid, index) => {
+                        const date = new Date(bid.time);
+                        const formattedTime = date.toLocaleString('vi-VN', {
+                            hour12: false,
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                        });
+
+                        // ✅ format số tiền
+                        const formattedAmount = new Intl.NumberFormat('vi-VN').format(bid.amount);
+                        const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${bid.user.name}</td>
+                            <td>Đã trả giá</td>
+                            <td>${formattedAmount} VND</td>
+                            <td>${formattedTime}</td>
+                        </tr>
+                    `;
+                        tbody.append(row);
+                    });
+                },
+                error: function(err) {
+                    console.error("Lỗi khi load auctionInfo:", err);
+                }
+            });
+        } else if (msg.type === "ERROR") {
+            alert("ERROR: " + msg.data);
+        } else if (msg.type === "SUCCESS") {
+            console.log("SUCCESS: " + msg.data);
+        }
+    };
+
+    function sendBid() {
+        // Khai báo các biến cần thiết (Đã sửa lỗi ReferenceError)
+        const amountInput = document.getElementById("amount");
+        const amount = parseInt(amountInput.value);
+        const errorDisplay = document.getElementById('bid-error-message');
+        const numberFormatter = new Intl.NumberFormat('vi-VN');
+
+        let highestBidValue = 0;
+
+        if (auctionInfo.highestBidPrice) {
+            // Loại bỏ các ký tự không phải số (ví dụ: dấu phân cách hàng nghìn)
+            const priceString = String(auctionInfo.highestBidPrice).replace(/[^0-9]/g, '');
+            highestBidValue = parseInt(priceString) || 0;
+        }
+
+        // Fallback: nếu highestBidPrice không có, kiểm tra giá khởi điểm
+        // Giả định giá khởi điểm là chuỗi đã được định dạng và cũng cần được phân tích cú pháp
+        if (highestBidValue === 0 && auctionInfo.auction.startingPrice) {
+            const startingPriceString = String(auctionInfo.auction.startingPrice).replace(/[^0-9]/g, '');
+            highestBidValue = parseInt(startingPriceString) || 0;
+        }
+
+
+        // Đặt lại trạng thái lỗi trước khi kiểm tra
+        errorDisplay.classList.add('d-none');
+        amountInput.classList.remove("is-invalid");
+
+        // Validation 1: Số tiền phải là số dương
+        if (isNaN(amount) || amount <= 0) {
+            errorDisplay.textContent = "Số tiền đấu giá không hợp lệ. Vui lòng nhập số dương.";
+            errorDisplay.classList.remove('d-none');
+            amountInput.classList.add("is-invalid");
+            return false;
+        }
+
+        // Validation 2: Số tiền đấu giá phải lớn hơn giá cao nhất hiện tại (cả hai đều là VND đầy đủ)
+        if (amount < highestBidValue + 100000) {
+            errorDisplay.textContent = `Giá phải lớn hơn giá cao nhất hiện tại ít nhất 100.000 VND`;
+            errorDisplay.classList.remove('d-none');
+            amountInput.classList.add("is-invalid");
+            return false;
+        }
+
+        // --- CHỈ GỬI ĐI KHI KHÔNG CÓ LỖI ---
+        const bid = {
+            auctionId: auctionInfo.auction.id,
+            userId: user.id,
+            amount: amount,
+        };
+        try {
+            socket.send(JSON.stringify(bid));
+            console.log("Đã gửi đấu giá:", bid);
+            // Có thể thêm logic thông báo "Đang chờ xác nhận từ server..."
+        } catch (error) {
+            console.error("Lỗi khi gửi dữ liệu qua WebSocket:", error);
+        }
+    }
+
+</script>
+</body>
+<div th:replace="~{/layout/footer::footer}"></div>
+
+</html>

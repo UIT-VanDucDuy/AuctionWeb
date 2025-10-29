@@ -1,0 +1,142 @@
+    /* CSS Tùy chỉnh và Màu thương hiệu */
+:root {
+    --primary-red: #b41712;
+    --dark-text: #2c3e50;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa; /* Light background */
+    color: var(--dark-text);
+}
+
+/* Navbar & Menu */
+.bg-primary-red {
+    background-color: var(--primary-red) !important;
+}
+
+.btn-primary-red {
+    background-color: var(--primary-red);
+    border-color: var(--primary-red);
+    color: white;
+    transition: all 0.3s;
+}
+
+.btn-primary-red:hover {
+    background-color: #9f1310;
+    border-color: #9f1310;
+    color: white;
+}
+
+/* Category Grid (Main 2) - V2 STYLES */
+.category-card-v2 {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 0.75rem;
+    background-color: white;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+    color: inherit;
+}
+.category-card-v2:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+    color: var(--dark-text);
+}
+.category-card-icon {
+    font-size: 2.5rem;
+    color: var(--primary-red);
+    margin-bottom: 0.5rem;
+}
+.category-card-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--dark-text);
+    margin-bottom: 0;
+}
+.category-card-count {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+/* Auction Item Card (General style for all product grids) */
+.auction-card-item {
+    transition: box-shadow 0.3s, transform 0.3s;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid #dee2e6;
+}
+.auction-card-item:hover {
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+    transform: translateY(-4px);
+}
+.auction-card-item .card-img-top {
+    height: 180px; /* Fixed height for image consistency */
+    object-fit: cover;
+}
+.auction-card-item a.card-title:hover {
+    color: var(--primary-red) !important;
+}
+
+
+/* Listing Sidebar (The banner beside the list) */
+.listing-sidebar {
+    background-color: var(--primary-red);
+    color: white;
+    border-radius: 0.75rem;
+}
+.listing-sidebar .card-body {
+    padding: 2rem;
+    min-height: 100%; /* Ensure full height */
+}
+.listing-sidebar.bg-tstl {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/tai_san_cong.jpg);
+    background-size: cover;
+    background-position: center;
+}
+.listing-sidebar.bg-bds {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/BDS.jpg);
+    background-size: cover;
+    background-position: center;
+}
+.listing-sidebar.bg-xeco {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_co1.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+.listing-sidebar .btn {
+    border-color: white;
+    color: white;
+    background-color: transparent;
+    font-weight: 600;
+}
+.listing-sidebar .btn:hover {
+    background-color: white;
+    color: var(--primary-red);
+}
+.rounded-3xl {
+    border-radius: 1.5rem !important; /* Larger border-radius for modern look */
+}
+.object-cover {
+    object-fit: cover;
+}
+.text-shadow-lg {
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+.pulse-effect {
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+    70% { transform: scale(1.02); box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+/* Tùy chỉnh: Giảm bớt kích thước ảnh trong phần "Sắp được đấu giá" cho bố cục 5 cột */
+@media (min-width: 992px) {
+    .auction-card-item .card-img-top {
+        height: 150px;
+    }
+    /* Đảm bảo bố cục 2x2 cho các khu vực sản phẩm chính (dùng row-cols-2) */
+}

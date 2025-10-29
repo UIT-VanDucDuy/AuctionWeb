@@ -1,8 +1,13 @@
 package com.example.auctionweb.websocket;
 
+import com.example.auctionweb.dto.BidHistoryDto;
 import com.example.auctionweb.dto.WebSocketMessage;
+import com.example.auctionweb.entity.Auction;
 import com.example.auctionweb.entity.BidHistory;
+import com.example.auctionweb.entity.User;
+import com.example.auctionweb.service.IAuctionService;
 import com.example.auctionweb.service.IBidHistoryService;
+import com.example.auctionweb.service.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -20,10 +27,23 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(BidWebSocketHandler.class);
     private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final ObjectMapper objectMapper;
 
     @Autowired
     private IBidHistoryService bidHistoryService;
+    @Autowired
+    private IAuctionService auctionService;
+    @Autowired
+    private IUserService userService;
+
+
+    public BidWebSocketHandler() {
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
+
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -41,20 +61,20 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
         
         try {
             // Parse JSON từ client thành BidHistory
-            BidHistory bid = objectMapper.readValue(message.getPayload(), BidHistory.class);
-            
-            // Validate bid
-            if (bid.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
-                WebSocketMessage errorMsg = new WebSocketMessage("ERROR", "Số tiền đấu giá không hợp lệ!");
-                sendMessageToSession(session, errorMsg);
-                return;
-            }
-
+            BidHistoryDto bidDto = objectMapper.readValue(message.getPayload(), BidHistoryDto.class);
+            Auction auction = auctionService.getAuctionById(bidDto.getAuctionId());
+            User user = userService.findUserById(bidDto.getUserId());
+            BidHistory bid = new BidHistory(auction,user,bidDto.getAmount());
 
             // Lưu vào DB
-            boolean saved = bidHistoryService.add(bid);
-            if (saved) {
-                // Nếu lưu thành công thì broadcast cho tất cả client
+            boolean success;
+            BidHistory savedBid = bidHistoryService.save(bid);
+            if (savedBid != null && savedBid.getId() != null) {
+                success = true;
+            } else {
+                success = false;
+            }
+            if (success) {
                 broadcastNewBid(bid);
                 logger.info("Bid saved and broadcasted: Auction ID {}, Amount {}", 
                            bid.getAuction().getId(), bid.getAmount());
@@ -85,6 +105,12 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
 
     public void broadcastNewBid(BidHistory bid) throws Exception {
         WebSocketMessage message = new WebSocketMessage("BID", bid);
+        message.setAuction(bid.getAuction());
+        broadcastMessage(message);
+    }
+    public void broadcastFinishAuction(Auction auction) throws Exception {
+        WebSocketMessage message = new WebSocketMessage("AUCTION_END", auction);
+        message.setAuction(auction);
         message.setAuctionId(bid.getAuction().getId());
         broadcastMessage(message);
     }
