@@ -1,37 +1,59 @@
 package com.example.auctionweb.controller;
 
 import com.example.auctionweb.entity.Product;
-import com.example.auctionweb.service.IProductService;
+import com.example.auctionweb.entity.Category;
+import com.example.auctionweb.repository.CategoryRepository;
+import com.example.auctionweb.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
-    private IProductService productService;
+    private ProductService productService;
 
-    @GetMapping("/")
-    public String home(Model model) {
-        model.addAttribute("products", productService.searchProducts(null, null));
-        model.addAttribute("categories", productService.getAllCategories());
-        return "home";
+    @Autowired
+    private CategoryRepository categoryRepository;
+
+    @GetMapping("/dashboard")
+    public String userDashboard(Model model) {
+        List<Product> approvedProducts = productService.getApprovedProducts();
+        List<Category> categories = categoryRepository.findAll();
+
+        model.addAttribute("products", approvedProducts);
+        model.addAttribute("categories", categories);
+        return "user/dashboard";
     }
 
-    @GetMapping("/search")
-    public String searchProducts(
-            @RequestParam(value = "name", required = false) String name,
-            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+    @GetMapping("/products")
+    public String viewProducts(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Integer categoryId,
             Model model) {
 
-        model.addAttribute("products", productService.searchProducts(name, categoryId));
-        model.addAttribute("categories", productService.getAllCategories());
-        model.addAttribute("searchName", name);
+        List<Product> products;
+        Category category = null;
+
+        if (categoryId != null) {
+            category = categoryRepository.findById(categoryId).orElse(null);
+        }
+
+        products = productService.searchApprovedProducts(search, category);
+        List<Category> categories = categoryRepository.findAll();
+
+        model.addAttribute("products", products);
+        model.addAttribute("categories", categories);
+        model.addAttribute("search", search);
         model.addAttribute("selectedCategoryId", categoryId);
 
-        return "home";
+        return "user/products";
     }
 }

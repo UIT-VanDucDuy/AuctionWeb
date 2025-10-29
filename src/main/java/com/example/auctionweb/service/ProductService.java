@@ -1,17 +1,21 @@
 package com.example.auctionweb.service;
 
-import com.example.auctionweb.entity.Product;
+import com.example.auctionweb.dto.ProductRequestDTO;
 import com.example.auctionweb.entity.Category;
-import com.example.auctionweb.repository.ProductRepository;
+import com.example.auctionweb.entity.Product;
+import com.example.auctionweb.entity.User;
 import com.example.auctionweb.repository.CategoryRepository;
+import com.example.auctionweb.repository.ProductRepository;
+import com.example.auctionweb.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProductService implements IProductService {
+public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
@@ -19,64 +23,22 @@ public class ProductService implements IProductService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    // ========== CHO NGƯỜI DÙNG ==========
+    @Autowired
+    private UserRepository userRepository;
 
-    @Override
-    public List<Product> searchProducts(String name, Integer categoryId) {
-        if ((name == null || name.trim().isEmpty()) && categoryId == null) {
-            return productRepository.findByStatus(Product.ProductStatus.APPROVED);
-        }
+    // ========== CHO ADMIN ==========
 
-        if (categoryId == null) {
-            return productRepository.findByNameContainingIgnoreCaseAndStatus(
-                    name, Product.ProductStatus.APPROVED);
-        }
-
-        if (name == null || name.trim().isEmpty()) {
-            Category category = categoryRepository.findById(categoryId).orElse(null);
-            if (category != null) {
-                return productRepository.findByCategoryAndStatus(category, Product.ProductStatus.APPROVED);
-            }
-            return List.of();
-        }
-
-        Category category = categoryRepository.findById(categoryId).orElse(null);
-        if (category != null) {
-            return productRepository.findByNameContainingIgnoreCaseAndCategoryAndStatus(
-                    name, category, Product.ProductStatus.APPROVED);
-        }
-
-        return List.of();
-    }
-
-    @Override
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAllByOrderByNameAsc();
-    }
-
-    // ========== CRUD SẢN PHẨM ==========
-
-    @Override
-    public Product saveProduct(Product product) {
-        return productRepository.save(product);
-    }
-
-    @Override
+    // Lấy tất cả sản phẩm (sắp xếp mới nhất)
     public List<Product> getAllProductsForAdmin() {
         return productRepository.findAllByOrderByRequestedAtDesc();
     }
 
-    @Override
-    public Product getProductById(Integer id) {
-        return productRepository.findById(id).orElse(null);
-    }
-
-    @Override
+    // Lấy sản phẩm theo trạng thái (sắp xếp mới nhất)
     public List<Product> getProductsByStatus(Product.ProductStatus status) {
         return productRepository.findByStatusOrderByRequestedAtDesc(status);
     }
 
-    @Override
+    // Lấy sản phẩm theo danh mục
     public List<Product> getProductsByCategory(Integer categoryId) {
         Category category = categoryRepository.findById(categoryId).orElse(null);
         if (category != null) {
@@ -85,69 +47,103 @@ public class ProductService implements IProductService {
         return List.of();
     }
 
-    @Override
+    // Lấy sản phẩm theo người bán
     public List<Product> getProductsBySeller(Integer sellerId) {
         return productRepository.findBySellerId(sellerId);
     }
 
-    @Override
-    public Product updateProductStatus(Integer productId, Product.ProductStatus status) {
-        Optional<Product> productOpt = productRepository.findById(productId);
-        if (productOpt.isPresent()) {
-            Product product = productOpt.get();
-            product.setStatus(status);
-            return productRepository.save(product);
-        }
-        throw new RuntimeException("Product not found with id: " + productId);
+    // ========== CHO NGƯỜI DÙNG ==========
+
+    // Tìm kiếm sản phẩm đã duyệt theo tên
+    public List<Product> searchApprovedProductsByName(String name) {
+        return productRepository.findByNameContainingIgnoreCaseAndStatus(name, Product.ProductStatus.APPROVED);
     }
 
-    @Override
-    public void deleteProduct(Integer productId) {
-        if (!productRepository.existsById(productId)) {
-            throw new RuntimeException("Product not found with id: " + productId);
-        }
-        productRepository.deleteById(productId);
+    // Lấy sản phẩm đã duyệt theo danh mục
+    public List<Product> getApprovedProductsByCategory(Category category) {
+        return productRepository.findByCategoryAndStatus(category, Product.ProductStatus.APPROVED);
     }
 
-    // ========== CRUD DANH MỤC ==========
-
-    @Override
-    public Category createCategory(Category category) {
-        if (categoryRepository.findByName(category.getName()) != null) {
-            throw new RuntimeException("Category name already exists: " + category.getName());
+    // Tìm kiếm nâng cao
+    public List<Product> searchApprovedProducts(String name, Category category) {
+        if (name != null && category != null) {
+            return productRepository.findByNameContainingIgnoreCaseAndCategoryAndStatus(name, category, Product.ProductStatus.APPROVED);
+        } else if (name != null) {
+            return searchApprovedProductsByName(name);
+        } else if (category != null) {
+            return getApprovedProductsByCategory(category);
+        } else {
+            return getApprovedProducts();
         }
-        return categoryRepository.save(category);
     }
 
-    @Override
-    public Category getCategoryById(Integer id) {
-        return categoryRepository.findById(id).orElse(null);
+    // Lấy tất cả sản phẩm đã duyệt
+    public List<Product> getApprovedProducts() {
+        return productRepository.findByStatus(Product.ProductStatus.APPROVED);
     }
 
-    @Override
-    public Category updateCategory(Integer categoryId, Category category) {
-        Category existingCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryId));
+    // ========== CRUD CHUNG ==========
 
-        Category duplicateCategory = categoryRepository.findByName(category.getName());
-        if (duplicateCategory != null && !duplicateCategory.getId().equals(categoryId)) {
-            throw new RuntimeException("Category name already exists: " + category.getName());
-        }
-
-        existingCategory.setName(category.getName());
-        return categoryRepository.save(existingCategory);
+    public Product getProductById(Integer id) {
+        return productRepository.findById(id).orElse(null);
     }
 
-    @Override
-    public void deleteCategory(Integer categoryId) {
-        Category category = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + categoryId));
+    public Product createProduct(ProductRequestDTO productDTO) {
+        Product product = new Product();
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setStartingPrice(productDTO.getStartingPrice());
+        product.setImageUrl(productDTO.getImageUrl());
+        product.setRequestedAt(LocalDateTime.now());
+        product.setStatus(Product.ProductStatus.PENDING);
 
-        List<Product> productsInCategory = productRepository.findByCategory(category);
-        if (!productsInCategory.isEmpty()) {
-            throw new RuntimeException("Cannot delete category with existing products");
+        // Set category
+        if (productDTO.getCategoryId() != null) {
+            Category category = categoryRepository.findById(productDTO.getCategoryId()).orElse(null);
+            product.setCategory(category);
         }
 
-        categoryRepository.delete(category);
+        // Set default seller (có thể điều chỉnh theo logic đăng nhập)
+        Optional<User> defaultSeller = userRepository.findById(1);
+        defaultSeller.ifPresent(product::setSeller);
+
+        return productRepository.save(product);
+    }
+
+    public Product updateProduct(Integer id, ProductRequestDTO productDTO) {
+        Product existingProduct = productRepository.findById(id).orElse(null);
+        if (existingProduct == null) {
+            throw new RuntimeException("Không tìm thấy sản phẩm");
+        }
+
+        existingProduct.setName(productDTO.getName());
+        existingProduct.setDescription(productDTO.getDescription());
+        existingProduct.setStartingPrice(productDTO.getStartingPrice());
+        existingProduct.setImageUrl(productDTO.getImageUrl());
+
+        if (productDTO.getCategoryId() != null) {
+            Category category = categoryRepository.findById(productDTO.getCategoryId()).orElse(null);
+            existingProduct.setCategory(category);
+        }
+
+        return productRepository.save(existingProduct);
+    }
+
+    public void deleteProduct(Integer id) {
+        productRepository.deleteById(id);
+    }
+
+    public Product updateProductStatus(Integer id, Product.ProductStatus status) {
+        Product product = productRepository.findById(id).orElse(null);
+        if (product == null) {
+            throw new RuntimeException("Không tìm thấy sản phẩm");
+        }
+        product.setStatus(status);
+        return productRepository.save(product);
+    }
+
+    // Đếm sản phẩm theo trạng thái
+    public long countProductsByStatus(Product.ProductStatus status) {
+        return productRepository.findByStatus(status).size();
     }
 }
