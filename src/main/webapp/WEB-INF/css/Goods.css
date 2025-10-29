@@ -1,0 +1,188 @@
+/*---------------header-------------------*/
+body {
+  background-color: rgb(245, 245, 245);
+}
+
+a {
+  list-style: none;
+  color: black;
+  text-decoration: none;
+}
+
+.header_item2 {
+  display: grid;
+  grid-template-columns: 30% 50%;
+  align-items: center;
+  padding: 1.5ch;
+  background-color: rgb(245, 245, 245);
+}
+
+.header_item3 {
+  display: grid;
+  grid-template-columns: 2% 15% 8% 8% 8% 15%;
+  align-items: center;
+  justify-items: center;
+  height: 1.5cm;
+  background-color: #b41712;
+  color: white;
+  font-size: 20px;
+  position: relative;
+}
+.header_item3 a {
+  color: white;
+  font-size: 20px;
+}
+.header_item3 a:hover {
+  background-color: #ffffff;
+  color: #b41712;
+  font-size: 20px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.input1 {
+  border-bottom-left-radius: 15px;
+  border-top-left-radius: 15px;
+  border: none;
+  height: 1cm;
+  padding-right: 0%;
+  box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
+}
+.input2 {
+  border-bottom-right-radius: 15px;
+  border-top-right-radius: 15px;
+  border: none;
+  height: 1cm;
+  width: 10cm;
+  padding-left: 0%;
+  box-shadow: 50px 10px #111111 0 0 10px 30px #0e0d0d 30px 0 20px 30px #1a1919;
+}
+.form form button {
+  background-color: rgb(66, 65, 65);
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  width: 1cm;
+  height: 1cm;
+}
+/*------------item------------*/
+.item {
+  border-color: rgb(185, 183, 183);
+  border-style: hidden hidden solid hidden;
+  border-width: 1px;
+}
+/*----------------main---------*/
+.main1 {
+  padding-top: 2ch;
+}
+.gird-container {
+  display: grid;
+  grid-template-columns: 43% 55%;
+  gap: 1em;
+}
+.gird-container div a img {
+  max-width: 100%;
+  object-fit: cover;
+}
+.img {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.i4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.i4 > div {
+  padding: 0.5em;
+  font-size: 18px;
+}
+/*-----------------Congcu---------*/
+.Congcu {
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  align-items: center;
+  justify-items: center;
+  height: 1.5cm;
+  background-color: #b41712;
+  font-size: 20px;
+  list-style-type: none;
+  padding: 0%;
+}
+.Congcu li {
+  list-style: outside none none;
+  position: relative;
+  line-height: 25px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+.Congcu li a {
+  color: white;
+  font-size: 20px;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.Congcu li a:hover {
+  background-color: white;
+  color: #b41712;
+  font-size: 20px;
+}
+.Congcu2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 10px;
+  padding: 1em;
+}
+
+.TinTuc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+}
+
+.TinTuc > div {
+  background-color: white;
+}
+
+.TinTuc a img {
+  max-width: 100%;
+}
+
+/*------------main4------------*/
+.main4 {
+  padding-top: 5ch;
+  padding-bottom: 5ch;
+  padding-left: 3ch;
+  padding-right: 3ch;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 30px;
+  border: #686666;
+  border-color: red;
+  font-size: 22px;
+}
+
+.main4 > div > a {
+  font-size: 17px;
+  color: #686666;
+}
+
+.timkiem {
+  display: grid;
+  grid-template-columns: 40% 40% 20%;
+  align-items: center;
+  justify-items: center;
+  height: 1.5cm;
+  background-color: #b41712;
+  color: white;
+  font-size: 20px;
+}

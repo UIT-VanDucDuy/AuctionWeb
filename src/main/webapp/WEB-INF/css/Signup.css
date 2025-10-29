@@ -1,0 +1,171 @@
+/*---------------header-------------------*/
+body {
+  background-color: rgb(245, 245, 245);
+}
+
+.header_item1 {
+  display: grid;
+  grid-template-columns: 18% 67% 7% 8%;
+  align-items: center;
+  padding-left: 2vh;
+  border-color: rgb(182, 181, 181);
+  border-style: hidden hidden solid hidden;
+  border-width: 1px;
+  color: rgb(161, 161, 161);
+  background-color: rgb(248, 250, 250);
+}
+
+a {
+  list-style: none;
+  color: black;
+  text-decoration: none;
+}
+
+.header_item2 {
+  display: grid;
+  grid-template-columns: 30% 50%;
+  align-items: center;
+  padding: 1.5ch;
+  background-color: rgb(245, 245, 245);
+}
+
+.header_item3 {
+  display: grid;
+  grid-template-columns: 2% 15% 8% 8% 8% 15% 24% 6% 6%;
+  align-items: center;
+  justify-items: center;
+  height: 1.5cm;
+  background-color: #b41712;
+  color: white;
+  font-size: 20px;
+  position: relative;
+}
+.header_item3 a {
+  color: white;
+  font-size: 20px;
+}
+.header_item3 a:hover {
+  background-color: #ffffff;
+  color: #b41712;
+  font-size: 20px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.input1 {
+  border-bottom-left-radius: 15px;
+  border-top-left-radius: 15px;
+  border: none;
+  height: 1cm;
+  padding-right: 0%;
+  box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
+}
+.input2 {
+  border-bottom-right-radius: 15px;
+  border-top-right-radius: 15px;
+  border: none;
+  height: 1cm;
+  width: 10cm;
+  padding-left: 0%;
+  box-shadow: 50px 10px #111111 0 0 10px 30px #0e0d0d 30px 0 20px 30px #1a1919;
+}
+.form form button {
+  background-color: rgb(66, 65, 65);
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  width: 1cm;
+  height: 1cm;
+}
+/*---------------main1-------------------*/
+.main1 {
+  padding-top: 2ch;
+  padding-bottom: 4ch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgb(245, 245, 245);
+}
+.main1 > form {
+  width: 70%;
+}
+.main1 > form > fieldset {
+  display: grid;
+  grid-template-columns: 35% 1fr 1fr 1fr 1fr 1fr 1fr;
+  gap: 0.5em;
+  padding: 3em;
+}
+.main1 > form > fieldset > input {
+  padding: 0.5em;
+  border: none;
+  border-bottom: 1px solid #686666;
+  background-color: rgb(245, 245, 245);
+}
+.main1 > form > fieldset > label {
+  padding: 0.5em;
+}
+.main1 > form > fieldset > button {
+  padding: 0.5em;
+  width: 4cm;
+  height: 1cm;
+  background-color: #b41712;
+  border: none;
+  border-radius: 100px;
+  color: white;
+}
+.display_image {
+  border: 1px solid #000000;
+  height: 211px;
+  width: 375px;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+/*-----------ul------------*/
+.ul1 {
+  display: grid;
+  grid-template-columns: 35% 15% 15% 35%;
+  padding: 0%;
+}
+.ul1 a {
+  font-size: 24px;
+  justify-content: center;
+  text-align: center;
+}
+ul a:hover {
+  border-color: rgb(0, 0, 0);
+  border-style: hidden hidden solid hidden;
+  border-width: 2px;
+}
+
+/*------------main4------------*/
+.main4 {
+  padding-top: 5ch;
+  padding-bottom: 5ch;
+  padding-left: 3ch;
+  padding-right: 3ch;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 30px;
+  border: #686666;
+  border-color: red;
+  font-size: 22px;
+}
+
+.main4 > div > a {
+  font-size: 17px;
+  color: #686666;
+}
+
+.timkiem {
+  display: grid;
+  grid-template-columns: 40% 40% 20%;
+  align-items: center;
+  justify-items: center;
+  height: 1.5cm;
+  background-color: #b41712;
+  color: white;
+  font-size: 20px;
+}
