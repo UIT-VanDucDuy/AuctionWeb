@@ -16,4 +16,10 @@ public class AuctionScheduler {
     public void checkAuctionEndTimes() throws Exception {
         auctionService.finishExpiredAuctions();
     }
+
+    @Scheduled(fixedRate = 1000) // mỗi 1 giây
+    public void checkAuctionStartTimes() {
+        auctionService.startAuction();
+    }
+
 }

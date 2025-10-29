@@ -63,4 +63,16 @@ public class AuctionService implements IAuctionService {
             bidWebSocketHandler.broadcastFinishAuction(a);
         }
     }
+
+    @Override
+    public void startAuction() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Auction> auctions = auctionRepository.findAllByStatusAndStartTimeBefore("PENDING",now);
+        for (Auction a : auctions) {
+            a.setStatus("ONGOING");
+            auctionRepository.save(a);
+            Notification notificationSeller = new Notification(a.getProduct().getSeller(),"Bắt đầu đấu giá sản phẩm:" + a.getProduct().getId().toString());
+            notificationService.save(notificationSeller);
+        }
+    }
 }

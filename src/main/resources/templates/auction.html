@@ -352,7 +352,6 @@
             amountInput.classList.add("is-invalid");
             return false;
         }
-
         // Validation 2: Số tiền đấu giá phải lớn hơn giá cao nhất hiện tại (cả hai đều là VND đầy đủ)
         if (amount < highestBidValue + 100000) {
             errorDisplay.textContent = `Giá phải lớn hơn giá cao nhất hiện tại ít nhất 100.000 VND`;
@@ -360,7 +359,6 @@
             amountInput.classList.add("is-invalid");
             return false;
         }
-
         // --- CHỈ GỬI ĐI KHI KHÔNG CÓ LỖI ---
         const bid = {
             auctionId: auctionInfo.auction.id,
@@ -379,5 +377,4 @@
 </script>
 </body>
 <div th:replace="~{/layout/footer::footer}"></div>
-
 </html>
