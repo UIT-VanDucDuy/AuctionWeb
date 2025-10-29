@@ -1,4 +1,4 @@
-package com.example.auctionweb.service;
+package com.example.auctionweb.service.interfaces;
 
 import com.example.auctionweb.entity.Account;
 

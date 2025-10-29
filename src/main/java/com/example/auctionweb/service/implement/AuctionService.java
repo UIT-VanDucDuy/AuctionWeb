@@ -1,11 +1,12 @@
-package com.example.auctionweb.service;
+package com.example.auctionweb.service.implement;
 
 import com.example.auctionweb.dto.AuctionDto;
 import com.example.auctionweb.entity.Auction;
 import com.example.auctionweb.entity.BidHistory;
 import com.example.auctionweb.entity.Notification;
-import com.example.auctionweb.entity.Product;
 import com.example.auctionweb.repository.AuctionRepository;
+import com.example.auctionweb.service.interfaces.IAuctionService;
+import com.example.auctionweb.service.interfaces.INotificationService;
 import com.example.auctionweb.websocket.BidWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;

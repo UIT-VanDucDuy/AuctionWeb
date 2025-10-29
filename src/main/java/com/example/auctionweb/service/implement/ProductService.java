@@ -1,7 +1,8 @@
-package com.example.auctionweb.service;
+package com.example.auctionweb.service.implement;
 
 import com.example.auctionweb.entity.Product;
 import com.example.auctionweb.repository.ProductRepository;
+import com.example.auctionweb.service.interfaces.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

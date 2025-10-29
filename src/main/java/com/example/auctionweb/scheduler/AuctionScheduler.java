@@ -1,6 +1,6 @@
 package com.example.auctionweb.scheduler;
 
-import com.example.auctionweb.service.IAuctionService;
+import com.example.auctionweb.service.interfaces.IAuctionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
