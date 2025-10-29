@@ -1,0 +1,220 @@
+/*---------------header-------------------*/
+body {
+  background-color: rgb(248, 250, 250);
+}
+
+.header_item1 {
+  display: grid;
+  grid-template-columns: 18% 67% 7% 8%;
+  align-items: center;
+  padding-left: 2vh;
+  border-color: rgb(182, 181, 181);
+  border-style: hidden hidden solid hidden;
+  border-width: 1px;
+  color: rgb(161, 161, 161);
+  background-color: rgb(248, 250, 250);
+}
+
+a {
+  list-style: none;
+  color: black;
+  text-decoration: none;
+}
+
+.header_item2 {
+  display: grid;
+  grid-template-columns: 30% 50%;
+  align-items: center;
+  padding: 1.5ch;
+  background-color: rgb(248, 250, 250);
+}
+
+.header_item3 {
+  display: grid;
+  grid-template-columns: 2% 15% 8% 8% 8% 15%;
+  align-items: center;
+  justify-items: center;
+  height: 1.5cm;
+  background-color: #b41712;
+  color: white;
+  font-size: 20px;
+  position: relative;
+}
+.header_item3 a {
+  color: white;
+  font-size: 20px;
+}
+.header_item3 a:hover {
+  background-color: #ffffff;
+  color: #b41712;
+  font-size: 20px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.input1 {
+  border-bottom-left-radius: 15px;
+  border-top-left-radius: 15px;
+  border: none;
+  height: 1cm;
+  padding-right: 0%;
+  box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
+}
+.input2 {
+  border-bottom-right-radius: 15px;
+  border-top-right-radius: 15px;
+  border: none;
+  height: 1cm;
+  width: 10cm;
+  padding-left: 0%;
+  box-shadow: 50px 10px #111111 0 0 10px 30px #0e0d0d 30px 0 20px 30px #1a1919;
+}
+.form form button {
+  background-color: rgb(66, 65, 65);
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  width: 1cm;
+  height: 1cm;
+}
+/*--------a123-----------------*/
+.a12 {
+  font-size: 24px;
+  border-color: rgb(173, 173, 173);
+  border-style: hidden hidden solid hidden;
+  border-width: 1px;
+  padding-bottom: 0.3em;
+}
+.a13 {
+  padding-top: 1em;
+  display: grid;
+  grid-template-columns: 20% 25%;
+  align-items: center;
+  font-size: 18px;
+}
+.a13 input {
+  width: 70%;
+  height: 100%;
+  font-size: 14px;
+  padding-left: 5px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-top-right-radius: 20px;
+  border-color: rgb(196, 196, 196);
+  border: none;
+  border-width: 1px;
+}
+/*----------------main---------*/
+.main1 {
+  padding-top: 2ch;
+}
+.gird-container {
+  display: grid;
+  grid-template-columns: 24% 24% 24% 24%;
+  gap: 1em;
+}
+.ar1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  text-align: center;
+}
+.gird-container div a img {
+  max-width: 100%;
+  object-fit: cover;
+}
+.Loc {
+  display: flex;
+  flex-direction: column;
+}
+.Loc p {
+  font-size: 20px;
+  text-align: center;
+  color: #b41712;
+  border-style: hidden hidden solid hidden;
+  border-color: #e7e6e6;
+  border-width: 1px;
+}
+.Loc form div {
+  display: grid;
+  grid-template-columns: 31% 38% 32%;
+  padding: 5px;
+  font-size: 18px;
+}
+.Loc form button {
+  font-size: 16px;
+  color: #ffffff;
+  background-color: #b41712;
+  border: none;
+  height: 1.2cm;
+  width: 2cm;
+  border-radius: 20px;
+}
+.Loc form button:hover {
+  font-size: 16px;
+  color: #b41712;
+  background-color: #ffffff;
+  border: none;
+  height: 1.2cm;
+  width: 2cm;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.radio {
+  padding-top: 5ch;
+  padding-bottom: 5ch;
+  display: flex;
+  flex-direction: row;
+}
+.radio a {
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  font-size: 16px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.radio a:hover {
+  background-color: #b41712;
+  color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  font-size: 16px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+/*------------main4------------*/
+.main4 {
+  padding-top: 5ch;
+  padding-bottom: 5ch;
+  padding-left: 3ch;
+  padding-right: 3ch;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 30px;
+  border: #686666;
+  border-color: red;
+  font-size: 22px;
+}
+
+.main4 > div > a {
+  font-size: 17px;
+  color: #686666;
+}
+
+.timkiem {
+  display: grid;
+  grid-template-columns: 40% 40% 20%;
+  align-items: center;
+  justify-items: center;
+  height: 1.5cm;
+  background-color: #b41712;
+  color: white;
+  font-size: 20px;
+}

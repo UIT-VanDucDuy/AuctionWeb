@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
+    <title>Sign In</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/Signin.css'%}" />
+</head>
+
+<body>
+    <div class="header">
+        <div class="header_item1">
+            <div>Liên hệ: 0818666***/0979334***</div>
+            <div>Email: 20521251@gm.uit.edu.vn </div>
+            <a style="color: rgb(161, 161, 161)" href="/Signin">Đăng nhập</a>
+            <a style="color: rgb(161, 161, 161)" href="/Signup">Đăng ký</a>
+        </div>
+        <div class="header_item2">
+            <a href="/"><img style="width: 350px;" src="{% static 'image/logoLacViet.png'%}" alt=""></a>
+            <div class="form">
+                <form action="/Search">
+                    <input class="input1" list="browsers" name="browser" placeholder=" Danh mục">
+                    <datalist id="browsers">
+                        <option value="Hàng hiệu">
+                        <option value="Sưu tầm - Nghệ thuật">
+                        <option value="Phương tiện xe cộ">
+                        <option value="Bất động sản - Quyền sử dụng đất">
+                        <option value="Tài sản thanh lý">
+                    </datalist>
+                    <input class="input2" type="text" id="lname" name="lname" placeholder="Tìm kiếm...">
+                    <button><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="header_item3">
+            &nbsp;
+            <div><i class="fa-solid fa-bars"></i> Danh mục tài sản</div>
+            <a href="#">Cuộc đấu giá</a>
+            <a href="#">Tin tức</a>
+            <a href="#">Giới thiệu</a>
+            <a href="/Lienhe">Liên hệ bán tài sản</a>
+        </div>
+    </div>
+    <div style="padding: 10px;">
+        <a style="color: gray;" href="/Auction">Trang chủ/</a>
+        <a style="color: gray;" href="/Signin"> Đăng nhập</a>
+    </div>
+    <ul class="ul1">
+        <a style="grid-column:2/3 ;" href="/Signin">Đăng nhập</a>
+        <a href="/Signup">Đăng ký</a>
+    </ul>
+    <div class="main1">
+        <form action="" method="POST">
+            {% csrf_token %}
+            <fieldset>
+                <div style="grid-column: 1/8;">
+                    <style>
+                        h1 {
+                            color: red;
+                            font-size: 13pt;
+                        }
+                    </style>
+                    {% for message in messages %}
+                    <h1>{{message}}</h1>
+                    {% endfor %}
+                </div>
+                <legend>Đăng nhập :</legend>
+                <label style="grid-column:1/3 ;" for="username">Tên đăng nhập:</label>
+                <input style="grid-column: 3/7;" type="text" id="username" name="username"
+                    placeholder="Nhập email hoặc tên đăng nhập">
+                <label style="grid-column: 1/3;" for="password">Mật khẩu:</label>
+                <input style="grid-column: 3/7;" type="password" id="password" name="password"
+                    placeholder="Nhập mật khẩu">
+                <button style="grid-column: 5/7;" onclick="singup">Đăng nhập</button>
+            </fieldset>
+        </form>
+    </div>
+    <div class="timkiem">
+        <div>Nhanh tay tìm kiếm vật phẩm bạn cần nào !</div>
+        <div></div>
+        <form action="/Search">
+            <input type="text" id="lname" name="lname" placeholder="Tìm kiếm...">
+            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+    </div>
+    <div class="main4">
+        <div style="display:flex;flex-direction:column">
+            <img style="width: 350px;" src="{% static 'image/logoLacViet.png'%}" alt="">
+            <br>
+            Đăng ký email để nhận tin tức mới nhất từ chúng tôi
+        </div>
+        <div style="display:flex;flex-direction:column">
+            Thông tin liên hệ:
+            <div></div>
+            &nbsp;
+            <a class="click">20521251@bm.uit.edu.vn</a>&nbsp;
+            <a class="click">0818666***</a>&nbsp;
+            <a class="click">0979334***</a>&nbsp;
+        </div>
+        <div style="display:flex;flex-direction:column">
+            Về chúng tôi :
+            <div></div>
+            &nbsp;
+            <a class="click" href="#">Giới thiệu</a>&nbsp;
+            <a class="click" href="#">Quy chế hoạt động</a>&nbsp;
+            <a class="click" href="#">Cơ chế giải quyết tranh chấp</a>&nbsp;
+        </div>
+        <div style="display:flex;flex-direction:column">
+            Chính sách :
+            <div></div>
+            &nbsp;
+            <a class="click" href="#"> Văn bản pháp quy</a>&nbsp;
+            <a class="click" href="#">Chính sách bảo mật thông tin</a>&nbsp;
+
+        </div>
+        <div></div>
+        <div>Công ty đấu giá ****</div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div>Công ty đấu giá ****</div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div>Công ty đấu giá ****</div>
+    </div>
+</body>
+
+</html>

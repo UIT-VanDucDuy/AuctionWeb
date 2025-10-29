@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.math.BigDecimal;
 
 @Component
 public class BidWebSocketHandler extends TextWebSocketHandler {
@@ -54,7 +55,7 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
             BidHistory bid = objectMapper.readValue(message.getPayload(), BidHistory.class);
             
             // Validate bid
-            if (bid.getAmount() <= 0) {
+            if (bid.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
                 WebSocketMessage errorMsg = new WebSocketMessage("ERROR", "Số tiền đấu giá không hợp lệ!");
                 sendMessageToSession(session, errorMsg);
                 return;

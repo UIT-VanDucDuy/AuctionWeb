@@ -1,0 +1,841 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
+    <title>Home</title>
+</head>
+
+<body>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <div class="header">
+        <div class="header_item1">
+            <div>Liên hệ: 0818666***/0979334***</div>
+            <div>Email: 20521251@gm.uit.edu.vn </div>
+            {% if user.username %}
+            <div class="dropdown1">
+                <span><i class="fa-regular fa-user"></i> <b>{{user.username}}</b> <i
+                        class="fa-solid fa-sort-down"></i></span>
+                <div class="dropdown1-content">
+                    <a href="/User">Thông tin cá nhân</a>
+                    <a href="/User">Lịch sử giao dịch</a>
+                    <a href="/Changeyourpassword">Đổi mật khẩu</a>
+                    <a href="/Logout">Đăng xuất</a>
+                </div>
+            </div>
+            {% else %}
+            <a style="color: rgb(161, 161, 161)" href="/Signin">Đăng nhập</a>
+            <a style="color: rgb(161, 161, 161)" href="/Signup">Đăng ký</a>
+            {% endif %}
+        </div>
+        <div class="header_item2">
+            <a href="/"><img style="width: 350px;" src="{% static 'image/logoLacViet.png' %}" alt=""></a>
+            <div class="form">
+                <form action="/Search/" method="POST">
+                    {% csrf_token %}
+                    <input class="input1" list="types" name="types" placeholder=" Danh mục">
+                    <datalist id="types">
+                        <option value="Hàng hiệu">
+                        <option value="Sưu tầm - Nghệ thuật">
+                        <option value="Phương tiện xe cộ">
+                        <option value="Bất động sản - Quyền sử dụng đất">
+                        <option value="Tài sản thanh lý">
+                        <option value="Khác">
+
+                    </datalist>
+                    <input class="input2" type="text" id="searched" name="searched" placeholder="Tìm kiếm...">
+                    <button><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="header_item3">
+            &nbsp;
+            <nav role="navigation" class="primary-navigation">
+                <li>
+                    <a style="color:white;"><i class="fa-solid fa-bars"></i> Danh mục tài sản</a>
+                    <ul class="dropdown">
+                        <li><a href="/Search/Hàng hiệu">Hàng hiệu</a></li>
+                        <li><a href="/Search/Sưu tầm - Nghệ thuật">Sưu tầm - Nghệ thuật</a></li>
+                        <li><a href="/Search/Phương tiện xe cộ">Phương tiện xe cộ</a></li>
+                        <li><a href="/Search/Bất động sản - Quyền sử dụng đất">Bất động sản </a></li>
+                        <li><a href="/Search/Tài sản thanh lý">Tài sản thanh lý</a></li>
+                    </ul>
+                </li>
+            </nav>
+            <form action="/Search/" method="POST">
+                {%csrf_token%}
+                <input type="hidden" list="types" name="types">
+                <input type="hidden" id="searched" name="searched" placeholder="Tìm kiếm...">
+                <button class="but1">
+                    <a class="a1">Cuộc đấu giá</a></button>
+            </form>
+            <a class="a1" href="/Information">Tin tức</a>
+            <a class="a1" href="/Information">Giới thiệu</a>
+            <a class="a1" href="/Lienhe">Liên hệ bán tài sản</a>
+            <DIv></DIv>
+            <p id="time"></p>
+            <p id="current_date"></p>
+            <script>
+                date = new Date();
+                year = date.getFullYear();
+                month = date.getMonth() + 1;
+                day = date.getDate();
+                document.getElementById("current_date").innerHTML = day + "/" + month + "/" + year;
+
+            </script>
+        </div>
+    </div>
+    <div class="main1">
+        <div class="main1_item1">Tài sản sắp được đấu giá</div>
+        &nbsp;
+        <div class="main1_item2">
+            {% for goods in goods_list|slice:"6:11" %}
+            <div class="TinTuc">
+                <a href="/Goods/{{goods.id}}"><img src="{{goods.image.url}}" alt=""></a>
+                <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
+                <p> </p>
+                <div>Giá khởi điểm:</div>
+                <span style="font-size: 20px;">{{goods.price}} VND</span>
+                <div>Thời gian kết thúc: {{goods.endingdate}}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="main2">
+        <div class="grid-container">
+            <div class="item1"
+                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://firebasestorage.googleapis.com/v0/b/nt208-28e2a.appspot.com/o/tai_san_cong.jpg?alt=media&token=7db48f4a-eead-4f5e-8a6d-5145f19b41f8) ;">
+                <div>TÀI SẢN</div>
+                <div>THANH LÝ</div>
+                <div style="font-size:18px ;">Tài sản ({{list1_length}})</div>
+                &nbsp;
+                <button><a href="/Search/Tài sản thanh lý">Xem thêm</a></button>
+            </div>
+            <div class="item2"
+                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://firebasestorage.googleapis.com/v0/b/nt208-28e2a.appspot.com/o/xe_co.jpg?alt=media&token=c88ee99b-6b5f-4ca0-a0a0-8796e7144d71) ;">
+                <div>XE CỘ</div>
+                <div style="font-size:18px ;">Tài sản ({{list3_length}})</div>
+                &nbsp;
+                <button><a href="/Search/Phương tiện xe cộ">Xem thêm</a></button>
+            </div>
+            <div class="item3"
+                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://firebasestorage.googleapis.com/v0/b/nt208-28e2a.appspot.com/o/nghe_thuat.jpg?alt=media&token=f517c3c5-227b-4c14-8947-f4d1527d25b2) ;">
+                <div>NGHỆ THUẬT</div>
+                <div style="font-size:18px ;">Tài sản ({{list4_length}})</div>
+                &nbsp;
+                <button><a href="/Search/Sưu tầm - Nghệ thuật">Xem thêm</a></button>
+            </div>
+            <div class="item4"
+                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://firebasestorage.googleapis.com/v0/b/nt208-28e2a.appspot.com/o/batdongsan.jpg?alt=media&token=7ef4ffc4-dfee-4cd2-b085-4a9895fc87bc) ;">
+                <div>BẤT ĐỘNG SẢN</div>
+                <div style="font-size:18px ;">Tài sản ({{list2_length}})</div>
+                &nbsp;
+                <button><a href="/Search/Bất động sản - Quyền sử dụng đất">Xem thêm</a></button>
+            </div>
+            <div class="item5"
+                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://firebasestorage.googleapis.com/v0/b/nt208-28e2a.appspot.com/o/hang_hieu.jpg?alt=media&token=8ce9919d-5791-4cb5-b5cf-7245734a6207) ;">
+                <DIV>HÀNG HIỆU</DIV>
+                <div style="font-size:18px ;">Tài sản ({{list5_length}})</div>
+                &nbsp;
+                <button><a href="/Search/Hàng hiệu">Xem thêm</a></button>
+            </div>
+            <div class="item6"
+                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://firebasestorage.googleapis.com/v0/b/nt208-28e2a.appspot.com/o/TaiSanKhac.jpg?alt=media&token=e6594d65-dda1-4988-95e8-3b2fd1fa4a39) ;">
+                <div>TÀI SẢN KHÁC</div>
+                <div style="font-size:18px ;">Tài sản ({{list6_length}})</div>
+                &nbsp;
+                <button><a href="/Search/Khác">Xem thêm</a></button>
+            </div>
+        </div>
+    </div>
+    <div class="main3">
+        <div class="grid-container2">
+            <div style="  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+            url(https://firebasestorage.googleapis.com/v0/b/nt208-28e2a.appspot.com/o/tai_san_cong.jpg?alt=media&token=7db48f4a-eead-4f5e-8a6d-5145f19b41f8 );"
+                class="i1">
+
+                <div style="font-size: 25px;">TÀI SẢN THANH LÝ</div>
+                <div>tài sản({{list1_length}})</div>
+                &nbsp;
+                <button><a href="/Search/Tài sản thanh lý">Xem thêm</a></button>
+
+            </div>
+            {% for goods in goods_list1|slice:"0:4" %}
+            <div class="i2">
+                <a href="/Goods/{{goods.id}}"><img style="width:155px;height:155px ;" src="{{goods.image.url}}"
+                        alt=""></a>
+                &nbsp;
+                <div>
+                    <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
+                    <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: {{goods.user}}
+                    </div>
+                    &nbsp;
+                    <div style="color: rgb(68,68,68);">Giá khởi điểm: {{goods.price}}</div>
+                    <div style="color: rgb(68,68,68);">Thời gian kết thúc: {{goods.endingdate}}</div>
+                </div>
+            </div>
+            {% endfor %}
+
+
+        </div>
+        <div class="main3">
+            <div class="grid-container2">
+                <div style="  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url(https://firebasestorage.googleapis.com/v0/b/nt208-28e2a.appspot.com/o/BDS.jpg?alt=media&token=6f38925b-2766-435e-9de0-94b3fb8c5a74);"
+                    class="i1">
+
+                    <div style="font-size: 25px;">BẤT ĐỘNG SẢN</div>
+                    <div style="font-size: 25px;">QUYỀN SD ĐẤT</div>
+
+                    <div>tài sản({{list2_length}})</div>
+                    &nbsp;
+                    <button><a href="/Search/Bất động sản - Quyền sử dụng đất">Xem thêm</a></button>
+                </div>
+                {% for goods in goods_list2|slice:"0:4" %}
+                <div class="i2">
+                    <a href="/Goods/{{goods.id}}"><img style="width:155px;height:155px ;" src="{{goods.image.url}}"
+                            alt=""></a>
+                    &nbsp;
+                    <div>
+                        <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
+                        <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: {{goods.user}}
+                        </div>
+                        &nbsp;
+                        <div style="color: rgb(68,68,68);">Giá khởi điểm: {{goods.price}}</div>
+                        <div style="color: rgb(68,68,68);">Thời gian kết thúc: {{goods.endingdate}}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="main3">
+                <div class="grid-container2">
+                    <div style=" background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                    url(https://firebasestorage.googleapis.com/v0/b/nt208-28e2a.appspot.com/o/xe_co1.jpg?alt=media&token=7525d56c-d24d-4880-b1f5-55d13c1a81c3);"
+                        class="i1">
+                        <div style="font-size: 30px;">XE CỘ</div>
+                        <div>tài sản({{list3_length}})</div>
+                        &nbsp;
+                        <button><a href="/Search/Phương tiện xe cộ">Xem thêm</a></button>
+
+                    </div>
+                    {% for goods in goods_list3|slice:"0:4" %}
+                    <div class="i2">
+                        <a href="/Goods/{{goods.id}}"><img style="width:155px;height:155px ;" src="{{goods.image.url}}"
+                                alt=""></a>
+                        &nbsp;
+                        <div>
+                            <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
+                            <div style="font-style:italic;color: rgb(68, 68, 68);">Chủ tài sản: {{goods.user}}
+                            </div>
+                            &nbsp;
+                            <div style="color: rgb(68,68,68);">Giá khởi điểm: {{goods.price}}</div>
+                            <div style="color: rgb(68,68,68);">Thời gian kết thúc: {{goods.endingdate}}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div style="padding: 2ch;"></div>
+                <div class="main5">
+                    <div class="main5_item">
+                        <div style="grid-column:1/2;font-size: 50px;">Trở thành đối tác của Lạc Việt</div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div style="align-items: center;flex-direction: column;justify-items: center;display: flex;">
+                            <div style="grid-row:1/3;font-size: 20px;color: grey;"><br>Trở thành đối tác của Lạc Việt.
+                                Chúng tôi
+                                sẽ đồng hành
+                                cùng bạn để đấu giá các tác phẩm nghệ thuật.
+                                Sứ mệnh của chúng tôi là xây dựng lên một cộng đồng đấu giá chuyên nghiệp và bền vững ở
+                                Việt
+                                Nam.
+                            </div>
+                            &nbsp;
+                            <a href="/Lienhe"><button onclick="clickLHBTS()">liên hệ bán tài sản</button>
+                            </a>
+                        </div>
+
+                    </div>
+                    <div style="padding: 2ch;"></div>
+
+                    <div class="timkiem">
+                        <div>Nhanh tay tìm kiếm vật phẩm bạn cần nào !</div>
+                        <div></div>
+                        <form action="/Search/" method="POST">
+                            {%csrf_token%}
+                            <input type="text" id="searched" name="searched" placeholder="Tìm kiếm...">
+                            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="main4">
+                        <div style="display:flex;flex-direction:column">
+                            <img style="width: 350px;" src="{% static 'image/logoLacViet.png' %}" alt="">
+                            <br>
+                            Đăng ký email để nhận tin tức mới nhất từ chúng tôi
+                        </div>
+                        <div style="display:flex;flex-direction:column">
+                            Thông tin liên hệ:
+                            <div></div>
+                            &nbsp;
+                            <a class="click">20521251@bm.uit.edu.vn</a>&nbsp;
+                            <a class="click">0818666***</a>&nbsp;
+                            <a class="click">0979334***</a>&nbsp;
+                        </div>
+                        <div style="display:flex;flex-direction:column">
+                            Về chúng tôi :
+                            <div></div>
+                            &nbsp;
+                            <a class="click" href="#">Giới thiệu</a>&nbsp;
+                            <a class="click" href="#">Quy chế hoạt động</a>&nbsp;
+                            <a class="click" href="#">Cơ chế giải quyết tranh chấp</a>&nbsp;
+                        </div>
+                        <div style="display:flex;flex-direction:column">
+                            Chính sách :
+                            <div></div>
+                            &nbsp;
+                            <a class="click" href="#"> Văn bản pháp quy</a>&nbsp;
+                            <a class="click" href="#">Chính sách bảo mật thông tin</a>&nbsp;
+
+                        </div>
+                        <div></div>
+                        <div>Công ty đấu giá ****</div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div>Công ty đấu giá ****</div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div>Công ty đấu giá ****</div>
+                    </div>
+                </div>
+
+                <style>
+                    .but1 {
+                        background-color: transparent;
+                        border: none;
+                        font-family: 'Times New Roman', Times, serif;
+                        height: 1.75cm;
+                        padding: 0cm;
+                    }
+
+                    .primary-navigation {
+                        margin: 0 auto;
+                        display: flex;
+                        font-size: 20px;
+                        height: 100%;
+                    }
+
+                    .primary-navigation li {
+                        list-style: none;
+                        margin: 0 auto;
+                        display: inline-flex;
+                        position: relative;
+                        text-decoration: none;
+                        height: 1.75cm;
+                        align-items: center;
+                    }
+
+                    .primary-navigation li ul {
+                        visibility: hidden;
+                        opacity: 0;
+                        position: absolute;
+                        padding-left: 0;
+                        top: 50px;
+                        left: 0px;
+                        display: none;
+                        background: white;
+                    }
+
+                    .primary-navigation li ul::before {
+                        content: '';
+                        top: -10px;
+                        position: absolute;
+                        width: 100%;
+                        z-index: 10;
+                        height: 20px;
+                        background-color: transparent;
+                    }
+
+                    .primary-navigation li:hover>ul,
+                    .primary-navigation li ul:hover {
+                        visibility: visible;
+                        opacity: 1;
+                        display: block;
+                        min-width: 250px;
+                        text-align: left;
+                        padding-top: 10px;
+                        box-shadow: 0px 3px 5px -1px #ccc;
+                    }
+
+                    .primary-navigation li ul li {
+                        clear: both;
+                        width: 100%;
+                        text-align: left;
+                        margin-bottom: 20px;
+                        padding-left: 5px;
+                        border-style: none;
+                        text-decoration: none;
+                        height: 100%;
+
+                    }
+
+                    .primary-navigation li ul li a {
+                        text-align: center;
+                        display: flex;
+                        transition: all 1s ease;
+                        padding-left: 10px;
+                    }
+
+                    .primary-navigation li ul li a:hover {
+                        padding-left: 20px;
+                        border-left: 3px solid #ffffff;
+                        transition: all 0.3s ease;
+                        color: #b41712;
+                        height: 100%;
+                        text-align: left;
+                    }
+
+                    /*---------------header-------------------*/
+
+                    body {
+                        background-color: rgb(245, 245, 245);
+                    }
+
+                    .header_item1 {
+                        display: grid;
+                        grid-template-columns: 18% 62% 10% 10%;
+                        align-items: center;
+                        padding-left: 2vh;
+                        border-color: rgb(182, 181, 181);
+                        border-style: hidden hidden solid hidden;
+                        border-width: 1px;
+                        color: rgb(161, 161, 161);
+                        background-color: rgb(248, 250, 250);
+                    }
+
+                    a {
+                        list-style: none;
+                        color: black;
+                        text-decoration: none;
+                    }
+
+                    .header_item2 {
+                        display: grid;
+                        grid-template-columns: 30% 50%;
+                        align-items: center;
+                        padding: 1.5ch;
+                        background-color: rgb(245, 245, 245);
+                    }
+
+                    .header_item3 {
+                        display: grid;
+                        grid-template-columns: 2% 15% 8% 8% 8% 15% 24% 6% 6%;
+                        align-items: center;
+                        justify-items: center;
+                        height: 1.75cm;
+                        position: fixed;
+                        background-color: #b41712;
+                        color: white;
+                        font-size: 20px;
+                        position: relative;
+                    }
+
+                    .a1 {
+                        color: white;
+                        font-size: 20px;
+                    }
+
+                    .a1:hover {
+                        background-color: #ffffff;
+                        color: #b41712;
+                        font-size: 20px;
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .input1 {
+                        border-bottom-left-radius: 15px;
+                        border-top-left-radius: 15px;
+                        border: none;
+                        height: 1cm;
+                        padding-right: 0%;
+                        box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
+                    }
+
+                    .input2 {
+                        border-bottom-right-radius: 15px;
+                        border-top-right-radius: 15px;
+                        border: none;
+                        height: 1cm;
+                        width: 10cm;
+                        padding-left: 0%;
+                        box-shadow: 50px 10px #111111 0 0 10px 30px #0e0d0d 30px 0 20px 30px #1a1919;
+                    }
+
+                    .form form button {
+                        background-color: rgb(66, 65, 65);
+                        color: #ffffff;
+                        border: none;
+                        border-radius: 20px;
+                        width: 1cm;
+                        height: 1cm;
+                    }
+
+                    /*---------------main-------------------*/
+                    .main1 {
+                        padding-top: 4ch;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        background-color: rgb(245, 245, 245);
+                    }
+
+                    .main1_item1 {
+                        border-color: rgb(124, 121, 121);
+                        border-style: hidden hidden solid hidden;
+                        border-width: 2px;
+                        font-size: 26px;
+                        background-color: rgb(245, 245, 245);
+                    }
+
+                    .main1_item2 {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+                        gap: 10px;
+                    }
+
+                    .TinTuc {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        background-color: #ffffff;
+                    }
+
+                    .TinTuc>div {
+                        background-color: white;
+                    }
+
+                    .TinTuc a {
+                        font-size: 18px;
+                        font-weight: bolder;
+                    }
+
+                    .TinTuc a img {
+                        max-width: 100%;
+                        height: 13em;
+                    }
+
+                    /*-------------main2--------------------*/
+                    .main2 {
+                        padding-top: 13ch;
+                        padding-bottom: 3ch;
+                    }
+
+                    .item1 {
+                        grid-area: header;
+                        height: 312px;
+                    }
+
+                    .item2 {
+                        grid-area: menu;
+                    }
+
+                    .item3 {
+                        grid-area: main;
+                    }
+
+                    .item4 {
+                        grid-area: right;
+                        height: 433px;
+                        background-image: url("static/image/handshake1.jpg");
+                    }
+
+                    .item5 {
+                        grid-area: footer;
+                        height: 312px;
+                    }
+
+                    .item6 {
+                        grid-area: left;
+                    }
+
+                    .grid-container {
+                        display: grid;
+                        grid-template-areas:
+                            "header menu main main"
+                            "right right main main"
+                            "right right footer left";
+                        gap: 8px;
+                        background-color: #ffffff;
+                    }
+
+
+                    .grid-container div {
+                        background-color: rgb(245, 245, 245);
+                        text-align: center;
+                        font-size: 30px;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        background-size: cover;
+                        justify-content: center;
+                        color: white;
+                        position: relative;
+                        background-color: transparent;
+
+                    }
+
+                    .grid-container div button {
+                        border-radius: 20px;
+                        height: 2.5em;
+                        width: 8em;
+                        font-size: 18px;
+                        border-color: #ffffff;
+                        color: white;
+                        background-color: transparent;
+                    }
+
+                    .grid-container div button:hover {
+                        background-color: white;
+                        color: #b41712;
+                        font-size: 18px;
+                    }
+
+                    .grid-container div button a {
+                        color: white;
+                        font-size: 20px;
+                        width: 100%;
+                        height: 100%;
+                        text-align: center;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        border-radius: 5ch;
+                    }
+
+                    .grid-container div button a:hover {
+                        background-color: white;
+                        color: #b41712;
+                        font-size: 20px;
+                    }
+
+                    /*----------------main3------------------*/
+                    .i1 {
+                        grid-row: 1/3;
+                        color: #ffffff;
+                        font-size: 30px;
+                        background-size: cover;
+                        display: flex;
+                        flex-direction: column;
+                    }
+
+                    .i1 div {
+                        padding-top: 3px;
+                        padding-bottom: 3px;
+                    }
+
+                    .i1 form button {
+                        border-radius: 20px;
+                        height: 2.5em;
+                        width: 8em;
+                        font-size: 18px;
+                        border-color: #ffffff;
+                        color: white;
+                        background-color: transparent;
+                    }
+
+                    .i1 form button:hover {
+                        border-radius: 20px;
+                        height: 2.5em;
+                        width: 8em;
+                        font-size: 18px;
+                        border-color: #ffffff;
+                        border: 1px white;
+                        color: #b41712;
+                        background-color: #ffffff;
+                    }
+
+                    .i2 {
+                        padding-top: 0.5em;
+                        padding-bottom: 0.5em;
+                        background-color: #ffffff;
+                    }
+
+                    .i2 div {
+                        padding-left: 1ch;
+                    }
+
+                    .main3 {
+                        padding-top: 6ch;
+                        padding-bottom: 3ch;
+                        background-color: rgb(245, 245, 245);
+                    }
+
+                    .grid-container2 {
+                        display: grid;
+                        grid-template-columns: 21% 38% 38%;
+                        gap: 30px;
+                        background-color: rgb(245, 245, 245);
+                        padding-left: 25px;
+                        padding-right: 25px;
+                    }
+
+                    .grid-container2>div {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 18px;
+                        position: relative;
+                    }
+
+                    .grid-container2>div>div>a {
+                        font-weight: bold;
+                    }
+
+                    .grid-container2 button {
+                        border-radius: 20px;
+                        height: 2.5em;
+                        width: 8em;
+                        font-size: 18px;
+                        border-color: #ffffff;
+                        color: white;
+                        background-color: transparent;
+                    }
+
+                    .grid-container2 button:hover {
+                        background-color: white;
+                        color: #b41712;
+                        font-size: 18px;
+                    }
+
+                    .grid-container2 button a {
+                        color: white;
+                        font-size: 20px;
+                        width: 100%;
+                        height: 100%;
+                        text-align: center;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        border-radius: 5ch;
+                    }
+
+                    .grid-container2 button a:hover {
+                        background-color: white;
+                        color: #b41712;
+                        font-size: 20px;
+                    }
+
+                    /*------------main4------------*/
+                    .main4 {
+                        padding-top: 5ch;
+                        padding-bottom: 5ch;
+                        padding-left: 3ch;
+                        padding-right: 3ch;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 1fr 1fr;
+                        grid-gap: 30px;
+                        border: #686666;
+                        border-color: red;
+                        font-size: 22px;
+                    }
+
+                    .main4>div>a {
+                        font-size: 17px;
+                        color: #686666;
+                    }
+
+                    .timkiem {
+                        display: grid;
+                        grid-template-columns: 40% 40% 20%;
+                        align-items: center;
+                        justify-items: center;
+                        height: 1.5cm;
+                        background-color: #b41712;
+                        color: white;
+                        font-size: 20px;
+                    }
+
+                    /* Logged in */
+                    /*-------------dropdowm-----------*/
+                    .dropdown1 {
+                        position: relative;
+                        display: inline-block;
+                        color: #0e0d0d;
+                    }
+
+                    .dropdown1-content {
+                        display: none;
+                        position: absolute;
+                        background-color: #f9f9f9;
+                        min-width: 140px;
+                        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+                        padding: 12px 16px;
+                        z-index: 1;
+                    }
+
+                    .dropdown1:hover .dropdown1-content {
+                        display: flex;
+                        flex-direction: column;
+                    }
+
+                    .dropdown1-content a:hover {
+                        font-size: 18px;
+                        color: #b41712;
+                    }
+
+                    /*--------------main 5 ---------------*/
+                    .main5 {
+                        height: 100vh;
+                        padding-left: 3ch;
+                        padding-right: 3ch;
+                        padding-top: 4ch;
+                        padding-bottom: 9ch;
+                        background-color: rgb(243, 243, 243);
+                    }
+
+                    .main5_item {
+                        background-image: url("https://firebasestorage.googleapis.com/v0/b/nt208-28e2a.appspot.com/o/handshake1.jpg?alt=media&token=eb4a62ad-77dc-4e20-9cf1-691703e9ed37");
+                        height: 100vh;
+                        background-size: 100%;
+                        background-position: 100%;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 1fr;
+                        grid-gap: 10px;
+                        padding-top: 5ch;
+                        padding-left: 6ch;
+                        padding-right: 4ch;
+                        background-color: rgb(243, 243, 243);
+                        box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
+                    }
+
+                    .main5_item div a button {
+                        padding: 0.5em;
+                        width: 10cm;
+                        height: 1cm;
+                        background-color: #b41712;
+                        border: none;
+                        border-radius: 100px;
+                        color: white;
+                        font-size: 18px;
+                    }
+                </style>
+
+</body>
+
+</html>
