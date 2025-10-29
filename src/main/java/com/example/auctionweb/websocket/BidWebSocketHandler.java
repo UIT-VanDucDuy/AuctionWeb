@@ -53,13 +53,6 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
         try {
             // Parse JSON từ client thành BidHistory
             BidHistory bid = objectMapper.readValue(message.getPayload(), BidHistory.class);
-            
-            // Validate bid
-            if (bid.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
-                WebSocketMessage errorMsg = new WebSocketMessage("ERROR", "Số tiền đấu giá không hợp lệ!");
-                sendMessageToSession(session, errorMsg);
-                return;
-            }
             // Lưu vào DB
             boolean success;
             BidHistory savedBid = bidHistoryService.add(bid);
