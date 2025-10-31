@@ -85,39 +85,46 @@
                             </div>
                         </div>
 
-<!--                         4. Form Đấu giá -->
-                        <form class="mt-4" id="formSubmit" onsubmit="sendBid(); return false;" th:if="${auctionInfo.auction.status == 'ONGOING'}">
-                            <label for="amount" class="form-label font-weight-bold">Nhập số tiền đấu giá của bạn:</label>
-                            <div class="input-group input-group-lg mb-3">
-                                <input type="number" id="amount" class="form-control"
-                                       placeholder="Số tiền tối thiểu...">
-                                <span class="input-group-text font-weight-bold text-secondary">VND</span>
-                                <div id="bid-error-message" class="invalid-feedback d-none"></div>
-                            </div>
-                            <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn">
-                                <i class="fas fa-gavel me-2"></i> Đấu giá ngay
+<!--&lt;!&ndash;                         4. Form Đấu giá &ndash;&gt;-->
+<!--                        <form class="mt-4" id="formSubmit" onsubmit="sendBid(); return false;" th:if="${auctionInfo.auction.status == 'ONGOING'}">-->
+<!--                            <label for="amount" class="form-label font-weight-bold">Nhập số tiền đấu giá của bạn:</label>-->
+<!--                            <div class="input-group input-group-lg mb-3">-->
+<!--                                <input type="number" id="amount" class="form-control"-->
+<!--                                       placeholder="Số tiền tối thiểu...">-->
+<!--                                <span class="input-group-text font-weight-bold text-secondary">VND</span>-->
+<!--                                <div id="bid-error-message" class="invalid-feedback d-none"></div>-->
+<!--                            </div>-->
+<!--                            <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn">-->
+<!--                                <i class="fas fa-gavel me-2"></i> Đấu giá ngay-->
+<!--                            </button>-->
+<!--                        </form>-->
+<!--                        &lt;!&ndash; 5. Người thắng cuộc &ndash;&gt;-->
+<!--                        <div class="mt-4 p-4 bg-success-subtle border-start border-5 border-success rounded shadow-sm" id="divWinner"-->
+<!--                             th:if="${auctionInfo.auction.status == 'FINISHED'}">-->
+<!--                            <h5 class="text-success font-weight-bold mb-3">-->
+<!--                                <i class="fas fa-trophy me-2"></i> PHIÊN ĐẤU GIÁ ĐÃ KẾT THÚC-->
+<!--                            </h5>-->
+<!--                            <p class="mb-1 text-dark">-->
+<!--                                <strong class="text-secondary-dark">Người thắng cuộc:</strong>-->
+<!--                                <span class="text-primary font-weight-bold h5" id="winnerName"-->
+<!--                                      th:text="${auctionInfo.auction.winner.name}">-->
+<!--                            </span>-->
+<!--                            </p>-->
+<!--                            <p class="mb-0 text-dark">-->
+<!--                                <strong class="text-secondary-dark">Giá thắng cuộc:</strong>-->
+<!--                                &lt;!&ndash; Hiển thị giá cao nhất &ndash;&gt;-->
+<!--                                <span class="text-danger font-weight-bold h5" id="winnerPrice"-->
+<!--                                      th:text="${#strings.replace(auctionInfo.highestBidPrice, '.00', '')} + ' VNĐ'">-->
+<!--                            </span>-->
+<!--                            </p>-->
+<!--                        </div>-->
+
+                        <form class="mt-4" onsubmit="sendBid(); return false;" th:if="${auctionInfo.auction.status == 'PENDING'}">
+                            <button class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn"
+                                    data-bs-toggle="modal" data-bs-target="#auctionRegistration">
+                                <i class="fas fa-gavel me-2"></i> Đăng ký tham gia ngay
                             </button>
                         </form>
-                        <!-- 5. Người thắng cuộc -->
-                        <div class="mt-4 p-4 bg-success-subtle border-start border-5 border-success rounded shadow-sm" id="divWinner"
-                             th:if="${auctionInfo.auction.status == 'FINISHED'}">
-                            <h5 class="text-success font-weight-bold mb-3">
-                                <i class="fas fa-trophy me-2"></i> PHIÊN ĐẤU GIÁ ĐÃ KẾT THÚC
-                            </h5>
-                            <p class="mb-1 text-dark">
-                                <strong class="text-secondary-dark">Người thắng cuộc:</strong>
-                                <span class="text-primary font-weight-bold h5" id="winnerName"
-                                      th:text="${auctionInfo.auction.winner.name}">
-                            </span>
-                            </p>
-                            <p class="mb-0 text-dark">
-                                <strong class="text-secondary-dark">Giá thắng cuộc:</strong>
-                                <!-- Hiển thị giá cao nhất -->
-                                <span class="text-danger font-weight-bold h5" id="winnerPrice"
-                                      th:text="${#strings.replace(auctionInfo.highestBidPrice, '.00', '')} + ' VNĐ'">
-                            </span>
-                            </p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -224,6 +231,34 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="auctionRegistration" tabindex="-1" aria-labelledby="auctionRegistrationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content bg-dark text-white">
+            <div class="modal-header">
+                <h5 class="modal-title" id="auctionRegistrationLabel">Login</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body justify-content-center align-items-center d-flex  ">
+                <form action="/Home?action=login" class="form" method="post">
+               <span class="input-span">
+                    <label for="usernameLogin" class="label">Username</label>
+                    <input type="text" name="username" id="usernameLogin"/>
+                    <label for="passwordLogin" class="label">Password</label>
+                    <input type="password" name="password" id="passwordLogin"/>
+                </span>
+                    <br>
+                    <p id="loginMessage"></p>
+                    <span class="span"><a href="#">Forgot password?</a></span>
+                    <input class="submit" type="submit" value="Log in"/>
+                    <span class="span">Don't have an account?
+                    <a href="" data-bs-toggle="modal" data-bs-target="#signUpModal">Sign up</a>
+                </span>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -377,4 +412,5 @@
 </script>
 </body>
 <div th:replace="~{/layout/footer::footer}"></div>
+
 </html>
