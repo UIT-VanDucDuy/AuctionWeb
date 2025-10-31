@@ -2,9 +2,9 @@ package com.example.auctionweb.controller;
 
 import com.example.auctionweb.entity.Account;
 import com.example.auctionweb.entity.User;
-import com.example.auctionweb.service.IAccountService;
-import com.example.auctionweb.service.IBidHistoryService;
-import com.example.auctionweb.service.IUserService;
+import com.example.auctionweb.service.interfaces.IAccountService;
+import com.example.auctionweb.service.interfaces.IBidHistoryService;
+import com.example.auctionweb.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -34,7 +34,7 @@ public class HomeController {
         // Thêm bid history list
         model.addAttribute("bidHistoryList", bidHistoryService.findAll());
         
-        return "home1";
+        return "layout/home";
     }
 
 }

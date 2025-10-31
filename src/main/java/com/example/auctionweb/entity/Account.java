@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "account")
-public class Account {
+public class    Account {
     public enum Role {
         ADMIN, USER, SELLER
     }
@@ -23,8 +23,9 @@ public class Account {
     @Column(length = 255, nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(length = 30)
-    private String role;
+    private Role role;
 
     @Column(name = "active")
     private Boolean active = true;

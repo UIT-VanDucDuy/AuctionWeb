@@ -132,13 +132,13 @@ INSERT INTO category (name) VALUES
 
 -- Insert Accounts
 INSERT INTO account (username, password, role, active) VALUES 
-('admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'ADMIN', TRUE), -- password: admin123
-('seller1', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'SELLER', TRUE), -- password: admin123
-('seller2', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'SELLER', TRUE), -- password: admin123
-('user1', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'USER', TRUE), -- password: admin123
-('user2', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'USER', TRUE), -- password: admin123
-('user3', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'USER', TRUE), -- password: admin123
-('user4', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDi', 'USER', FALSE); -- password: admin123 (inactive)
+('admin', '$2a$10$2bi2Y1CSp.wiY.YSDU31JeGZOAS3wwFuiFv0ji.MxS4iKSJjE67TO', 'ADMIN', TRUE), -- password: 123
+('seller1', '$2a$10$2bi2Y1CSp.wiY.YSDU31JeGZOAS3wwFuiFv0ji.MxS4iKSJjE67TO', 'SELLER', TRUE), -- password: 123
+('seller2', '$2a$10$2bi2Y1CSp.wiY.YSDU31JeGZOAS3wwFuiFv0ji.MxS4iKSJjE67TO', 'SELLER', TRUE), -- password: 123
+('user1', '$2a$10$2bi2Y1CSp.wiY.YSDU31JeGZOAS3wwFuiFv0ji.MxS4iKSJjE67TO', 'USER', TRUE), -- password: 123
+('user2', '$2a$10$2bi2Y1CSp.wiY.YSDU31JeGZOAS3wwFuiFv0ji.MxS4iKSJjE67TO', 'USER', TRUE), -- password: 123
+('user3', '$2a$10$2bi2Y1CSp.wiY.YSDU31JeGZOAS3wwFuiFv0ji.MxS4iKSJjE67T', 'USER', TRUE), -- password: 123
+('user4', '$2a$10$2bi2Y1CSp.wiY.YSDU31JeGZOAS3wwFuiFv0ji.MxS4iKSJjE67TO', 'USER', FALSE); -- password: 123 (inactive)
 
 -- Insert Users
 INSERT INTO user (account_id, name, email, phone, address) VALUES 

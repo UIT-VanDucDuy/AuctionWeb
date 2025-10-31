@@ -63,6 +63,15 @@
             <!-- LOGIN FORM -->
             <div id="loginForm">
                 <h3 class="text-center mb-4 text-danger fw-bold">Đăng nhập</h3>
+                
+                <!-- ERROR MESSAGE -->
+                <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                    <strong>Lỗi đăng nhập!</strong> Tên đăng nhập hoặc mật khẩu không đúng, hoặc tài khoản đã bị khóa.
+                </div>
+                <div th:if="${param.logout}" class="alert alert-success" role="alert">
+                    <strong>Đăng xuất thành công!</strong> Bạn đã đăng xuất khỏi hệ thống.
+                </div>
+                
                 <form name='f' th:action="@{/process-login}" method='POST'>
                     <div class="mb-3">
                         <label class="form-label">Tên đăng nhập</label>
@@ -80,32 +89,17 @@
                 </form>
             </div>
 
-            <!-- REGISTER FORM -->
+            <!-- REGISTER FORM (Removed - Use dedicated /register page) -->
             <div id="registerForm" class="hidden">
-                <h3 class="text-center mb-4 text-danger fw-bold">Đăng ký</h3>
-                <form>
-                    <div class="mb-3">
-                        <label class="form-label">Tên đăng nhập</label>
-                        <input type="text" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Mật khẩu</label>
-                        <input type="password" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Xác nhận mật khẩu</label>
-                        <input type="password" class="form-control" required>
-                    </div>
-<!--                    <div class="mb-3">-->
-<!--                        <label class="form-label">Email</label>-->
-<!--                        <input type="email" class="form-control" required>-->
-<!--                    </div>-->
-                    <button type="submit" class="btn btn-danger w-100">Đăng ký</button>
-                    <div class="text-center mt-3">
+                <div class="text-center">
+                    <h3 class="text-danger fw-bold mb-4">Đăng ký</h3>
+                    <p class="text-muted mb-4">Vui lòng đăng ký tại trang đăng ký chuyên dụng</p>
+                    <a href="/register" class="btn btn-danger w-100 mb-3">Đi đến trang đăng ký</a>
+                    <div class="text-center">
                         <span>Đã có tài khoản?</span>
                         <a class="toggle-link" onclick="toggleForms()">Đăng nhập</a>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

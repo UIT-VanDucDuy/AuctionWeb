@@ -5,9 +5,9 @@ import com.example.auctionweb.dto.WebSocketMessage;
 import com.example.auctionweb.entity.Auction;
 import com.example.auctionweb.entity.BidHistory;
 import com.example.auctionweb.entity.User;
-import com.example.auctionweb.service.IAuctionService;
-import com.example.auctionweb.service.IBidHistoryService;
-import com.example.auctionweb.service.IUserService;
+import com.example.auctionweb.service.interfaces.IAuctionService;
+import com.example.auctionweb.service.interfaces.IBidHistoryService;
+import com.example.auctionweb.service.interfaces.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.math.BigDecimal;
 
 @Component
 public class BidWebSocketHandler extends TextWebSocketHandler {

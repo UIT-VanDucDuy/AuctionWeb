@@ -32,34 +32,53 @@ public class RegisterController {
     @PostMapping("/register")
     public String register(@RequestParam String username,
                           @RequestParam String password,
+                          @RequestParam(required = false) String confirmPassword,
                           @RequestParam String name,
                           @RequestParam(required = false) String email,
                           @RequestParam(required = false) String phone,
                           RedirectAttributes redirectAttributes) {
         try {
+            // Kiểm tra username hợp lệ
+            if (username == null || username.trim().length() < 3) {
+                redirectAttributes.addFlashAttribute("error", "Tên đăng nhập phải có ít nhất 3 ký tự!");
+                return "redirect:/register";
+            }
+
             // Kiểm tra username đã tồn tại
             if (accountRepository.findByUsername(username) != null) {
-                redirectAttributes.addFlashAttribute("error", "Username đã tồn tại!");
+                redirectAttributes.addFlashAttribute("error", "Username đã tồn tại! Vui lòng chọn username khác.");
+                return "redirect:/register";
+            }
+
+            // Kiểm tra password
+            if (password == null || password.length() < 6) {
+                redirectAttributes.addFlashAttribute("error", "Mật khẩu phải có ít nhất 6 ký tự!");
+                return "redirect:/register";
+            }
+
+            // Kiểm tra xác nhận mật khẩu
+            if (confirmPassword != null && !password.equals(confirmPassword)) {
+                redirectAttributes.addFlashAttribute("error", "Mật khẩu xác nhận không khớp!");
                 return "redirect:/register";
             }
 
             // Tạo Account với password mã hóa
             Account account = new Account();
-            account.setUsername(username);
-            account.setPassword(passwordEncoder.encode(password)); // Mã hóa password
-            account.setRole(Account.Role.USER);
-            account.setActive(true);
-            accountRepository.save(account);
+            account.setUsername(username.trim());
+            account.setPassword(passwordEncoder.encode(password)); // Mã hóa password bằng BCrypt
+            account.setRole(Account.Role.USER); // Mặc định là USER
+            account.setActive(true); // Tự động kích hoạt
+            Account savedAccount = accountRepository.save(account);
 
             // Tạo User
             User user = new User();
-            user.setName(name);
-            user.setEmail(email);
-            user.setPhone(phone);
-            user.setAccount(account);
+            user.setName(name != null ? name.trim() : null);
+            user.setEmail(email != null && !email.trim().isEmpty() ? email.trim() : null);
+            user.setPhone(phone != null && !phone.trim().isEmpty() ? phone.trim() : null);
+            user.setAccount(savedAccount);
             userRepository.save(user);
 
-            redirectAttributes.addFlashAttribute("success", "Đăng ký thành công! Vui lòng đăng nhập.");
+            redirectAttributes.addFlashAttribute("success", "Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
             return "redirect:/login";
         } catch (Exception e) {
             e.printStackTrace();

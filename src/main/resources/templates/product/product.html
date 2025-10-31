@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,8 +8,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
-  <title>Tìm kiếm</title>
-  {% load static %}
+  <title>Document</title>
+  <!--<link rel="stylesheet" href="{% static 'css/Lienhe.css'%}" />-->
+
 </head>
 
 <body>
@@ -32,10 +35,10 @@
     {% endif %}
   </div>
   <div class="header_item2">
-    <a href="/"><img style="width: 350px;" src="{% static 'image/logoLacViet.png'%}" alt=""></a>
+    <a href="/static"><img style="width: 350px;" src="{%static 'image/logoLacViet.png'%}" alt=""></a>
     <div class="form">
-      <form action="/Search/" method="POST">
-        {% csrf_token %}
+      <form action="/Search/" method='POST'>
+        {%csrf_token%}
         <input class="input1" list="types" name="types" placeholder=" Danh mục">
         <datalist id="types">
           <option value="Hàng hiệu">
@@ -43,15 +46,12 @@
           <option value="Phương tiện xe cộ">
           <option value="Bất động sản - Quyền sử dụng đất">
           <option value="Tài sản thanh lý">
-          <option value="Khác">
-
         </datalist>
         <input class="input2" type="text" id="searched" name="searched" placeholder="Tìm kiếm...">
         <button><i class="fa-solid fa-magnifying-glass"></i></button>
       </form>
     </div>
   </div>
-
   <div class="header_item3">
     &nbsp;
     <nav role="navigation" class="primary-navigation">
@@ -66,6 +66,8 @@
         </ul>
       </li>
     </nav>
+
+
     <form action="/Search/" method="POST">
       {%csrf_token%}
       <input type="hidden" list="types" name="types">
@@ -91,80 +93,63 @@
 </div>
 <div style="padding: 10px;">
   <a style="color: gray;" href="/Auction">Trang chủ/</a>
-  <a style="color: gray;" href="/Search"> Tìm kiếm</a>
-</div>
-<div style="font-size: 18px; padding-left: 3ch;">
-  Kết quả tìm kiếm từ khóa: {{searched}}
+  <a style="color: gray;" href="/Lienhe"> Đăng nhập</a>
 </div>
 <div class="main1">
-  <div class="gird-container">
-    <div class="Loc" style="grid-row: 1/9;">
-      <p>Lọc theo giá</p>
-      <form action="">
-        <div>Từ :</div>
-        <div>
-          <div> 10.000.000</div>
-          <input type="range" min="10000000" max="1000000000" value="10000000">
-          <div> 1.000.000.000</div>
-        </div>
-        <div>Đến :</div>
-        <div>
-          <div> 1.000.000.000</div>
-          <input type="range" max="500000000000" min="1000000000" value="1000000000">
-          <div> 50.000.000.000</div>
-        </div>
-
-        <button>Lọc</button>
-      </form>
-    </div>
-    {%if goods_list %}
-    {% for goods in goods_list|slice:"0:12" %}
-    <div class="TinTuc">
-      <a href="/Goods/{{goods.id}}"><img src="{{goods.image.url}}" alt=""></a>
-      <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
-      <p> </p>
-      <div>Giá khởi điểm:</div>
-      <span style="font-size: 20px;">{{goods.price}} VND</span>
-      <div>Thời gian kết thúc: {{goods.endingdate}}</div>
-    </div>
-    {% endfor %}
-    {%else%}
-    <h2>Không có kết quả nào được tìm thấy... </h2>
-    <style>
-      h2 {
-        grid-column: 2/5;
-        display: flex;
-        flex-direction: column;
-        text-align: center;
-        font-weight: 400;
-      }
-    </style>
-    {%endif%}
-    {%if leng > 12%}
-    <div class="radio" style="grid-column: 2/3;">
-      <a href="/Search"><i class="fa-solid fa-arrow-left"></i></a>
-      <a href="#page1"> 1 </a>
-      <a href="#page1"> 2 </a>
-      <div style="padding-left: 10px;padding-right: 10px;"> ... </div>
-      <a href="#page1"> 3 </a>
-      <a href="#page1"> 4 </a>
-      <a href="/Search"><i class="fa-solid fa-arrow-right"></i></a>
-    </div>
-    {%endif%}
-  </div>
+  <form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <fieldset>
+      <legend style="font-size:18px ;">Liên hệ bán tài sản:</legend>
+      {% if user.username %}
+      <div style="grid-column: 1/7;"> Hãy nhập đầy đủ thông tin cá nhân và thông tin chi tiết tài sản bạn muốn
+        bán vào bên dưới:</div>
+      <input style="grid-column: 1/7;" type="text" name="name" placeholder="Tên tài sản">
+      <input style="grid-column: 1/4;" type="text"
+             value="{{user_profile.firstname}} {{user_profile.lastname}}">
+      <input style="grid-column: 4/7;" type="text" value="{{user_profile.phonenumber}}">
+      {% else%}
+      <div style="grid-column: 1/7;color: #b41712;"> Hãy đăng nhập trước khi đăng bán tài sản:</div>
+      <input style="grid-column: 1/4;" type="text" name="name" placeholder="Tên tài sản">
+      <input style="grid-column: 1/4;" type="text" placeholder="Họ và tên">
+      <input style="grid-column: 4/7;" type="text" placeholder="Số điện thoại">
+      {% endif %}
+      <input style="grid-column: 1/4;" list="browsers" name="browser" placeholder="Loại tài sản">
+      <datalist id="browsers">
+        <option value="Hàng hiệu">
+        <option value="Sưu tầm - Nghệ thuật">
+        <option value="Phương tiện xe cộ">
+        <option value="Bất động sản - Quyền sử dụng đất">
+        <option value="Tài sản thanh lý">
+        <option value="Khác">
+      </datalist>
+      <input style="grid-column: 4/7;" type="text" name="price" placeholder="Giá khởi điểm">
+      <input style="grid-column: 1/7;" type="text" name="diachi" placeholder="Địa chỉ xem tài sản">
+      <input style="grid-column: 1/7;" type="text" name="time" placeholder="Thời gian xem tài sản">
+      <label style="grid-column: 1/7;">Ngày kết thúc đấu giá:</label>
+      <input style="grid-column: 1/8;" type="date" name="endingdate" max="2023-12-31">
+      <label style="grid-column: 1/3;">Hình ảnh của sản phẩm: </label>
+      <div style="grid-column: 3/7;">
+        <input type="file" id="image" name="image">
+        <div class="display_image"></div>
+      </div>
+      <textarea style="grid-column: 1/7;" name="bio" rows="10" cols="30"
+                placeholder="Mô tả của sản phẩm"></textarea>
+      <button style="grid-column:5/6;padding:0.5em;" onclick="singup">Gửi thông tin yêu cầu bán tài
+        sản</button>
+    </fieldset>
+  </form>
 </div>
 <div class="timkiem">
   <div>Nhanh tay tìm kiếm vật phẩm bạn cần nào !</div>
   <div></div>
-  <form action="/Search/" method="POST">
-    {% csrf_token %}
+  <form action="/Search/">
     <input type="text" id="searched" name="searched" placeholder="Tìm kiếm...">
     <button><i class="fa-solid fa-magnifying-glass"></i></button>
   </form>
 </div>
 <div class="main4">
   <div style="display:flex;flex-direction:column">
-    <img style="width: 350px;" src="{% static 'image/logoLacViet.png'%}" alt="">
+    <img style="width: 350px;" src="{%static 'image/logoLacViet.png'%}" alt="">
 
     Đăng ký email để nhận tin tức mới nhất từ chúng tôi
   </div>
@@ -203,6 +188,20 @@
   <div></div>
   <div>Công ty đấu giá ****</div>
 </div>
+<script>
+  const imagefront = document.querySelector("#image");
+
+  image.addEventListener("change", function () {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      let uploaded_image = reader.result;
+      const displayImage = document.querySelector(".display_image")
+      displayImage.style.backgroundImage = `url(${uploaded_image})`
+    });
+    reader.readAsDataURL(this.files[0]);
+  })
+
+</script>
 <style>
   .but1 {
     background-color: transparent;
@@ -376,104 +375,55 @@
     height: 1cm;
   }
 
-  /*----------------main---------*/
+  /*---------------main1-------------------*/
   .main1 {
-    padding-top: 2ch;
-  }
-
-  .gird-container {
-    display: grid;
-    grid-template-columns: 24% 24% 24% 24%;
-    gap: 1em;
-  }
-
-  .TinTuc {
+    padding-top: 4ch;
+    padding-bottom: 4ch;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #ffffff;
+    background-color: rgb(245, 245, 245);
   }
 
-  .TinTuc>div {
+  .main1>form {
+    width: 80%;
     background-color: white;
   }
 
-  .TinTuc a {
-    font-size: 20px;
-    font-weight: bolder;
-  }
-
-  .TinTuc a img {
-    max-width: 100%;
-    height: 13em;
-  }
-
-  .Loc {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .Loc p {
-    font-size: 20px;
-    text-align: center;
-    color: #b41712;
-    border-style: hidden hidden solid hidden;
-    border-color: #e7e6e6;
-    border-width: 1px;
-  }
-
-  .Loc form div {
+  .main1>form>fieldset {
     display: grid;
-    grid-template-columns: 31% 38% 32%;
-    padding: 5px;
-    font-size: 18px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    gap: 3em;
+    padding: 3em;
+    background-color: white;
   }
 
-  .Loc form button {
-    font-size: 16px;
-    color: #ffffff;
-    background-color: #b41712;
+  .main1>form>fieldset>input {
+    padding: 0.5em;
     border: none;
-    height: 1.2cm;
-    width: 2cm;
-    border-radius: 20px;
+    border-bottom: 1px solid #686666;
+    background-color: white;
   }
 
-  .Loc form button:hover {
+  .main1 form fieldset button {
+    width: 8cm;
+    height: 1cm;
+    border-radius: 20px;
+    border: none;
+    background-color: #b41712;
+    color: #ffffff;
     font-size: 16px;
+  }
+
+  .main1 form fieldset button:hover {
+    width: 8cm;
+    height: 1cm;
+    border-radius: 20px;
+    border: none;
+    background-color: #ffffff;
     color: #b41712;
-    background-color: #ffffff;
-    border: none;
-    height: 1.2cm;
-    width: 2cm;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  }
-
-  .radio {
-    padding-top: 5ch;
-    padding-bottom: 5ch;
-    display: flex;
-    flex-direction: row;
-  }
-
-  .radio a {
-    background-color: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     font-size: 16px;
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-
-  .radio a:hover {
-    background-color: #b41712;
-    color: #ffffff;
-    border-radius: 20px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    font-size: 16px;
-    padding-left: 5px;
-    padding-right: 5px;
   }
 
   /*------------main4------------*/
@@ -506,7 +456,25 @@
     font-size: 20px;
   }
 
-  /*-------------dropdowm-----------*/
+  .display_image {
+    border: 1px solid #000000;
+    height: 211px;
+    width: 375px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  .display_image {
+    border: 1px solid #000000;
+    height: 422px;
+    width: 700px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
+
+  /*---------------dropdown-----------------*/
   .dropdown {
     position: relative;
     display: inline-block;

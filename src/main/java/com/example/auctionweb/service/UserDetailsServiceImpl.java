@@ -25,12 +25,24 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             System.out.println("User not found! " + userName);
             throw new UsernameNotFoundException("User " + userName + " was not found in the database");
         }
-        System.out.println("Found User: " + account);
+        
+        // Kiểm tra account có active không
+        if (account.getActive() == null || !account.getActive()) {
+            System.out.println("User account is INACTIVE: " + userName);
+            throw new UsernameNotFoundException("User " + userName + " account is inactive");
+        }
+        
+        System.out.println("Found User: " + account.getUsername() + " | Role: " + account.getRole() + " | Active: " + account.getActive());
+        
         // Convert Role enum to String
         GrantedAuthority authority = new SimpleGrantedAuthority(account.getRole().name());
         return new User(
                 account.getUsername(),
                 account.getPassword(),
+                account.getActive(), // enabled
+                true, // accountNonExpired
+                true, // credentialsNonExpired
+                true, // accountNonLocked
                 Collections.singleton(authority)
         );
     }

@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 public class UserService implements IUserService {
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private AccountService accountService;
 
     @Override
     public User findUserById(int id) {

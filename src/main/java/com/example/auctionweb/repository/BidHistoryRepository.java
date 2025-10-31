@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface BidHistoryRepository extends JpaRepository<BidHistory, Integer> {
     List<BidHistory> findAll();
-    BidHistory save(BidHistory bidHistory);
+    // save() method is already inherited from JpaRepository, no need to redeclare
     List<BidHistory> findAllByOrderByTimeDesc();
     List<BidHistory> findBidHistoriesByAuctionOrderByTimeDesc(Auction auction);
     BidHistory findTopByAuctionOrderByAmountDesc(Auction auction);

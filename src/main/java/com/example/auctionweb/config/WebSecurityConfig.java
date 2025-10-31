@@ -36,7 +36,9 @@ public class WebSecurityConfig {
     // xác thực
     @Bean
     public AuthenticationProvider authenticationProvider() {
+        // Use constructor injection to avoid deprecation warnings in Spring Security 6.x
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        // Set using methods (still works, just deprecated warning)
         authenticationProvider.setUserDetailsService(userDetailsService);
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
@@ -93,14 +95,18 @@ public class WebSecurityConfig {
                 // (Nếu bạn muốn /home và /auction là public, hãy chuyển chúng lên mục số 2)
                 .anyRequest().authenticated()
         );
+        // Inject AuthenticationProvider vào SecurityFilterChain
+        http.authenticationProvider(authenticationProvider());
+        
         // cấu hình form login
         http.formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/process-login") // đường dẫn trùng với url form login
-                .defaultSuccessUrl("/home")//
-                .failureUrl("/login")
+                .defaultSuccessUrl("/home", true) // force redirect
+                .failureUrl("/login?error=true") // thêm error parameter
                 .usernameParameter("username")//trùng với tên trong form đăng nhập
                 .passwordParameter("password")// trung với tên trong form đăng nhập
+                .permitAll()
         );
         // cấu hình logout
         http.logout(form -> form.logoutUrl("/logout").logoutSuccessUrl("/home"));

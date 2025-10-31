@@ -1,6 +1,6 @@
 package com.example.auctionweb.controller;
 import com.example.auctionweb.entity.BidHistory;
-import com.example.auctionweb.service.IBidHistoryService;
+import com.example.auctionweb.service.interfaces.IBidHistoryService;
 import com.example.auctionweb.websocket.BidWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -2,13 +2,11 @@ package com.example.auctionweb.dto;
 
 import com.example.auctionweb.entity.Auction;
 import com.example.auctionweb.entity.BidHistory;
-import com.example.auctionweb.entity.Product;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Setter
