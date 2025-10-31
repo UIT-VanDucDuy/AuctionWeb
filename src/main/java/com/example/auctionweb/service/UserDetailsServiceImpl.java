@@ -26,7 +26,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("User " + userName + " was not found in the database");
         }
         System.out.println("Found User: " + account);
-        GrantedAuthority authority = new SimpleGrantedAuthority(account.getRole());
+        // Convert Role enum to String
+        GrantedAuthority authority = new SimpleGrantedAuthority(account.getRole().name());
         return new User(
                 account.getUsername(),
                 account.getPassword(),

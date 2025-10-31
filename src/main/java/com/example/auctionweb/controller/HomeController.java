@@ -2,9 +2,9 @@ package com.example.auctionweb.controller;
 
 import com.example.auctionweb.entity.Account;
 import com.example.auctionweb.entity.User;
-import com.example.auctionweb.service.interfaces.IAccountService;
-import com.example.auctionweb.service.interfaces.IUserService;
-
+import com.example.auctionweb.service.IAccountService;
+import com.example.auctionweb.service.IBidHistoryService;
+import com.example.auctionweb.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -17,16 +17,24 @@ public class HomeController {
     private IUserService userService;
     @Autowired
     private IAccountService accountService;
-    @GetMapping("/home")
+    @Autowired
+    private IBidHistoryService bidHistoryService;
+    
+    @GetMapping(value = {"/", "/home"})
     public String showHome(Model model, Authentication authentication){
-        String userName=null;
-        if (authentication!=null){
+        // Lấy thông tin user nếu đã login
+        String userName = null;
+        if (authentication != null){
             userName = authentication.getName();
+            Account account = accountService.getAccount(userName);
+            User user = userService.findUserByAccount(account);
+            model.addAttribute("user", user);
         }
-        Account account = accountService.getAccount(userName);
-        User user = userService.findUserByAccount(account);
-        model.addAttribute("user", user);
-        return "home";
+        
+        // Thêm bid history list
+        model.addAttribute("bidHistoryList", bidHistoryService.findAll());
+        
+        return "home1";
     }
 
 }

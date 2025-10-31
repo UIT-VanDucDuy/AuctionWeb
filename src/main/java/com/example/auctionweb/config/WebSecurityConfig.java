@@ -81,7 +81,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/vendor/**").permitAll()
 
                 // 2. Các trang công khai (Không cần đăng nhập)
-                .requestMatchers("/home","/login","/403").permitAll()
+                .requestMatchers("/", "/home", "/login", "/register", "/create-admin-account", "/reset-admin-password", "/create-test-user", "/test/**", "/debug/**", "/403").permitAll()
 
                 // 3. Các trang của ADMIN (Quy tắc cụ thể)
                 .requestMatchers("/admin", "/admin/**").hasAuthority("ADMIN") // Dùng hasAuthority

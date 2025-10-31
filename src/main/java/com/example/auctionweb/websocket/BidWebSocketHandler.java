@@ -5,9 +5,9 @@ import com.example.auctionweb.dto.WebSocketMessage;
 import com.example.auctionweb.entity.Auction;
 import com.example.auctionweb.entity.BidHistory;
 import com.example.auctionweb.entity.User;
-import com.example.auctionweb.service.interfaces.IAuctionService;
-import com.example.auctionweb.service.interfaces.IBidHistoryService;
-import com.example.auctionweb.service.interfaces.IUserService;
+import com.example.auctionweb.service.IAuctionService;
+import com.example.auctionweb.service.IBidHistoryService;
+import com.example.auctionweb.service.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +20,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.math.BigDecimal;
 
 @Component
 public class BidWebSocketHandler extends TextWebSocketHandler {
@@ -110,6 +111,7 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
     public void broadcastFinishAuction(Auction auction) throws Exception {
         WebSocketMessage message = new WebSocketMessage("AUCTION_END", auction);
         message.setAuction(auction);
+        message.setAuctionId(auction.getId());
         broadcastMessage(message);
     }
 
@@ -133,6 +135,7 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
         logger.info("Broadcasted message to {} clients", sentCount);
     }
 
+    // 🟢 Method để gửi message cho một session cụ thể
     public void sendMessageToSession(WebSocketSession session, WebSocketMessage message) throws Exception {
         if (session.isOpen()) {
             String json = objectMapper.writeValueAsString(message);
@@ -140,6 +143,7 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
+    // 🟢 Method để lấy số lượng clients đang kết nối
     public int getConnectedClientsCount() {
         return sessions.size();
     }

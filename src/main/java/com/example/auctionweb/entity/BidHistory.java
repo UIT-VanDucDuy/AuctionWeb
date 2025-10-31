@@ -32,14 +32,64 @@ public class BidHistory {
     private LocalDateTime time;
     @Column(name = "winner_flag")
     private Boolean winnerFlag;
+
     public BidHistory() {
         this.time = LocalDateTime.now();
     }
 
-    public BidHistory(Auction auction, User user, BigDecimal  amount) {
+    public BidHistory(Auction auction, User user, BigDecimal amount) {
         this.auction = auction;
         this.user = user;
         this.amount = amount;
         this.time = LocalDateTime.now();
+        this.winnerFlag = false;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Auction getAuction() {
+        return auction;
+    }
+
+    public void setAuction(Auction auction) {
+        this.auction = auction;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public LocalDateTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalDateTime time) {
+        this.time = time;
+    }
+
+    public Boolean getWinnerFlag() {
+        return winnerFlag;
+    }
+
+    public void setWinnerFlag(Boolean winnerFlag) {
+        this.winnerFlag = winnerFlag;
     }
 }

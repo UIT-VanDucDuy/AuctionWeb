@@ -15,6 +15,7 @@ public class WebSocketMessage {
     private Object data;
     private String message;
     private Auction auction;
+    private Integer auctionId; // ID của auction
     private String timestamp;
 
     public WebSocketMessage(String type, Object data) {
