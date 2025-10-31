@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface AuctionRepository extends JpaRepository<Auction, Integer> {
     List<Auction> findAllByStatusAndEndTimeBefore(String status, LocalDateTime endTime);
+    List<Auction> findAllByStatusAndStartTimeBefore(String status, LocalDateTime startTime);
 }
 
 

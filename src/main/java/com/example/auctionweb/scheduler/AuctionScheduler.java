@@ -1,6 +1,6 @@
 package com.example.auctionweb.scheduler;
 
-import com.example.auctionweb.service.IAuctionService;
+import com.example.auctionweb.service.interfaces.IAuctionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,4 +16,10 @@ public class AuctionScheduler {
     public void checkAuctionEndTimes() throws Exception {
         auctionService.finishExpiredAuctions();
     }
+
+    @Scheduled(fixedRate = 1000) // mỗi 1 giây
+    public void checkAuctionStartTimes() {
+        auctionService.startAuction();
+    }
+
 }

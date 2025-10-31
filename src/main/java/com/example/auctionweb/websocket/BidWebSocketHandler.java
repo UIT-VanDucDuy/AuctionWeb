@@ -111,7 +111,7 @@ public class BidWebSocketHandler extends TextWebSocketHandler {
     public void broadcastFinishAuction(Auction auction) throws Exception {
         WebSocketMessage message = new WebSocketMessage("AUCTION_END", auction);
         message.setAuction(auction);
-        message.setAuctionId(bid.getAuction().getId());
+        message.setAuctionId(auction.getId());
         broadcastMessage(message);
     }
 

@@ -1,7 +1,11 @@
 package com.example.auctionweb.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "account")
 public class Account {
@@ -19,9 +23,8 @@ public class Account {
     @Column(length = 255, nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
     @Column(length = 30)
-    private Role role;
+    private String role;
 
     @Column(name = "active")
     private Boolean active = true;
@@ -29,43 +32,4 @@ public class Account {
     public Account() {
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
 }

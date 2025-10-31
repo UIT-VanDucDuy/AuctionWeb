@@ -29,12 +29,14 @@ public class ListBidController{
     @PostMapping("")
     public String save(@ModelAttribute("bidHistory") BidHistory bidHistory,
                        RedirectAttributes redirectAttributes) {
-        boolean success = bidHistoryService.add(bidHistory);
+        // Sử dụng save() thay vì add()
+        BidHistory savedBid = bidHistoryService.save(bidHistory);
+        boolean success = savedBid != null && savedBid.getId() != null;
 
         if (success) {
             try {
                 // ✅ broadcast chỉ khi lưu thành công
-                bidWebSocketHandler.broadcastNewBid(bidHistory);
+                bidWebSocketHandler.broadcastNewBid(savedBid);
             } catch (Exception e) {
                 e.printStackTrace();
             }
