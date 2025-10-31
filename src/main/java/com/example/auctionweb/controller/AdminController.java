@@ -5,6 +5,7 @@ import com.example.auctionweb.entity.AuctionRegistration.RegistrationStatus;
 import com.example.auctionweb.entity.Product.ProductStatus;
 import com.example.auctionweb.repository.*;
 import com.example.auctionweb.service.IProductService;
+import com.example.auctionweb.service.ProductService;
 import com.example.auctionweb.websocket.NotificationWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,7 @@ public class AdminController {
 
     @Autowired
     private NotificationWebSocketHandler notificationWs;
+
     @Autowired
     private IProductService productService;
 
@@ -319,7 +321,6 @@ public class AdminController {
             existingProduct.setName(productUpdate.getName());
             existingProduct.setDescription(productUpdate.getDescription());
             existingProduct.setStartingPrice(productUpdate.getStartingPrice());
-            existingProduct.setCurrentPrice(productUpdate.getCurrentPrice());
             existingProduct.setImageUrl(productUpdate.getImageUrl());
             existingProduct.setCategory(category);
             existingProduct.setStatus(productUpdate.getStatus());

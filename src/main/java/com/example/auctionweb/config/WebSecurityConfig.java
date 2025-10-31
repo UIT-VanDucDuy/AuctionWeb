@@ -100,7 +100,7 @@ public class WebSecurityConfig {
         );
         // Inject AuthenticationProvider vào SecurityFilterChain
         http.authenticationProvider(authenticationProvider());
-        
+
         // cấu hình form login
         http.formLogin(form -> form
                 .loginPage("/login")

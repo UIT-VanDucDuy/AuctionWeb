@@ -39,4 +39,6 @@ public interface IProductService {
 
     // DELETE
     void deleteCategory(Integer categoryId);
+    Product findById(int id);
+    List<Product> findAll();
 }

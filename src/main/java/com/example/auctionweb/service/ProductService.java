@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProductService {
+public class ProductService implements IProductService {
 
     @Autowired
     private ProductRepository productRepository;
@@ -26,19 +26,51 @@ public class ProductService {
     @Autowired
     private UserRepository userRepository;
 
-    // ========== CHO ADMIN ==========
+    // ========== CHO NGƯỜI DÙNG ==========
+    @Override
+    public List<Product> searchProducts(String name, Integer categoryId) {
+        if (name != null && !name.isEmpty() && categoryId != null) {
+            Category category = categoryRepository.findById(categoryId).orElse(null);
+            return productRepository.findByNameContainingIgnoreCaseAndCategoryAndStatus(name, category, Product.ProductStatus.APPROVED);
+        } else if (name != null && !name.isEmpty()) {
+            return productRepository.findByNameContainingIgnoreCaseAndStatus(name, Product.ProductStatus.APPROVED);
+        } else if (categoryId != null) {
+            Category category = categoryRepository.findById(categoryId).orElse(null);
+            return productRepository.findByCategoryAndStatus(category, Product.ProductStatus.APPROVED);
+        } else {
+            return productRepository.findByStatus(Product.ProductStatus.APPROVED);
+        }
+    }
 
-    // Lấy tất cả sản phẩm (sắp xếp mới nhất)
+    @Override
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll();
+    }
+
+    // ========== CRUD SẢN PHẨM ==========
+    // CREATE
+    @Override
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    // READ
+    @Override
     public List<Product> getAllProductsForAdmin() {
         return productRepository.findAllByOrderByRequestedAtDesc();
     }
 
-    // Lấy sản phẩm theo trạng thái (sắp xếp mới nhất)
+    @Override
+    public Product getProductById(Integer id) {
+        return productRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public List<Product> getProductsByStatus(Product.ProductStatus status) {
         return productRepository.findByStatusOrderByRequestedAtDesc(status);
     }
 
-    // Lấy sản phẩm theo danh mục
+    @Override
     public List<Product> getProductsByCategory(Integer categoryId) {
         Category category = categoryRepository.findById(categoryId).orElse(null);
         if (category != null) {
@@ -47,12 +79,69 @@ public class ProductService {
         return List.of();
     }
 
-    // Lấy sản phẩm theo người bán
+    @Override
     public List<Product> getProductsBySeller(Integer sellerId) {
         return productRepository.findBySellerId(sellerId);
     }
 
-    // ========== CHO NGƯỜI DÙNG ==========
+    // UPDATE
+    @Override
+    public Product updateProductStatus(Integer productId, Product.ProductStatus status) {
+        Product product = productRepository.findById(productId).orElse(null);
+        if (product == null) {
+            throw new RuntimeException("Không tìm thấy sản phẩm");
+        }
+        product.setStatus(status);
+        return productRepository.save(product);
+    }
+
+    // DELETE
+    @Override
+    public void deleteProduct(Integer productId) {
+        productRepository.deleteById(productId);
+    }
+
+    // ========== CRUD DANH MỤC ==========
+    // CREATE
+    @Override
+    public Category createCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    // READ
+    @Override
+    public Category getCategoryById(Integer id) {
+        return categoryRepository.findById(id).orElse(null);
+    }
+
+    // UPDATE
+    @Override
+    public Category updateCategory(Integer categoryId, Category category) {
+        Category existingCategory = categoryRepository.findById(categoryId).orElse(null);
+        if (existingCategory == null) {
+            throw new RuntimeException("Không tìm thấy danh mục");
+        }
+        existingCategory.setName(category.getName());
+        return categoryRepository.save(existingCategory);
+    }
+
+    // DELETE
+    @Override
+    public void deleteCategory(Integer categoryId) {
+        categoryRepository.deleteById(categoryId);
+    }
+
+    @Override
+    public Product findById(int id) {
+        return productRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Product> findAll() {
+        return productRepository.findAll();
+    }
+
+    // ========== CÁC METHOD BỔ SUNG ==========
 
     // Tìm kiếm sản phẩm đã duyệt theo tên
     public List<Product> searchApprovedProductsByName(String name) {
@@ -80,12 +169,6 @@ public class ProductService {
     // Lấy tất cả sản phẩm đã duyệt
     public List<Product> getApprovedProducts() {
         return productRepository.findByStatus(Product.ProductStatus.APPROVED);
-    }
-
-    // ========== CRUD CHUNG ==========
-
-    public Product getProductById(Integer id) {
-        return productRepository.findById(id).orElse(null);
     }
 
     public Product createProduct(ProductRequestDTO productDTO) {
@@ -127,19 +210,6 @@ public class ProductService {
         }
 
         return productRepository.save(existingProduct);
-    }
-
-    public void deleteProduct(Integer id) {
-        productRepository.deleteById(id);
-    }
-
-    public Product updateProductStatus(Integer id, Product.ProductStatus status) {
-        Product product = productRepository.findById(id).orElse(null);
-        if (product == null) {
-            throw new RuntimeException("Không tìm thấy sản phẩm");
-        }
-        product.setStatus(status);
-        return productRepository.save(product);
     }
 
     // Đếm sản phẩm theo trạng thái
