@@ -7,7 +7,12 @@ import com.example.auctionweb.service.interfaces.IBidHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Service
 public class BidHistoryService implements IBidHistoryService {
     @Autowired
@@ -29,6 +34,24 @@ public class BidHistoryService implements IBidHistoryService {
     @Override
     public BidHistory findTopByAuction(Auction auction) {
         return bidHistoryRepository.findTopByAuctionOrderByAmountDesc(auction);
+    }
+    public BigDecimal getHighestBidByProductId(Integer productId) {
+        return bidHistoryRepository.findMaxAmountByProductId(productId);
+    }
+
+
+    public Map<Integer, BigDecimal> getHighestBidMapByProductIds(List<Integer> productIds) {
+        if (productIds == null || productIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        List<Object[]> rows = bidHistoryRepository.findMaxAmountByProductIds(productIds);
+        Map<Integer, BigDecimal> result = new HashMap<>();
+        for (Object[] r : rows) {
+            Integer pid = (Integer) r[0];
+            BigDecimal max = (BigDecimal) r[1];
+            result.put(pid, max);
+        }
+        return result;
     }
 
 }

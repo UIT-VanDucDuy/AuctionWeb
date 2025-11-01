@@ -19,17 +19,21 @@ public class ProductRequestDTO {
     @Digits(integer = 15, fraction = 2, message = "Giá khởi điểm không hợp lệ")
     private BigDecimal startingPrice;
 
+    // 🆕 Giá cao nhất
+    @DecimalMin(value = "0.0", inclusive = true, message = "Giá cao nhất phải >= 0")
+    @Digits(integer = 15, fraction = 2, message = "Giá cao nhất không hợp lệ")
+    private BigDecimal highestPrice;
+
     @NotNull(message = "Danh mục không được để trống")
     private Integer categoryId;
 
-    @Pattern(regexp = "^(https?://.*\\.(?:png|jpg|jpeg|gif|webp))?$",
-            message = "URL hình ảnh không hợp lệ")
     private String imageUrl;
 
     public ProductRequestDTO() {
     }
 
-    // GETTERS AND SETTERS
+    // ======= GETTERS & SETTERS =======
+
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
@@ -41,6 +45,9 @@ public class ProductRequestDTO {
 
     public BigDecimal getStartingPrice() { return startingPrice; }
     public void setStartingPrice(BigDecimal startingPrice) { this.startingPrice = startingPrice; }
+
+    public BigDecimal getHighestPrice() { return highestPrice; }
+    public void setHighestPrice(BigDecimal highestPrice) { this.highestPrice = highestPrice; }
 
     public Integer getCategoryId() { return categoryId; }
     public void setCategoryId(Integer categoryId) { this.categoryId = categoryId; }

@@ -7,4 +7,5 @@ import java.util.List;
 public interface IBidHistoryRepository {
     List<BidHistory> findAll();
     boolean add(BidHistory bidHistory);
+
 }

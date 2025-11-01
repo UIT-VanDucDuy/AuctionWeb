@@ -10,6 +10,7 @@ import com.example.auctionweb.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -172,6 +173,9 @@ public class ProductService implements IProductService {
     }
 
     public Product createProduct(ProductRequestDTO productDTO) {
+        // Validate highestPrice từ DTO (nếu có)
+        validateHighestPrice(productDTO.getStartingPrice(), productDTO.getHighestPrice());
+
         Product product = new Product();
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
@@ -180,24 +184,30 @@ public class ProductService implements IProductService {
         product.setRequestedAt(LocalDateTime.now());
         product.setStatus(Product.ProductStatus.PENDING);
 
-        // Set category
         if (productDTO.getCategoryId() != null) {
             Category category = categoryRepository.findById(productDTO.getCategoryId()).orElse(null);
             product.setCategory(category);
         }
 
-        // Set default seller (có thể điều chỉnh theo logic đăng nhập)
         Optional<User> defaultSeller = userRepository.findById(1);
         defaultSeller.ifPresent(product::setSeller);
 
+        // KHÔNG set highestPrice vào entity vì bạn không muốn sửa entity
+        // Nếu sau này có field trong entity, chỉ cần mở comment:
+        // product.setHighestPrice(productDTO.getHighestPrice());
+
         return productRepository.save(product);
     }
+
 
     public Product updateProduct(Integer id, ProductRequestDTO productDTO) {
         Product existingProduct = productRepository.findById(id).orElse(null);
         if (existingProduct == null) {
             throw new RuntimeException("Không tìm thấy sản phẩm");
         }
+
+        // Validate highestPrice từ DTO (nếu có)
+        validateHighestPrice(productDTO.getStartingPrice(), productDTO.getHighestPrice());
 
         existingProduct.setName(productDTO.getName());
         existingProduct.setDescription(productDTO.getDescription());
@@ -209,8 +219,20 @@ public class ProductService implements IProductService {
             existingProduct.setCategory(category);
         }
 
+        // KHÔNG set highestPrice vào entity (đúng yêu cầu)
+        // Nếu sau này bổ sung field trong entity:
+        // existingProduct.setHighestPrice(productDTO.getHighestPrice());
+
         return productRepository.save(existingProduct);
     }
+    private void validateHighestPrice(BigDecimal startingPrice, BigDecimal highestPrice) {
+        if (startingPrice == null || highestPrice == null) return; // cho phép bỏ trống
+        if (highestPrice.compareTo(startingPrice) < 0) {
+            throw new IllegalArgumentException("Giá cao nhất không được nhỏ hơn giá khởi điểm!");
+        }
+    }
+
+
 
     // Đếm sản phẩm theo trạng thái
     public long countProductsByStatus(Product.ProductStatus status) {

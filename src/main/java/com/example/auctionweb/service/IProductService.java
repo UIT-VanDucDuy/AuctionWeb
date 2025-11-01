@@ -1,7 +1,10 @@
 package com.example.auctionweb.service;
 
+import com.example.auctionweb.dto.ProductRequestDTO;
 import com.example.auctionweb.entity.Product;
 import com.example.auctionweb.entity.Category;
+import jakarta.validation.Valid;
+
 import java.util.List;
 
 public interface IProductService {
@@ -41,4 +44,8 @@ public interface IProductService {
     void deleteCategory(Integer categoryId);
     Product findById(int id);
     List<Product> findAll();
+
+    Product updateProduct(Integer id,  ProductRequestDTO productDTO);
+
+    Product createProduct( ProductRequestDTO productDTO);
 }
