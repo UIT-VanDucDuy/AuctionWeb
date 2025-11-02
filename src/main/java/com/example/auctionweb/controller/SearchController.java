@@ -1,6 +1,6 @@
 package com.example.auctionweb.controller;
+
 import com.example.auctionweb.entity.Account;
-import com.example.auctionweb.entity.BidHistory;
 import com.example.auctionweb.entity.User;
 import com.example.auctionweb.service.interfaces.IAccountService;
 import com.example.auctionweb.service.interfaces.IAuctionService;
@@ -10,12 +10,15 @@ import com.example.auctionweb.websocket.BidWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 @Controller
-@RequestMapping ("/auction")
-public class AuctionController {
+@RequestMapping("/search")
+public class SearchController {
     @Autowired
     private IBidHistoryService bidHistoryService;
     @Autowired
@@ -27,19 +30,16 @@ public class AuctionController {
     @Autowired
     private IAccountService accountService;
 
-    @GetMapping("/{id}")
-    public ModelAndView loadPage(@PathVariable(name = "id") int id, Authentication authentication) {
+    @PostMapping()
+    public ModelAndView loadPage(Authentication authentication) {
         String userName=null;
         if (authentication!=null){
             userName = authentication.getName();
         }
         Account account = accountService.getAccount(userName);
         User user = userService.findUserByAccount(account);
-        ModelAndView modelAndView = new ModelAndView("auction/auction");
-        modelAndView.addObject("auctionInfo", auctionService.getAuctionInfoById(id));
+        ModelAndView modelAndView = new ModelAndView("product/search");
         modelAndView.addObject("user", user);
         return modelAndView;
     }
-
-
 }

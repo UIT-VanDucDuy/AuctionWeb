@@ -57,7 +57,7 @@
 <div class="card auth-card">
     <div class="card-body p-5">
         <div class="text-center mb-4">
-            <img class="img-fluid mb-3" src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/logoLacViet%20(2).png" 
+            <img class="img-fluid mb-3" src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/logoLacViet%20(2).png"
                  alt="Lạc Việt Auction" style="max-width: 200px;">
             <h3 class="text-danger fw-bold">Đăng ký tài khoản</h3>
         </div>
@@ -75,11 +75,11 @@
         <form th:action="@{/register}" method="POST" id="registerForm">
             <div class="mb-3">
                 <label class="form-label required-field">Tên đăng nhập</label>
-                <input type="text" 
-                       class="form-control" 
-                       name="username" 
+                <input type="text"
+                       class="form-control"
+                       name="username"
                        placeholder="Tối thiểu 3 ký tự"
-                       required 
+                       required
                        minlength="3"
                        pattern="[a-zA-Z0-9_]+"
                        title="Chỉ cho phép chữ cái, số và dấu gạch dưới">
@@ -88,21 +88,21 @@
 
             <div class="mb-3">
                 <label class="form-label required-field">Mật khẩu</label>
-                <input type="password" 
-                       class="form-control" 
-                       name="password" 
+                <input type="password"
+                       class="form-control"
+                       name="password"
                        id="password"
                        placeholder="Tối thiểu 6 ký tự"
-                       required 
+                       required
                        minlength="6">
                 <small class="form-text text-muted">Tối thiểu 6 ký tự</small>
             </div>
 
             <div class="mb-3">
                 <label class="form-label required-field">Xác nhận mật khẩu</label>
-                <input type="password" 
-                       class="form-control" 
-                       name="confirmPassword" 
+                <input type="password"
+                       class="form-control"
+                       name="confirmPassword"
                        id="confirmPassword"
                        placeholder="Nhập lại mật khẩu"
                        required>
@@ -113,44 +113,44 @@
 
             <div class="mb-3">
                 <label class="form-label required-field">Họ và tên</label>
-                <input type="text" 
-                       class="form-control" 
-                       name="name" 
+                <input type="text"
+                       class="form-control"
+                       name="name"
                        placeholder="Nhập họ và tên"
                        required>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Email</label>
-                <input type="email" 
-                       class="form-control" 
-                       name="email" 
+                <input type="email"
+                       class="form-control"
+                       name="email"
                        placeholder="example@email.com">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Số điện thoại</label>
-                <input type="text" 
-                       class="form-control" 
-                       name="phone" 
+                <input type="text"
+                       class="form-control"
+                       name="phone"
                        placeholder="0123456789"
                        pattern="[0-9]{10,11}"
                        title="Nhập số điện thoại 10-11 số">
             </div>
 
             <div class="mb-3 form-check">
-                <input type="checkbox" 
-                       class="form-check-input" 
-                       id="agreeTerms" 
+                <input type="checkbox"
+                       class="form-check-input"
+                       id="agreeTerms"
                        required>
                 <label class="form-check-label" for="agreeTerms">
-                    Tôi đồng ý với <a href="#" class="text-danger">Điều khoản sử dụng</a> và 
+                    Tôi đồng ý với <a href="#" class="text-danger">Điều khoản sử dụng</a> và
                     <a href="#" class="text-danger">Chính sách bảo mật</a>
                 </label>
             </div>
 
             <button type="submit" class="btn btn-danger w-100 mb-3">Đăng ký</button>
-            
+
             <div class="text-center">
                 <span>Đã có tài khoản?</span>
                 <a href="/login" class="text-danger text-decoration-none fw-bold"> Đăng nhập ngay</a>

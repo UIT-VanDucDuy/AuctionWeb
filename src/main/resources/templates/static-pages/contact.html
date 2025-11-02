@@ -1,506 +1,228 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
-    <title>Document</title>
-    <!--<link rel="stylesheet" href="{% static 'css/Lienhe.css'%}" />-->
-
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/header.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/auction.css}">
+    <title>Liên hệ Bán Tài sản</title>
 </head>
+<style>
+    /* Định nghĩa màu sắc chủ đạo của bạn */
+    :root {
+        --primary-color: #b41712; /* Màu đỏ đậm */
+        --text-color: #333;
+        --secondary-bg: #f5f5f5;
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--secondary-bg);
+    }
+
+    /* Override Bootstrap primary color for custom branding */
+    .bg-primary-custom {
+        background-color: var(--primary-color) !important;
+    }
+
+    .btn-primary-custom {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .btn-primary-custom:hover {
+        background-color: #9c140f;
+        border-color: #9c140f;
+    }
+
+    .text-primary-custom {
+        color: var(--primary-color) !important;
+    }
+
+    /* Header adjustments */
+    .top-bar a {
+        color: var(--text-color);
+        transition: color 0.3s;
+    }
+
+    .top-bar a:hover {
+        color: var(--primary-color);
+    }
+
+    /* Image Preview Custom Styling */
+    .display_image {
+        min-height: 200px;
+        background-color: #f0f0f0;
+        border: 2px dashed #ccc;
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #777;
+        font-style: italic;
+        border-radius: 8px;
+        margin-top: 10px;
+        width: 100%;
+    }
+</style>
 
 <body>
-    <div class="header">
-        <div class="header_item1">
-            <div>Liên hệ: 0818666***/0979334***</div>
-            <div>Email: 20521251@gm.uit.edu.vn </div>
-            {% if user.username %}
-            <div class="dropdown">
-                <span><i class="fa-regular fa-user"></i> <b>{{user.username}}</b> <i
-                        class="fa-solid fa-sort-down"></i></span>
-                <div class="dropdown-content">
-                    <a href="/User">Thông tin cá nhân</a>
-                    <a href="/User">Lịch sử giao dịch</a>
-                    <a href="/Changeyourpassword">Đổi mật khẩu</a>
-                    <a href="/Logout">Đăng xuất</a>
-                </div>
-            </div>
-            {% else %}
-            <a style="color: rgb(161, 161, 161)" href="/Signin">Đăng nhập</a>
-            <a style="color: rgb(161, 161, 161)" href="/Signup">Đăng ký</a>
-            {% endif %}
-        </div>
-        <div class="header_item2">
-            <a href="/"><img style="width: 350px;" src="{%static 'image/logoLacViet.png'%}" alt=""></a>
-            <div class="form">
-                <form action="/Search/" method='POST'>
-                    {%csrf_token%}
-                    <input class="input1" list="types" name="types" placeholder=" Danh mục">
-                    <datalist id="types">
-                        <option value="Hàng hiệu">
-                        <option value="Sưu tầm - Nghệ thuật">
-                        <option value="Phương tiện xe cộ">
-                        <option value="Bất động sản - Quyền sử dụng đất">
-                        <option value="Tài sản thanh lý">
-                    </datalist>
-                    <input class="input2" type="text" id="searched" name="searched" placeholder="Tìm kiếm...">
-                    <button><i class="fa-solid fa-magnifying-glass"></i></button>
-                </form>
-            </div>
-        </div>
-        <div class="header_item3">
-            &nbsp;
-            <nav role="navigation" class="primary-navigation">
-                <li>
-                    <a style="color:white;"><i class="fa-solid fa-bars"></i> Danh mục tài sản</a>
-                    <ul class="dropdown">
-                        <li><a href="/Search/Hàng hiệu">Hàng hiệu</a></li>
-                        <li><a href="/Search/Sưu tầm - Nghệ thuật">Sưu tầm - Nghệ thuật</a></li>
-                        <li><a href="/Search/Phương tiện xe cộ">Phương tiện xe cộ</a></li>
-                        <li><a href="/Search/Bất động sản - Quyền sử dụng đất">Bất động sản </a></li>
-                        <li><a href="/Search/Tài sản thanh lý">Tài sản thanh lý</a></li>
-                    </ul>
-                </li>
-            </nav>
+<div th:replace="~{/layout/header::header}"></div>
 
+<!-- BREADCRUMB -->
+<div class="container pt-3">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Auction" class="text-muted">Trang chủ</a></li>
+            <li class="breadcrumb-item active text-muted" aria-current="page">Liên hệ bán tài sản</li>
+        </ol>
+    </nav>
+</div>
 
-            <form action="/Search/" method="POST">
-                {%csrf_token%}
-                <input type="hidden" list="types" name="types">
-                <input type="hidden" id="searched" name="searched" placeholder="Tìm kiếm...">
-                <button class="but1">
-                    <a class="a1">Cuộc đấu giá</a></button>
+<!-- MAIN CONTENT - LIÊN HỆ BÁN TÀI SẢN (main1) -->
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <form action="" method="POST" enctype="multipart/form-data" class="p-4 p-md-5 bg-white shadow-lg rounded-3 border-top border-5 border-primary-custom">
+                <fieldset class="border-0 p-0">
+                    <legend class="fs-4 fw-bold mb-4 text-primary-custom">Thông tin Yêu cầu Bán Tài sản</legend>
+
+                    <!-- Thông tin hướng dẫn (Conditional Logic removed) -->
+                    <div class="col-12 mb-4 text-muted border-bottom pb-3">
+                        Hãy nhập đầy đủ thông tin cá nhân và thông tin chi tiết tài sản bạn muốn bán vào bên dưới:
+                    </div>
+
+                    <!-- User Info Placeholder (Assuming logged in for completeness) -->
+                    <div class="row mb-4 g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Tên tài sản:</label>
+                            <input type="text" class="form-control form-control-lg" name="name" placeholder="Ví dụ: Cây bonsai cổ thụ">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Họ và tên người liên hệ:</label>
+                            <input type="text" class="form-control" value="Nguyễn Văn A" placeholder="Họ và tên">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Số điện thoại liên hệ:</label>
+                            <input type="text" class="form-control" value="0901 234 567" placeholder="Số điện thoại">
+                        </div>
+                    </div>
+
+                    <!-- Asset Details -->
+                    <div class="row mb-4 g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Loại tài sản:</label>
+                            <select class="form-select" name="browser">
+                                <option value="">-- Chọn loại tài sản --</option>
+                                <option value="Hàng hiệu">Hàng hiệu</option>
+                                <option value="Sưu tầm - Nghệ thuật">Sưu tầm - Nghệ thuật</option>
+                                <option value="Phương tiện xe cộ">Phương tiện xe cộ</option>
+                                <option value="Bất động sản - Quyền sử dụng đất">Bất động sản</option>
+                                <option value="Tài sản thanh lý">Tài sản thanh lý</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Giá khởi điểm đề xuất (VND):</label>
+                            <input type="text" class="form-control" name="price" placeholder="Ví dụ: 10000000 (10 triệu)">
+                        </div>
+                    </div>
+
+                    <!-- Location and Time -->
+                    <div class="row mb-4 g-3">
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Địa chỉ xem tài sản:</label>
+                            <input type="text" class="form-control" name="diachi" placeholder="Số nhà, đường, quận/huyện, tỉnh/thành phố">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Thời gian xem tài sản:</label>
+                            <input type="text" class="form-control" name="time" placeholder="Ví dụ: Từ 9h - 11h sáng các ngày thứ 7">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Ngày kết thúc đấu giá mong muốn:</label>
+                            <input type="date" class="form-control" name="endingdate" max="2025-12-31">
+                        </div>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div class="row mb-4 g-3 align-items-center">
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Hình ảnh của sản phẩm:</label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        </div>
+                        <div class="col-12">
+                            <div class="display_image shadow-sm">
+                                Ảnh sẽ hiển thị ở đây
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="col-12 mb-4">
+                        <label class="form-label fw-bold">Mô tả chi tiết sản phẩm:</label>
+                        <textarea class="form-control" name="bio" rows="6" placeholder="Mô tả chi tiết về tình trạng, nguồn gốc, và các đặc điểm nổi bật của tài sản..."></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-12 d-flex justify-content-end mt-4">
+                        <button type="submit" class="btn btn-primary-custom btn-lg rounded-pill px-5 shadow-sm">
+                            Gửi thông tin yêu cầu bán tài sản
+                        </button>
+                    </div>
+                </fieldset>
             </form>
-            <a class="a1" href="/Information">Tin tức</a>
-            <a class="a1" href="/Information">Giới thiệu</a>
-            <a class="a1" href="/Lienhe">Liên hệ bán tài sản</a>
-            <DIv></DIv>
-            <p id="time"></p>
-            <p id="current_date"></p>
-            <script>
-                date = new Date();
-                year = date.getFullYear();
-                month = date.getMonth() + 1;
-                day = date.getDate();
-                document.getElementById("current_date").innerHTML = day + "/" + month + "/" + year;
-
-            </script>
         </div>
     </div>
-    <div style="padding: 10px;">
-        <a style="color: gray;" href="/Auction">Trang chủ/</a>
-        <a style="color: gray;" href="/Lienhe"> Đăng nhập</a>
-    </div>
-    <div class="main1">
-        <form action="" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <fieldset>
-                <legend style="font-size:18px ;">Liên hệ bán tài sản:</legend>
-                {% if user.username %}
-                <div style="grid-column: 1/7;"> Hãy nhập đầy đủ thông tin cá nhân và thông tin chi tiết tài sản bạn muốn
-                    bán vào bên dưới:</div>
-                <input style="grid-column: 1/7;" type="text" name="name" placeholder="Tên tài sản">
-                <input style="grid-column: 1/4;" type="text"
-                    value="{{user_profile.firstname}} {{user_profile.lastname}}">
-                <input style="grid-column: 4/7;" type="text" value="{{user_profile.phonenumber}}">
-                {% else%}
-                <div style="grid-column: 1/7;color: #b41712;"> Hãy đăng nhập trước khi đăng bán tài sản:</div>
-                <input style="grid-column: 1/4;" type="text" name="name" placeholder="Tên tài sản">
-                <input style="grid-column: 1/4;" type="text" placeholder="Họ và tên">
-                <input style="grid-column: 4/7;" type="text" placeholder="Số điện thoại">
-                {% endif %}
-                <input style="grid-column: 1/4;" list="browsers" name="browser" placeholder="Loại tài sản">
-                <datalist id="browsers">
-                    <option value="Hàng hiệu">
-                    <option value="Sưu tầm - Nghệ thuật">
-                    <option value="Phương tiện xe cộ">
-                    <option value="Bất động sản - Quyền sử dụng đất">
-                    <option value="Tài sản thanh lý">
-                    <option value="Khác">
-                </datalist>
-                <input style="grid-column: 4/7;" type="text" name="price" placeholder="Giá khởi điểm">
-                <input style="grid-column: 1/7;" type="text" name="diachi" placeholder="Địa chỉ xem tài sản">
-                <input style="grid-column: 1/7;" type="text" name="time" placeholder="Thời gian xem tài sản">
-                <label style="grid-column: 1/7;">Ngày kết thúc đấu giá:</label>
-                <input style="grid-column: 1/8;" type="date" name="endingdate" max="2023-12-31">
-                <label style="grid-column: 1/3;">Hình ảnh của sản phẩm: </label>
-                <div style="grid-column: 3/7;">
-                    <input type="file" id="image" name="image">
-                    <div class="display_image"></div>
-                </div>
-                <textarea style="grid-column: 1/7;" name="bio" rows="10" cols="30"
-                    placeholder="Mô tả của sản phẩm"></textarea>
-                <button style="grid-column:5/6;padding:0.5em;" onclick="singup">Gửi thông tin yêu cầu bán tài
-                    sản</button>
-            </fieldset>
-        </form>
-    </div>
-    <div class="timkiem">
-        <div>Nhanh tay tìm kiếm vật phẩm bạn cần nào !</div>
-        <div></div>
-        <form action="/Search/">
-            <input type="text" id="searched" name="searched" placeholder="Tìm kiếm...">
-            <button><i class="fa-solid fa-magnifying-glass"></i></button>
-        </form>
-    </div>
-    <div class="main4">
-        <div style="display:flex;flex-direction:column">
-            <img style="width: 350px;" src="{%static 'image/logoLacViet.png'%}" alt="">
+</div>
 
-            Đăng ký email để nhận tin tức mới nhất từ chúng tôi
-        </div>
-        <div style="display:flex;flex-direction:column">
-            Thông tin liên hệ:
-            <div></div>
-            &nbsp;
-            <a class="click">20521251@bm.uit.edu.vn</a>&nbsp;
-            <a class="click">0818666***</a>&nbsp;
-            <a class="click">0979334***</a>&nbsp;
-        </div>
-        <div style="display:flex;flex-direction:column">
-            Về chúng tôi :
-            <div></div>
-            &nbsp;
-            <a class="click" href="#">Giới thiệu</a>&nbsp;
-            <a class="click" href="#">Quy chế hoạt động</a>&nbsp;
-            <a class="click" href="#">Cơ chế giải quyết tranh chấp</a>&nbsp;
-        </div>
-        <div style="display:flex;flex-direction:column">
-            Chính sách :
-            <div></div>
-            &nbsp;
-            <a class="click" href="#"> Văn bản pháp quy</a>&nbsp;
-            <a class="click" href="#">Chính sách bảo mật thông tin</a>&nbsp;
+<div th:replace="~{/layout/footer::footer}"></div>
 
-        </div>
-        <div></div>
-        <div>Công ty đấu giá ****</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>Công ty đấu giá ****</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>Công ty đấu giá ****</div>
-    </div>
-    <script>
-        const imagefront = document.querySelector("#image");
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" xintegrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-        image.addEventListener("change", function () {
-            const reader = new FileReader();
-            reader.addEventListener("load", () => {
-                let uploaded_image = reader.result;
-                const displayImage = document.querySelector(".display_image")
-                displayImage.style.backgroundImage = `url(${uploaded_image})`
-            });
-            reader.readAsDataURL(this.files[0]);
-        })
-
-    </script>
-    <style>
-        .but1 {
-            background-color: transparent;
-            border: none;
-            font-family: 'Times New Roman', Times, serif;
-            height: 1.75cm;
-            padding: 0cm;
+<!-- CUSTOM JAVASCRIPT -->
+<script>
+    // Update current date
+    (function() {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const dateElement = document.getElementById("current_date");
+        if (dateElement) {
+            dateElement.innerHTML = `${day}/${month}/${year}`;
         }
+    })();
 
-        .primary-navigation {
-            margin: 0 auto;
-            display: flex;
-            font-size: 20px;
-            height: 100%;
-        }
+    // Image Preview Logic
+    document.addEventListener("DOMContentLoaded", function () {
+        const imageInput = document.querySelector("#image");
+        const displayImage = document.querySelector(".display_image");
 
-        .primary-navigation li {
-            list-style: none;
-            margin: 0 auto;
-            display: inline-flex;
-            position: relative;
-            text-decoration: none;
-            height: 1.75cm;
-            align-items: center;
-        }
-
-        .primary-navigation li ul {
-            visibility: hidden;
-            opacity: 0;
-            position: absolute;
-            padding-left: 0;
-            top: 50px;
-            left: 0px;
-            display: none;
-            background: white;
-        }
-
-        .primary-navigation li ul::before {
-            content: '';
-            top: -10px;
-            position: absolute;
-            width: 100%;
-            z-index: 10;
-            height: 20px;
-            background-color: transparent;
-        }
-
-        .primary-navigation li:hover>ul,
-        .primary-navigation li ul:hover {
-            visibility: visible;
-            opacity: 1;
-            display: block;
-            min-width: 250px;
-            text-align: left;
-            padding-top: 10px;
-            box-shadow: 0px 3px 5px -1px #ccc;
-        }
-
-        .primary-navigation li ul li {
-            clear: both;
-            width: 100%;
-            text-align: left;
-            margin-bottom: 20px;
-            padding-left: 5px;
-            border-style: none;
-            text-decoration: none;
-            height: 100%;
-
-        }
-
-        .primary-navigation li ul li a {
-            text-align: center;
-            display: flex;
-            transition: all 1s ease;
-            padding-left: 10px;
-        }
-
-        .primary-navigation li ul li a:hover {
-            padding-left: 20px;
-            border-left: 3px solid #ffffff;
-            transition: all 0.3s ease;
-            color: #b41712;
-            height: 100%;
-            text-align: left;
-        }
-
-        /*---------------header-------------------*/
-        body {
-            background-color: rgb(248, 250, 250);
-        }
-
-        .header_item1 {
-            display: grid;
-            grid-template-columns: 18% 67% 7% 8%;
-            align-items: center;
-            padding-left: 2vh;
-            border-color: rgb(182, 181, 181);
-            border-style: hidden hidden solid hidden;
-            border-width: 1px;
-            color: rgb(161, 161, 161);
-            background-color: rgb(248, 250, 250);
-        }
-
-        a {
-            list-style: none;
-            color: black;
-            text-decoration: none;
-        }
-
-        .header_item2 {
-            display: grid;
-            grid-template-columns: 30% 50%;
-            align-items: center;
-            padding: 1.5ch;
-            background-color: rgb(248, 250, 250);
-        }
-
-        .header_item3 {
-            display: grid;
-            grid-template-columns: 2% 15% 8% 8% 8% 15% 24% 6% 6%;
-            align-items: center;
-            justify-items: center;
-            height: 1.75cm;
-            background-color: #b41712;
-            color: white;
-            font-size: 20px;
-            position: relative;
-        }
-
-        .a1 {
-            color: white;
-            font-size: 20px;
-        }
-
-        .a1:hover {
-            background-color: #ffffff;
-            color: #b41712;
-            font-size: 20px;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .input1 {
-            border-bottom-left-radius: 15px;
-            border-top-left-radius: 15px;
-            border: none;
-            height: 1cm;
-            padding-right: 0%;
-            box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
-        }
-
-        .input2 {
-            border-bottom-right-radius: 15px;
-            border-top-right-radius: 15px;
-            border: none;
-            height: 1cm;
-            width: 10cm;
-            padding-left: 0%;
-            box-shadow: 50px 10px #111111 0 0 10px 30px #0e0d0d 30px 0 20px 30px #1a1919;
-        }
-
-        .form form button {
-            background-color: rgb(66, 65, 65);
-            color: #ffffff;
-            border: none;
-            border-radius: 20px;
-            width: 1cm;
-            height: 1cm;
-        }
-
-        /*---------------main1-------------------*/
-        .main1 {
-            padding-top: 4ch;
-            padding-bottom: 4ch;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: rgb(245, 245, 245);
-        }
-
-        .main1>form {
-            width: 80%;
-            background-color: white;
-        }
-
-        .main1>form>fieldset {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-            gap: 3em;
-            padding: 3em;
-            background-color: white;
-        }
-
-        .main1>form>fieldset>input {
-            padding: 0.5em;
-            border: none;
-            border-bottom: 1px solid #686666;
-            background-color: white;
-        }
-
-        .main1 form fieldset button {
-            width: 8cm;
-            height: 1cm;
-            border-radius: 20px;
-            border: none;
-            background-color: #b41712;
-            color: #ffffff;
-            font-size: 16px;
-        }
-
-        .main1 form fieldset button:hover {
-            width: 8cm;
-            height: 1cm;
-            border-radius: 20px;
-            border: none;
-            background-color: #ffffff;
-            color: #b41712;
-            font-size: 16px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
-
-        /*------------main4------------*/
-        .main4 {
-            padding-top: 5ch;
-            padding-bottom: 5ch;
-            padding-left: 3ch;
-            padding-right: 3ch;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            grid-gap: 30px;
-            border: #686666;
-            border-color: red;
-            font-size: 22px;
-        }
-
-        .main4>div>a {
-            font-size: 17px;
-            color: #686666;
-        }
-
-        .timkiem {
-            display: grid;
-            grid-template-columns: 40% 40% 20%;
-            align-items: center;
-            justify-items: center;
-            height: 1.5cm;
-            background-color: #b41712;
-            color: white;
-            font-size: 20px;
-        }
-
-        .display_image {
-            border: 1px solid #000000;
-            height: 211px;
-            width: 375px;
-            background-position: center;
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        .display_image {
-            border: 1px solid #000000;
-            height: 422px;
-            width: 700px;
-            background-position: center;
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        /*---------------dropdown-----------------*/
-        .dropdown {
-            position: relative;
-            display: inline-block;
-            color: #0e0d0d;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 140px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            padding: 12px 16px;
-            z-index: 1;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .dropdown-content a:hover {
-            font-size: 18px;
-            color: #b41712;
-        }
-    </style>
+        imageInput.addEventListener("change", function () {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.addEventListener("load", () => {
+                    const uploaded_image = reader.result;
+                    displayImage.style.backgroundImage = `url(${uploaded_image})`;
+                    displayImage.textContent = "";
+                });
+                reader.readAsDataURL(this.files[0]);
+            } else {
+                displayImage.style.backgroundImage = 'none';
+                displayImage.textContent = "Ảnh sẽ hiển thị ở đây";
+            }
+        });
+    });
+</script>
 </body>
 
 </html>
