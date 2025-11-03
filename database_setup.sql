@@ -24,95 +24,98 @@ DROP TABLE IF EXISTS account;
 
 -- Account table
 CREATE TABLE account (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role ENUM('ADMIN', 'USER', 'SELLER') DEFAULT 'USER',
-    active BOOLEAN DEFAULT TRUE,
-    PRIMARY KEY (id)
+id INT(11) NOT NULL AUTO_INCREMENT,
+username VARCHAR(50) NOT NULL UNIQUE,
+password VARCHAR(255) NOT NULL,
+role ENUM('ADMIN', 'USER', 'SELLER') DEFAULT 'USER',
+active BOOLEAN DEFAULT TRUE,
+PRIMARY KEY (id)
 );
 
 -- User table
 CREATE TABLE user (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    account_id INT(11) NOT NULL,
-    name VARCHAR(100),
-    email VARCHAR(100),
-    phone VARCHAR(20),
-    address VARCHAR(255),
-    PRIMARY KEY (id),
-    FOREIGN KEY (account_id) REFERENCES account(id) ON DELETE CASCADE
+id INT(11) NOT NULL AUTO_INCREMENT,
+account_id INT(11) NOT NULL,
+name VARCHAR(100),
+email VARCHAR(100),
+phone VARCHAR(20),
+address VARCHAR(255),
+PRIMARY KEY (id),
+FOREIGN KEY (account_id) REFERENCES account(id) ON DELETE CASCADE
 );
 
 -- Category table
 CREATE TABLE category (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    PRIMARY KEY (id)
+id INT(11) NOT NULL AUTO_INCREMENT,
+name VARCHAR(100) NOT NULL UNIQUE,
+PRIMARY KEY (id)
 );
 
 -- Product table
 CREATE TABLE product (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    seller_id INT(11) NOT NULL,
-    owner_id INT(11),
-    name VARCHAR(200) NOT NULL,
-    description TEXT,
-    starting_price DECIMAL(15,2),
-    image_url VARCHAR(255),
-    category_id INT(11),
-    requested_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    status ENUM('PENDING', 'APPROVED', 'REJECTED', 'SOLD') DEFAULT 'PENDING',
-    PRIMARY KEY (id),
-    FOREIGN KEY (seller_id) REFERENCES user(id) ON DELETE CASCADE,
-    FOREIGN KEY (owner_id) REFERENCES user(id) ON DELETE SET NULL,
-    FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET NULL
+id INT(11) NOT NULL AUTO_INCREMENT,
+seller_id INT(11) NOT NULL,
+owner_id INT(11),
+name VARCHAR(200) NOT NULL,
+description TEXT,
+starting_price DECIMAL(15,2),
+image_url VARCHAR(255),
+category_id INT(11),
+requested_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+status ENUM('PENDING', 'APPROVED', 'REJECTED', 'SOLD') DEFAULT 'PENDING',
+PRIMARY KEY (id),
+FOREIGN KEY (seller_id) REFERENCES user(id) ON DELETE CASCADE,
+FOREIGN KEY (owner_id) REFERENCES user(id) ON DELETE SET NULL,
+FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE SET NULL
 );
 
 -- Auction table
 CREATE TABLE auction (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    product_id INT(11) NOT NULL,
-    start_time DATETIME,
-    end_time DATETIME,
-    starting_price DECIMAL(15,2),
-    PRIMARY KEY (id),
-    FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
+id INT(11) NOT NULL AUTO_INCREMENT,
+product_id INT(11) NOT NULL,
+start_time DATETIME,
+end_time DATETIME,
+starting_price DECIMAL(15,2),
+PRIMARY KEY (id),
+status VARCHAR(255),
+winner INT,
+FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
+CONSTRAINT fk_auction_winner FOREIGN KEY (winner) REFERENCES user(id)
 );
 
 -- Auction Registration table
 CREATE TABLE auctionregistration (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    auction_id INT(11) NOT NULL,
-    user_id INT(11) NOT NULL,
-    status ENUM('PENDING', 'APPROVED', 'REJECTED') DEFAULT 'PENDING',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (auction_id) REFERENCES auction(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+id INT(11) NOT NULL AUTO_INCREMENT,
+auction_id INT(11) NOT NULL,
+user_id INT(11) NOT NULL,
+status ENUM('PENDING', 'APPROVED', 'REJECTED') DEFAULT 'PENDING',
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (id),
+FOREIGN KEY (auction_id) REFERENCES auction(id) ON DELETE CASCADE,
+FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
 -- Bid History table
 CREATE TABLE bidhistory (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    auction_id INT(11) NOT NULL,
-    user_id INT(11) NOT NULL,
-    amount DECIMAL(15,2) NOT NULL,
-    time DATETIME DEFAULT CURRENT_TIMESTAMP,
-    winner_flag BOOLEAN DEFAULT FALSE,
-    PRIMARY KEY (id),
-    FOREIGN KEY (auction_id) REFERENCES auction(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+id INT(11) NOT NULL AUTO_INCREMENT,
+auction_id INT(11) NOT NULL,
+user_id INT(11) NOT NULL,
+amount DECIMAL(15,2) NOT NULL,
+time DATETIME DEFAULT CURRENT_TIMESTAMP,
+winner_flag BOOLEAN DEFAULT FALSE,
+PRIMARY KEY (id),
+FOREIGN KEY (auction_id) REFERENCES auction(id) ON DELETE CASCADE,
+FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
 -- Notification table
 CREATE TABLE notification (
-    id INT(11) NOT NULL AUTO_INCREMENT,
-    user_id INT(11) NOT NULL,
-    notification TEXT,
-    time DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+id INT(11) NOT NULL AUTO_INCREMENT,
+user_id INT(11) NOT NULL,
+notification TEXT,
+time DATETIME DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY (id),
+FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
 -- =============================================
@@ -120,7 +123,7 @@ CREATE TABLE notification (
 -- =============================================
 
 -- Insert Categories
-INSERT INTO category (name) VALUES 
+INSERT INTO category (name) VALUES
 ('Điện tử'),
 ('Thời trang'),
 ('Gia dụng'),
@@ -131,7 +134,7 @@ INSERT INTO category (name) VALUES
 ('Xe cộ');
 
 -- Insert Accounts
-INSERT INTO account (username, password, role, active) VALUES 
+INSERT INTO account (username, password, role, active) VALUES
 ('admin', '$2a$10$2bi2Y1CSp.wiY.YSDU31JeGZOAS3wwFuiFv0ji.MxS4iKSJjE67TO', 'ADMIN', TRUE), -- password: 123
 ('seller1', '$2a$10$2bi2Y1CSp.wiY.YSDU31JeGZOAS3wwFuiFv0ji.MxS4iKSJjE67TO', 'SELLER', TRUE), -- password: 123
 ('seller2', '$2a$10$2bi2Y1CSp.wiY.YSDU31JeGZOAS3wwFuiFv0ji.MxS4iKSJjE67TO', 'SELLER', TRUE), -- password: 123
@@ -141,7 +144,7 @@ INSERT INTO account (username, password, role, active) VALUES
 ('user4', '$2a$10$2bi2Y1CSp.wiY.YSDU31JeGZOAS3wwFuiFv0ji.MxS4iKSJjE67TO', 'USER', FALSE); -- password: 123 (inactive)
 
 -- Insert Users
-INSERT INTO user (account_id, name, email, phone, address) VALUES 
+INSERT INTO user (account_id, name, email, phone, address) VALUES
 (1, 'Administrator', 'admin@auction.com', '0123456789', 'Hà Nội'),
 (2, 'Nguyễn Văn Bán', 'seller1@email.com', '0987654321', 'TP.HCM'),
 (3, 'Trần Thị Bán', 'seller2@email.com', '0912345678', 'Đà Nẵng'),
@@ -151,16 +154,26 @@ INSERT INTO user (account_id, name, email, phone, address) VALUES
 (7, 'Vũ Thị Tạm', 'user4@email.com', '0956789012', 'Huế');
 
 -- Insert Products
-INSERT INTO product (seller_id, owner_id, name, description, starting_price, image_url, category_id, requested_at, status) VALUES 
-(2, 2, 'iPhone 15 Pro Max', 'Điện thoại iPhone 15 Pro Max 256GB, màu Titan tự nhiên, còn bảo hành Apple', 25000000, '/images/iphone15.jpg', 1, '2024-10-15 10:00:00', 'APPROVED'),
-(2, 2, 'MacBook Air M2', 'Laptop MacBook Air 13 inch M2 chip, 8GB RAM, 256GB SSD, màu Space Gray', 28000000, '/images/macbook.jpg', 1, '2024-10-16 14:30:00', 'APPROVED'),
-(3, 3, 'Áo khoác da', 'Áo khoác da bò thật, size L, màu đen, chất lượng cao', 1500000, '/images/jacket.jpg', 2, '2024-10-17 09:15:00', 'PENDING'),
-(3, 3, 'Túi xách Gucci', 'Túi xách Gucci chính hãng, màu đen, tình trạng tốt', 12000000, '/images/gucci.jpg', 2, '2024-10-18 16:45:00', 'APPROVED'),
-(2, 2, 'Bộ bàn ghế gỗ', 'Bộ bàn ghế gỗ lim, 6 ghế, tình trạng tốt', 8000000, '/images/table.jpg', 3, '2024-10-19 11:20:00', 'REJECTED'),
-(3, 3, 'Sách "Đắc Nhân Tâm"', 'Sách Đắc Nhân Tâm bản gốc, tình trạng mới', 150000, '/images/book.jpg', 4, '2024-10-20 08:30:00', 'APPROVED');
-
+INSERT INTO product (id,seller_id, owner_id, name, description, starting_price, image_url, category_id, requested_at, status) VALUES
+(1, 2, 2, 'iPhone 15 Pro Max', 'Điện thoại iPhone 15 Pro Max 256GB, màu Titan tự nhiên, còn bảo hành Apple', 25000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/iPhone15ProMax.png', 1, '2024-10-15 10:00:00', 'APPROVED'),
+(2, 2, 2, 'MacBook Air M2', 'Laptop MacBook Air 13 inch M2 chip, 8GB RAM, 256GB SSD, màu Space Gray', 28000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/MacBook%20Air%20M2.jpg', 1, '2024-10-16 14:30:00', 'APPROVED'),
+(3, 3, 3, 'Áo khoác da', 'Áo khoác da bò thật, size L, màu đen, chất lượng cao', 1500000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/ao-da.jpg', 2, '2024-10-17 09:15:00', 'APPROVED'),
+(4, 3, 3, 'Túi xách Gucci', 'Túi xách Gucci chính hãng, màu đen, tình trạng tốt', 12000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/Tui-xach-Gucci-vien-nau-quai-nau-sieu-cap.jpg', 2, '2024-10-18 16:45:00', 'APPROVED'),
+(5, 2, 2, 'Bộ bàn ghế gỗ', 'Bộ bàn ghế gỗ lim, 6 ghế, tình trạng tốt', 8000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/BanGheGo.jpg', 3, '2024-10-19 11:20:00', 'APPROVED'),
+(6, 3, 3, 'Sách \"Đắc Nhân Tâm\"', 'Sách Đắc Nhân Tâm bản gốc, tình trạng mới', 150000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/DacNhanTam.jpg', 4, '2024-10-20 08:30:00', 'APPROVED'),
+(7, 4, 4, 'Xe ô tô Toyota Camry 2018', 'Xe Toyota Camry 2018, màu bạc, đi ít, tình trạng tốt', 800000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe-camry3_KQLN.jpg', 8, '2024-10-20 12:00:00', 'APPROVED'),
+(8, 4, 4, 'Xe máy Honda SH', 'Xe máy Honda SH 2020, màu đen, đi ít, bảo trì định kỳ', 70000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe-sh.jpg', 8, '2024-10-21 09:00:00', 'APPROVED'),
+(9, 2, 5, 'Túi xách Louis Vuitton', 'Túi xách Louis Vuitton chính hãng, màu nâu, tình trạng rất tốt', 15000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/tui-lv-brown.jpg', 2, '2024-10-22 15:30:00', 'APPROVED'),
+(10, 3, 5, 'Giày sneaker Adidas', 'Giày sneaker Adidas, size 42, màu trắng, mới 90%', 4000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/giay-sneaker-adidas.jpg', 2, '2024-10-23 13:45:00', 'APPROVED'),
+(11, 4, 6, 'Tác phẩm nghệ thuật trừu tượng', 'Tranh trừu tượng, kích thước 1m x 1m, chất liệu sơn dầu', 5000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/tranh7.jpg', 6, '2024-10-24 11:00:00', 'APPROVED'),
+(12, 6, 5, 'Bức tranh phong cảnh', 'Bức tranh phong cảnh, kích thước 80cm x 60cm, chất liệu acrylic', 6000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/tranh.jpg', 6, '2024-10-25 10:30:00', 'APPROVED'),
+(13, 7, 7, 'Tác phẩm nghệ thuật hiện đại', 'Tranh hiện đại, kích thước 1.5m x 1m, chất liệu mixed media', 7000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/tranh-1024x683.jpg', 6, '2024-10-26 14:00:00', 'APPROVED'),
+(14, 7, 7, 'Túi xách Prada', 'Túi xách Prada chính hãng, màu đen, còn mới', 20000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/TuiXachPrada.jpeg', 2, '2024-10-27 16:15:00', 'APPROVED'),
+(15, 5, 5, 'Xe ô tô Honda Civic 2019', 'Xe Honda Civic 2019, đã qua sử dụng, màu đỏ, tình trạng tốt', 600000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe-honda-civic.jpg', 8, '2024-10-28 08:45:00', 'APPROVED'),
+(16, 6, 6, 'Tác phẩm nghệ thuật cổ điển', 'Tranh cổ điển, kích thước 70cm x 50cm, chất liệu sơn dầu', 8000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/tranh2.jpg', 6, '2024-10-29 10:00:00', 'APPROVED'),
+(17, 7, 7, 'Xe điện VF8', 'Xe máy VF8, màu đen, đi ít, bảo trì định kỳ', 200000000.00, 'https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe-vf8.jpg', 8, '2024-10-29 10:00:00', 'APPROVED');
 -- Insert Auctions
-INSERT INTO auction (product_id, start_time, end_time, starting_price) VALUES
+INSERT INTO auction (id,product_id, start_time, end_time, starting_price,status,winner) VALUES
 (1, 1, '2024-10-25 09:00:00', '2025-10-25 18:00:00', 25000000.00, 'FINISHED', 4),
 (2, 2, '2024-10-26 10:00:00', '2024-10-26 19:00:00', 28000000.00, 'FINISHED', 4),
 (3, 4, '2024-10-27 14:00:00', '2024-10-27 20:00:00', 12000000.00, 'FINISHED', 4),
@@ -180,7 +193,7 @@ INSERT INTO auction (product_id, start_time, end_time, starting_price) VALUES
 (17, 17, '2025-11-03 15:00:00', '2025-11-05 15:00:00', 200000000.00, 'ONGOING', NULL);
 
 -- Insert Auction Registrations
-INSERT INTO auctionregistration (auction_id, user_id, status, created_at) VALUES
+INSERT INTO auctionregistration (id,auction_id, user_id, status, created_at) VALUES
 (1, 1, 4, 'APPROVED', '2024-10-20 10:00:00'),
 (2, 1, 5, 'APPROVED', '2024-10-20 10:30:00'),
 (3, 1, 6, 'PENDING', '2024-10-20 11:00:00'),
@@ -200,7 +213,7 @@ INSERT INTO auctionregistration (auction_id, user_id, status, created_at) VALUES
 (17, 13, 6, 'APPROVED', '2025-11-03 18:13:44');
 
 -- Insert Bid History
-INSERT INTO bidhistory (auction_id, user_id, amount, time, winner_flag) VALUES 
+INSERT INTO bidhistory (auction_id, user_id, amount, time, winner_flag) VALUES
 (1, 4, 25000000, '2024-10-25 09:05:00', FALSE),
 (1, 5, 25500000, '2024-10-25 09:10:00', FALSE),
 (1, 4, 26000000, '2024-10-25 09:15:00', FALSE),
@@ -216,7 +229,7 @@ INSERT INTO bidhistory (auction_id, user_id, amount, time, winner_flag) VALUES
 (4, 4, 170000, '2024-10-28 15:15:00', TRUE);
 
 -- Insert Notifications
-INSERT INTO notification (user_id, notification, time) VALUES 
+INSERT INTO notification (user_id, notification, time) VALUES
 (2, 'Sản phẩm "iPhone 15 Pro Max" của bạn đã được duyệt và sẽ được đấu giá vào 25/10/2024', '2024-10-20 10:00:00'),
 (2, 'Sản phẩm "MacBook Air M2" của bạn đã được duyệt và sẽ được đấu giá vào 26/10/2024', '2024-10-21 10:00:00'),
 (3, 'Sản phẩm "Áo khoác da" của bạn đang chờ duyệt', '2024-10-17 09:15:00'),

@@ -89,7 +89,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/", "/home", "/login", "/register", "/create-admin-account", "/reset-admin-password", "/create-test-user", "/test/**", "/debug/**", "/403").permitAll()
 
                 // 3. Các trang của ADMIN (Quy tắc cụ thể)
-                .requestMatchers("/admin", "/admin/**").hasAuthority("ADMIN") // Dùng hasAuthority
+                .requestMatchers("/admin", "/admin/**","/create","/search/**").hasAuthority("ADMIN") // Dùng hasAuthority
 
                 // 4. Các trang của USER (Ý định MỚI của bạn)
                 // Đã gộp /home, /auction/**, /blog/create vào đây
