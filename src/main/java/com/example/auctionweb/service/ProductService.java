@@ -7,49 +7,92 @@ import com.example.auctionweb.entity.User;
 import com.example.auctionweb.repository.CategoryRepository;
 import com.example.auctionweb.repository.ProductRepository;
 import com.example.auctionweb.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@Transactional
 public class ProductService implements IProductService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    public ProductService(ProductRepository productRepository,
+                          CategoryRepository categoryRepository,
+                          UserRepository userRepository) {
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
+    }
 
-    @Autowired
-    private UserRepository userRepository;
-
-    // ========== CHO NGƯỜI DÙNG ==========
+    // ========= USER-FACING =========
     @Override
+    @Transactional(readOnly = true)
     public List<Product> searchProducts(String name, Integer categoryId) {
-        if (name != null && !name.isEmpty() && categoryId != null) {
+        boolean hasName = name != null && !name.isBlank();
+        boolean hasCategory = categoryId != null;
+
+        if (hasName && hasCategory) {
             Category category = categoryRepository.findById(categoryId).orElse(null);
-            return productRepository.findByNameContainingIgnoreCaseAndCategoryAndStatus(name, category, Product.ProductStatus.APPROVED);
-        } else if (name != null && !name.isEmpty()) {
-            return productRepository.findByNameContainingIgnoreCaseAndStatus(name, Product.ProductStatus.APPROVED);
-        } else if (categoryId != null) {
+            if (category == null) return Collections.emptyList();
+            return productRepository.findByNameContainingIgnoreCaseAndCategoryAndStatus(
+                    name, category, Product.ProductStatus.APPROVED);
+        } else if (hasName) {
+            return productRepository.findByNameContainingIgnoreCaseAndStatus(
+                    name, Product.ProductStatus.APPROVED);
+        } else if (hasCategory) {
             Category category = categoryRepository.findById(categoryId).orElse(null);
-            return productRepository.findByCategoryAndStatus(category, Product.ProductStatus.APPROVED);
+            if (category == null) return Collections.emptyList();
+            return productRepository.findByCategoryAndStatus(
+                    category, Product.ProductStatus.APPROVED);
         } else {
             return productRepository.findByStatus(Product.ProductStatus.APPROVED);
         }
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
 
-    // ========== CRUD SẢN PHẨM ==========
-    // CREATE
+    // ========= PRODUCT CRUD =========
+
+    /** Create via DTO (preferred). highestPrice chỉ tồn tại ở DTO, KHÔNG persist xuống Product. */
+    @Override
+    public Product createProduct(ProductRequestDTO dto) {
+        // (tuỳ chọn) kiểm tra form-only: highestPrice >= startingPrice — không lưu xuống entity
+        validateHighestPrice(dto.getStartingPrice(), dto.getHighestPrice());
+
+        Product p = new Product();
+        p.setName(dto.getName());
+        p.setDescription(dto.getDescription());
+        p.setStartingPrice(dto.getStartingPrice());
+        p.setRequestedAt(LocalDateTime.now());
+        p.setStatus(Product.ProductStatus.PENDING);
+
+        // ảnh: lưu CHỈ tên file (vd: iphone15.png). View render qua /images/<filename>
+        p.setImageUrl(normalizeImageFileName(dto.getImageUrl()));
+
+        if (dto.getCategoryId() != null) {
+            Category category = categoryRepository.findById(dto.getCategoryId()).orElse(null);
+            p.setCategory(category);
+        }
+
+        // gán seller mặc định nếu cần (tùy business của bạn). Có thể bỏ dòng này.
+        userRepository.findById(1).ifPresent(p::setSeller);
+
+        // KHÔNG set highestPrice vào Product
+        return productRepository.save(p);
+    }
+
+    /** Create via entity (giữ để tương thích cũ). */
     @Override
     public Product saveProduct(Product product) {
         return productRepository.save(product);
@@ -57,30 +100,34 @@ public class ProductService implements IProductService {
 
     // READ
     @Override
+    @Transactional(readOnly = true)
     public List<Product> getAllProductsForAdmin() {
         return productRepository.findAllByOrderByRequestedAtDesc();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Product getProductById(Integer id) {
         return productRepository.findById(id).orElse(null);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Product> getProductsByStatus(Product.ProductStatus status) {
         return productRepository.findByStatusOrderByRequestedAtDesc(status);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Product> getProductsByCategory(Integer categoryId) {
+        if (categoryId == null) return Collections.emptyList();
         Category category = categoryRepository.findById(categoryId).orElse(null);
-        if (category != null) {
-            return productRepository.findByCategory(category);
-        }
-        return List.of();
+        if (category == null) return Collections.emptyList();
+        return productRepository.findByCategory(category);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Product> getProductsBySeller(Integer sellerId) {
         return productRepository.findBySellerId(sellerId);
     }
@@ -88,12 +135,34 @@ public class ProductService implements IProductService {
     // UPDATE
     @Override
     public Product updateProductStatus(Integer productId, Product.ProductStatus status) {
-        Product product = productRepository.findById(productId).orElse(null);
-        if (product == null) {
-            throw new RuntimeException("Không tìm thấy sản phẩm");
-        }
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sản phẩm"));
         product.setStatus(status);
         return productRepository.save(product);
+    }
+
+    @Override
+    public Product updateProduct(Integer id, ProductRequestDTO dto) {
+        // (tuỳ chọn) kiểm tra form-only
+        validateHighestPrice(dto.getStartingPrice(), dto.getHighestPrice());
+
+        Product existing = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy sản phẩm"));
+
+        existing.setName(dto.getName());
+        existing.setDescription(dto.getDescription());
+        existing.setStartingPrice(dto.getStartingPrice());
+        existing.setImageUrl(normalizeImageFileName(dto.getImageUrl()));
+
+        if (dto.getCategoryId() != null) {
+            Category category = categoryRepository.findById(dto.getCategoryId()).orElse(null);
+            existing.setCategory(category);
+        } else {
+            existing.setCategory(null);
+        }
+
+        // KHÔNG set highestPrice vào Product
+        return productRepository.save(existing);
     }
 
     // DELETE
@@ -102,140 +171,64 @@ public class ProductService implements IProductService {
         productRepository.deleteById(productId);
     }
 
-    // ========== CRUD DANH MỤC ==========
-    // CREATE
+    // ========= CATEGORY CRUD =========
     @Override
     public Category createCategory(Category category) {
         return categoryRepository.save(category);
     }
 
-    // READ
     @Override
+    @Transactional(readOnly = true)
     public Category getCategoryById(Integer id) {
         return categoryRepository.findById(id).orElse(null);
     }
 
-    // UPDATE
     @Override
     public Category updateCategory(Integer categoryId, Category category) {
-        Category existingCategory = categoryRepository.findById(categoryId).orElse(null);
-        if (existingCategory == null) {
-            throw new RuntimeException("Không tìm thấy danh mục");
-        }
-        existingCategory.setName(category.getName());
-        return categoryRepository.save(existingCategory);
+        Category existing = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy danh mục"));
+        existing.setName(category.getName());
+        return categoryRepository.save(existing);
     }
 
-    // DELETE
     @Override
     public void deleteCategory(Integer categoryId) {
         categoryRepository.deleteById(categoryId);
     }
 
+    // ========= Utilities =========
     @Override
+    @Transactional(readOnly = true)
     public Product findById(int id) {
         return productRepository.findById(id).orElse(null);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Product> findAll() {
         return productRepository.findAll();
     }
 
-    // ========== CÁC METHOD BỔ SUNG ==========
-
-    // Tìm kiếm sản phẩm đã duyệt theo tên
-    public List<Product> searchApprovedProductsByName(String name) {
-        return productRepository.findByNameContainingIgnoreCaseAndStatus(name, Product.ProductStatus.APPROVED);
+    @Override
+    @Transactional(readOnly = true)
+    public long countProductsByStatus(Product.ProductStatus status) {
+        return productRepository.countByStatus(status);
     }
 
-    // Lấy sản phẩm đã duyệt theo danh mục
-    public List<Product> getApprovedProductsByCategory(Category category) {
-        return productRepository.findByCategoryAndStatus(category, Product.ProductStatus.APPROVED);
-    }
-
-    // Tìm kiếm nâng cao
-    public List<Product> searchApprovedProducts(String name, Category category) {
-        if (name != null && category != null) {
-            return productRepository.findByNameContainingIgnoreCaseAndCategoryAndStatus(name, category, Product.ProductStatus.APPROVED);
-        } else if (name != null) {
-            return searchApprovedProductsByName(name);
-        } else if (category != null) {
-            return getApprovedProductsByCategory(category);
-        } else {
-            return getApprovedProducts();
-        }
-    }
-
-    // Lấy tất cả sản phẩm đã duyệt
-    public List<Product> getApprovedProducts() {
-        return productRepository.findByStatus(Product.ProductStatus.APPROVED);
-    }
-
-    public Product createProduct(ProductRequestDTO productDTO) {
-        // Validate highestPrice từ DTO (nếu có)
-        validateHighestPrice(productDTO.getStartingPrice(), productDTO.getHighestPrice());
-
-        Product product = new Product();
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        product.setStartingPrice(productDTO.getStartingPrice());
-        product.setImageUrl(productDTO.getImageUrl());
-        product.setRequestedAt(LocalDateTime.now());
-        product.setStatus(Product.ProductStatus.PENDING);
-
-        if (productDTO.getCategoryId() != null) {
-            Category category = categoryRepository.findById(productDTO.getCategoryId()).orElse(null);
-            product.setCategory(category);
-        }
-
-        Optional<User> defaultSeller = userRepository.findById(1);
-        defaultSeller.ifPresent(product::setSeller);
-
-        // KHÔNG set highestPrice vào entity vì bạn không muốn sửa entity
-        // Nếu sau này có field trong entity, chỉ cần mở comment:
-        // product.setHighestPrice(productDTO.getHighestPrice());
-
-        return productRepository.save(product);
-    }
-
-
-    public Product updateProduct(Integer id, ProductRequestDTO productDTO) {
-        Product existingProduct = productRepository.findById(id).orElse(null);
-        if (existingProduct == null) {
-            throw new RuntimeException("Không tìm thấy sản phẩm");
-        }
-
-        // Validate highestPrice từ DTO (nếu có)
-        validateHighestPrice(productDTO.getStartingPrice(), productDTO.getHighestPrice());
-
-        existingProduct.setName(productDTO.getName());
-        existingProduct.setDescription(productDTO.getDescription());
-        existingProduct.setStartingPrice(productDTO.getStartingPrice());
-        existingProduct.setImageUrl(productDTO.getImageUrl());
-
-        if (productDTO.getCategoryId() != null) {
-            Category category = categoryRepository.findById(productDTO.getCategoryId()).orElse(null);
-            existingProduct.setCategory(category);
-        }
-
-        // KHÔNG set highestPrice vào entity (đúng yêu cầu)
-        // Nếu sau này bổ sung field trong entity:
-        // existingProduct.setHighestPrice(productDTO.getHighestPrice());
-
-        return productRepository.save(existingProduct);
-    }
+    /** Cho phép bỏ trống; nếu nhập thì yêu cầu highest >= starting. Chỉ kiểm tra ở DTO (không persist). */
     private void validateHighestPrice(BigDecimal startingPrice, BigDecimal highestPrice) {
-        if (startingPrice == null || highestPrice == null) return; // cho phép bỏ trống
+        if (startingPrice == null || highestPrice == null) return;
         if (highestPrice.compareTo(startingPrice) < 0) {
             throw new IllegalArgumentException("Giá cao nhất không được nhỏ hơn giá khởi điểm!");
         }
     }
 
-
-
-    // Đếm sản phẩm theo trạng thái
-    public long countProductsByStatus(Product.ProductStatus status) {
-        return productRepository.findByStatus(status).size();
+    /** Nhận vào URL hoặc path, chỉ giữ lại phần tên file để lưu (vd: \"iphone15.png\"). */
+    private String normalizeImageFileName(String raw) {
+        if (raw == null) return null;
+        String trimmed = raw.trim();
+        if (trimmed.isEmpty()) return null;
+        int slash = Math.max(trimmed.lastIndexOf('/'), trimmed.lastIndexOf('\\'));
+        return (slash >= 0) ? trimmed.substring(slash + 1) : trimmed;
     }
 }

@@ -3,6 +3,13 @@ package com.example.auctionweb.dto;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 
+/**
+ * LƯU Ý:
+ * - imageUrl: CHỈ là TÊN FILE trong src/main/resources/static/images
+ *   Ví dụ: "iphone15.png". Khi render: @{'/images/' + ${product.imageUrl}}
+ * - highestPrice: chỉ tồn tại ở DTO để hiển thị/validate form, KHÔNG map xuống Product.
+ * - Không có bất kỳ validation cho imageUrl.
+ */
 public class ProductRequestDTO {
 
     private Integer id;
@@ -19,7 +26,7 @@ public class ProductRequestDTO {
     @Digits(integer = 15, fraction = 2, message = "Giá khởi điểm không hợp lệ")
     private BigDecimal startingPrice;
 
-    // 🆕 Giá cao nhất
+    // chỉ ở DTO, KHÔNG lưu Product
     @DecimalMin(value = "0.0", inclusive = true, message = "Giá cao nhất phải >= 0")
     @Digits(integer = 15, fraction = 2, message = "Giá cao nhất không hợp lệ")
     private BigDecimal highestPrice;
@@ -27,12 +34,10 @@ public class ProductRequestDTO {
     @NotNull(message = "Danh mục không được để trống")
     private Integer categoryId;
 
+    // tên file trong static/images, VD: "iphone15.png"
     private String imageUrl;
 
-    public ProductRequestDTO() {
-    }
-
-    // ======= GETTERS & SETTERS =======
+    public ProductRequestDTO() {}
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }

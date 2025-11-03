@@ -1,5 +1,6 @@
 package com.example.auctionweb.controller;
 
+import com.example.auctionweb.dto.AuctionDto;
 import com.example.auctionweb.dto.ProductRequestDTO;
 import com.example.auctionweb.entity.*;
 import com.example.auctionweb.entity.AuctionRegistration.RegistrationStatus;
@@ -8,107 +9,187 @@ import com.example.auctionweb.repository.*;
 import com.example.auctionweb.service.IProductService;
 import com.example.auctionweb.websocket.NotificationWebSocketHandler;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Autowired private AuctionRegistrationRepository registrationRepository;
+    // ===== Injects =====
+    @Autowired private IProductService productService;
     @Autowired private ProductRepository productRepository;
+    @Autowired private CategoryRepository categoryRepository;
     @Autowired private UserRepository userRepository;
     @Autowired private AccountRepository accountRepository;
     @Autowired private NotificationRepository notificationRepository;
+    @Autowired private AuctionRegistrationRepository registrationRepository;
     @Autowired(required = false) private NotificationWebSocketHandler notificationWs;
-    @Autowired private IProductService productService;
+    @Autowired private BidHistoryRepository bidHistoryRepository;
+    @Autowired private AuctionRegistrationRepository  auctionRegistrationRepository;
 
-    // ================== ENTRY / DASHBOARD ==================
 
-    @GetMapping({"", "/"})
-    public String adminRoot() {
-        return "redirect:/admin/dashboard";
+
+    @Autowired(required = false) private AuctionRepository auctionRepository;
+
+    // Bid history service bạn đang dùng
+    @Autowired private com.example.auctionweb.service.implement.BidHistoryService bidHistoryService;
+
+    // ===== Trim String inputs ("" -> null) =====
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 
-    @Autowired
-    private com.example.auctionweb.service.implement.BidHistoryService bidHistoryService;
+    // ===== Entry =====
+    @GetMapping({"", "/"})
+    public String adminRoot() { return "redirect:/admin/dashboard"; }
 
+    // ===== Dashboard =====
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         List<Product> allProducts = productService.getAllProductsForAdmin();
-        List<Product> pendingProducts = productService.getProductsByStatus(Product.ProductStatus.PENDING);
+        List<Product> pendingProducts = productService.getProductsByStatus(ProductStatus.PENDING);
 
         model.addAttribute("totalProducts", allProducts.size());
         model.addAttribute("pendingProducts", pendingProducts.size());
+
         List<Product> recentProducts = allProducts.stream().limit(5).toList();
         model.addAttribute("recentProducts", recentProducts);
-        List<Integer> productIds = recentProducts.stream()
-                .map(Product::getId)
-                .toList();
+
+        List<Integer> productIds = recentProducts.stream().map(Product::getId).toList();
         Map<Integer, BigDecimal> highestBidMap =
                 bidHistoryService.getHighestBidMapByProductIds(productIds);
         model.addAttribute("highestBidMap", highestBidMap);
+
         model.addAttribute("totalUsers", userRepository.findAll().size());
         model.addAttribute("totalCategories", productService.getAllCategories().size());
-        int pendingRegs = registrationRepository.findByStatus(AuctionRegistration.RegistrationStatus.PENDING).size();
+        int pendingRegs = registrationRepository.findByStatus(RegistrationStatus.PENDING).size();
         model.addAttribute("pendingRegistrations", pendingRegs);
         model.addAttribute("totalAuctions", registrationRepository.findAll().size());
 
         return "admin/dashboard";
     }
 
-
-    // ================== AUCTION REGISTRATIONS ==================
-
+    // ===== Auction Registrations =====
     @GetMapping("/auction-registrations")
     public String listAuctionRegistrations(@RequestParam(defaultValue = "PENDING") String status, Model model) {
-        List<AuctionRegistration> registrations;
-        if ("ALL".equalsIgnoreCase(status)) {
-            registrations = registrationRepository.findAll();
-        } else {
-            registrations = registrationRepository.findByStatus(RegistrationStatus.valueOf(status.toUpperCase()));
-        }
+        List<AuctionRegistration> registrations =
+                "ALL".equalsIgnoreCase(status)
+                        ? registrationRepository.findAll()
+                        : registrationRepository.findByStatus(RegistrationStatus.valueOf(status.toUpperCase()));
         model.addAttribute("registrations", registrations);
         model.addAttribute("currentStatus", status.toUpperCase());
         return "admin/auction-registrations";
     }
 
-    @PostMapping("/auction-registrations/{id}/approve") public String approveAuctionRegistration(@PathVariable("id") Integer id) throws Exception { AuctionRegistration reg = registrationRepository.findById(id).orElse(null); if (reg != null) { reg.setStatus(RegistrationStatus.APPROVED); registrationRepository.save(reg); Notification n = new Notification(); n.setUser(reg.getUser()); n.setNotification("Đăng ký tham gia đấu giá đã được duyệt"); n.setTime(LocalDateTime.now()); notificationRepository.save(n); notificationWs.broadcastNotification(n); } return "redirect:/admin/auction-registrations"; } @PostMapping("/auction-registrations/{id}/reject") public String rejectAuctionRegistration(@PathVariable("id") Integer id) throws Exception { AuctionRegistration reg = registrationRepository.findById(id).orElse(null); if (reg != null) { reg.setStatus(RegistrationStatus.REJECTED); registrationRepository.save(reg); Notification n = new Notification(); n.setUser(reg.getUser()); n.setNotification("Đăng ký tham gia đấu giá đã bị từ chối"); n.setTime(LocalDateTime.now()); notificationRepository.save(n); notificationWs.broadcastNotification(n); } return "redirect:/admin/auction-registrations"; }
+    @PostMapping("/auction-registrations/{id}/approve")
+    public String approveAuctionRegistration(@PathVariable Integer id) {
+        AuctionRegistration reg = registrationRepository.findById(id).orElse(null);
+        if (reg != null) {
+            reg.setStatus(RegistrationStatus.APPROVED);
+            registrationRepository.save(reg);
 
-    // ================== PRODUCT REGISTRATIONS ==================
+            Notification n = new Notification();
+            n.setUser(reg.getUser());
+            n.setNotification("Đăng ký tham gia đấu giá đã được duyệt");
+            n.setTime(LocalDateTime.now());
+            notificationRepository.save(n);
 
+            if (notificationWs != null) {
+                try { notificationWs.broadcastNotification(n); } catch (Exception ignore) {}
+            }
+        }
+        return "redirect:/admin/auction-registrations";
+    }
+
+    @PostMapping("/auction-registrations/{id}/reject")
+    public String rejectAuctionRegistration(@PathVariable Integer id) {
+        AuctionRegistration reg = registrationRepository.findById(id).orElse(null);
+        if (reg != null) {
+            reg.setStatus(RegistrationStatus.REJECTED);
+            registrationRepository.save(reg);
+
+            Notification n = new Notification();
+            n.setUser(reg.getUser());
+            n.setNotification("Đăng ký tham gia đấu giá đã bị từ chối");
+            n.setTime(LocalDateTime.now());
+            notificationRepository.save(n);
+
+            if (notificationWs != null) {
+                try { notificationWs.broadcastNotification(n); } catch (Exception ignore) {}
+            }
+        }
+        return "redirect:/admin/auction-registrations";
+    }
+
+    // ===== Product Registrations =====
     @GetMapping("/product-registrations")
     public String listProductRegistrations(@RequestParam(defaultValue = "PENDING") String status, Model model) {
-        List<Product> products;
-        if ("ALL".equalsIgnoreCase(status)) {
-            products = productRepository.findAll();
-        } else {
-            products = productRepository.findByStatus(ProductStatus.valueOf(status.toUpperCase()));
-        }
+        List<Product> products =
+                "ALL".equalsIgnoreCase(status)
+                        ? productRepository.findAll()
+                        : productRepository.findByStatus(ProductStatus.valueOf(status.toUpperCase()));
         model.addAttribute("products", products);
         model.addAttribute("currentStatus", status.toUpperCase());
         return "admin/product-registrations";
     }
 
-    @PostMapping("/product-registrations/{id}/approve") public String approveProduct(@PathVariable("id") Integer id) throws Exception { Product p = productRepository.findById(id).orElse(null); if (p != null) { p.setStatus(ProductStatus.APPROVED); productRepository.save(p); Notification n = new Notification(); n.setUser(p.getSeller()); n.setNotification("Sản phẩm của bạn đã được duyệt"); n.setTime(LocalDateTime.now()); notificationRepository.save(n); notificationWs.broadcastNotification(n); } return "redirect:/admin/product-registrations"; } @PostMapping("/product-registrations/{id}/reject") public String rejectProduct(@PathVariable("id") Integer id) throws Exception { Product p = productRepository.findById(id).orElse(null); if (p != null) { p.setStatus(ProductStatus.REJECTED); productRepository.save(p); Notification n = new Notification(); n.setUser(p.getSeller()); n.setNotification("Sản phẩm của bạn đã bị từ chối"); n.setTime(LocalDateTime.now()); notificationRepository.save(n); notificationWs.broadcastNotification(n); } return "redirect:/admin/product-registrations"; }
+    @PostMapping("/product-registrations/{id}/approve")
+    public String approveProduct(@PathVariable Integer id) {
+        Product p = productRepository.findById(id).orElse(null);
+        if (p != null) {
+            p.setStatus(ProductStatus.APPROVED);
+            productRepository.save(p);
 
-    // ================== USERS ==================
+            Notification n = new Notification();
+            n.setUser(p.getSeller());
+            n.setNotification("Sản phẩm của bạn đã được duyệt");
+            n.setTime(LocalDateTime.now());
+            notificationRepository.save(n);
 
+            if (notificationWs != null) {
+                try { notificationWs.broadcastNotification(n); } catch (Exception ignore) {}
+            }
+        }
+        return "redirect:/admin/product-registrations";
+    }
+
+    @PostMapping("/product-registrations/{id}/reject")
+    public String rejectProduct(@PathVariable Integer id) {
+        Product p = productRepository.findById(id).orElse(null);
+        if (p != null) {
+            p.setStatus(ProductStatus.REJECTED);
+            productRepository.save(p);
+
+            Notification n = new Notification();
+            n.setUser(p.getSeller());
+            n.setNotification("Sản phẩm của bạn đã bị từ chối");
+            n.setTime(LocalDateTime.now());
+            notificationRepository.save(n);
+
+            if (notificationWs != null) {
+                try { notificationWs.broadcastNotification(n); } catch (Exception ignore) {}
+            }
+        }
+        return "redirect:/admin/product-registrations";
+    }
+
+    // ===== Users & Accounts =====
     @GetMapping("/users")
     public String listUsers(Model model) {
-        List<User> users = userRepository.findAll();
-        model.addAttribute("users", users);
+        model.addAttribute("users", userRepository.findAll());
         return "admin/users";
     }
 
@@ -134,93 +215,86 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-    // ================== ACCOUNTS (fallback) ==================
-
     @GetMapping("/accounts")
     public String listAccounts(Model model) {
-        List<Account> accounts = accountRepository.findAll();
-        model.addAttribute("accounts", accounts);
+        model.addAttribute("accounts", accountRepository.findAll());
         return "admin/users";
     }
 
-    // ================== PRODUCTS (CRUD với DTO) ==================
-
-    // LIST
+    // ===== Products (CRUD via DTO) =====
     @GetMapping("/products")
     public String productManagement(
+            @RequestParam(value = "q", required = false) String q,
             @RequestParam(value = "status", required = false) ProductStatus status,
             @RequestParam(value = "categoryId", required = false) Integer categoryId,
             Model model) {
 
-        List<Product> products;
-        if (status != null && categoryId != null) {
-            products = productService.getAllProductsForAdmin().stream()
+        List<Product> products = productService.getAllProductsForAdmin();
+
+        if (status != null) {
+            products = products.stream()
                     .filter(p -> p.getStatus() == status)
-                    .filter(p -> p.getCategory() != null && p.getCategory().getId().equals(categoryId))
                     .collect(Collectors.toList());
-        } else if (status != null) {
-            products = productService.getProductsByStatus(status);
-        } else if (categoryId != null) {
-            products = productService.getProductsByCategory(categoryId);
-        } else {
-            products = productService.getAllProductsForAdmin();
+        }
+        if (categoryId != null) {
+            products = products.stream()
+                    .filter(p -> p.getCategory() != null && Objects.equals(p.getCategory().getId(), categoryId))
+                    .collect(Collectors.toList());
+        }
+        if (q != null && !q.isBlank()) {
+            String key = q.trim().toLowerCase();
+            products = products.stream()
+                    .filter(p -> p.getName() != null && p.getName().toLowerCase().contains(key))
+                    .collect(Collectors.toList());
         }
 
-        List<Category> categories = productService.getAllCategories();
-
         model.addAttribute("products", products);
-        model.addAttribute("categories", categories);
+        model.addAttribute("categories", productService.getAllCategories());
         model.addAttribute("statuses", ProductStatus.values());
+        model.addAttribute("q", q);
         model.addAttribute("selectedStatus", status);
         model.addAttribute("selectedCategoryId", categoryId);
 
         return "admin/products";
     }
 
-    // DETAIL (giữ nguyên – có thể dùng entity để xem)
     @GetMapping("/products/{id}")
     public String productDetail(@PathVariable Integer id, Model model) {
         Product product = productService.getProductById(id);
         if (product == null) return "redirect:/admin/products";
 
-        List<Category> categories = productService.getAllCategories();
-        model.addAttribute("productEntity", product); // nếu muốn hiển thị read-only
-        model.addAttribute("categories", categories);
+        model.addAttribute("productEntity", product);
+        model.addAttribute("categories", productService.getAllCategories());
         model.addAttribute("statuses", ProductStatus.values());
         return "admin/product-detail";
     }
 
-    // ADD FORM (bind vào DTO)
+    // Add form
     @GetMapping("/products/add")
     public String addProductForm(Model model) {
-        List<Category> categories = productService.getAllCategories();
-        model.addAttribute("product", new ProductRequestDTO()); // DTO
-        model.addAttribute("categories", categories);
-        // Nếu form không cần status (DTO không có), bỏ statuses
-        return "admin/product-form";
+        model.addAttribute("product", new ProductRequestDTO());
+        model.addAttribute("categories", productService.getAllCategories());
+        return "admin/product-add";
     }
 
-    // CREATE (nhận DTO)
+    // Create (highestPrice chỉ dùng form, không lưu DB)
     @PostMapping("/products")
-    public String createProduct(
-            @Valid @ModelAttribute("product") ProductRequestDTO productDTO,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+    public String createProduct(@Valid @ModelAttribute("product") ProductRequestDTO productDTO,
+                                BindingResult bindingResult,
+                                RedirectAttributes redirectAttributes,
+                                Model model) {
 
-        // validate highestPrice >= startingPrice (nếu có trong DTO)
         if (!validateHighestPrice(productDTO.getStartingPrice(), productDTO.getHighestPrice())) {
-            bindingResult.rejectValue("highestPrice", "price.invalid", "Giá cao nhất không được nhỏ hơn giá khởi điểm!");
+            bindingResult.rejectValue("highestPrice", "price.invalid",
+                    "Giá cao nhất không được nhỏ hơn giá khởi điểm!");
         }
-
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", productService.getAllCategories());
-            // Nếu template đang hiển thị statuses nhưng DTO không có -> đừng add statuses
-            return "admin/product-form";
+            return "admin/product-add";
         }
 
         try {
-            productService.createProduct(productDTO);
+            productService.createProduct(productDTO); // Service của bạn không map highestPrice xuống entity
             redirectAttributes.addFlashAttribute("success", "Thêm sản phẩm thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Lỗi khi thêm sản phẩm: " + e.getMessage());
@@ -228,7 +302,7 @@ public class AdminController {
         return "redirect:/admin/products";
     }
 
-    // EDIT FORM (map entity -> DTO để bind form)
+    // Edit form (entity -> DTO)
     @GetMapping("/products/{id}/edit")
     public String editProductForm(@PathVariable Integer id, Model model) {
         Product p = productService.getProductById(id);
@@ -239,53 +313,49 @@ public class AdminController {
         dto.setName(p.getName());
         dto.setDescription(p.getDescription());
         dto.setStartingPrice(p.getStartingPrice());
-        dto.setImageUrl(p.getImageUrl());
         dto.setCategoryId(p.getCategory() != null ? p.getCategory().getId() : null);
+        dto.setImageUrl(p.getImageUrl()); // tên file trong static/images
 
         BigDecimal highestBid = bidHistoryService.getHighestBidByProductId(id);
-        model.addAttribute("highestBid", highestBid);
+        dto.setHighestPrice(highestBid);
 
+        model.addAttribute("highestBid", highestBid);
         model.addAttribute("product", dto);
         model.addAttribute("categories", productService.getAllCategories());
         return "admin/product-form";
     }
 
-
-    // UPDATE (nhận DTO)
+    // Update
     @PostMapping("/products/{id}")
-    public String updateProduct(
-            @PathVariable Integer id,
-            @Valid @ModelAttribute("product") ProductRequestDTO productDTO,
-            BindingResult bindingResult,
-            RedirectAttributes redirectAttributes,
-            Model model) {
+    public String updateProduct(@PathVariable Integer id,
+                                @Valid @ModelAttribute("product") ProductRequestDTO productDTO,
+                                BindingResult bindingResult,
+                                RedirectAttributes redirectAttributes,
+                                Model model) {
 
         if (!validateHighestPrice(productDTO.getStartingPrice(), productDTO.getHighestPrice())) {
-            bindingResult.rejectValue("highestPrice", "price.invalid", "Giá cao nhất không được nhỏ hơn giá khởi điểm!");
+            bindingResult.rejectValue("highestPrice", "price.invalid",
+                    "Giá cao nhất không được nhỏ hơn giá khởi điểm!");
         }
-
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", productService.getAllCategories());
             return "admin/product-form";
         }
 
         try {
-            productService.updateProduct(id, productDTO);
+            productService.updateProduct(id, productDTO); // KHÔNG map highestPrice xuống entity
             redirectAttributes.addFlashAttribute("success", "Cập nhật sản phẩm thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Lỗi khi cập nhật sản phẩm: " + e.getMessage());
         }
-
         return "redirect:/admin/products";
     }
 
-    // QUICK UPDATE STATUS (giữ nguyên – dùng entity bên service)
+    // Quick update status
     @PostMapping("/products/{id}/status")
-    public String updateProductStatus(
-            @PathVariable Integer id,
-            @RequestParam ProductStatus status,
-            RedirectAttributes redirectAttributes) {
-
+    public String updateProductStatus(@PathVariable Integer id,
+                                      @RequestParam ProductStatus status,
+                                      RedirectAttributes redirectAttributes) {
         try {
             productService.updateProductStatus(id, status);
             redirectAttributes.addFlashAttribute("success", "Cập nhật trạng thái sản phẩm thành công!");
@@ -295,7 +365,7 @@ public class AdminController {
         return "redirect:/admin/products";
     }
 
-    // DELETE
+    // Delete
     @PostMapping("/products/{id}/delete")
     public String deleteProduct(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         try {
@@ -307,25 +377,12 @@ public class AdminController {
         return "redirect:/admin/products";
     }
 
-    // ================== CATEGORIES (CRUD) ==================
-
+    // ===== Categories =====
     @GetMapping("/categories")
     public String categoryManagement(Model model) {
-        List<Category> categories = productService.getAllCategories();
-        model.addAttribute("categories", categories);
+        model.addAttribute("categories", productService.getAllCategories());
         model.addAttribute("category", new Category());
         return "admin/categories";
-    }
-
-    @GetMapping("/categories/{id}")
-    public String categoryDetail(@PathVariable Integer id, Model model) {
-        Category category = productService.getCategoryById(id);
-        if (category == null) return "redirect:/admin/categories";
-
-        List<Product> products = productService.getProductsByCategory(id);
-        model.addAttribute("category", category);
-        model.addAttribute("products", products);
-        return "admin/category-detail";
     }
 
     @PostMapping("/categories")
@@ -340,11 +397,13 @@ public class AdminController {
     }
 
     @PostMapping("/categories/{id}")
-    public String updateCategory(@PathVariable Integer id, @RequestParam String name, RedirectAttributes redirectAttributes) {
+    public String updateCategory(@PathVariable Integer id,
+                                 @RequestParam String name,
+                                 RedirectAttributes redirectAttributes) {
         try {
-            Category category = new Category();
-            category.setName(name);
-            productService.updateCategory(id, category);
+            Category c = new Category();
+            c.setName(name);
+            productService.updateCategory(id, c);
             redirectAttributes.addFlashAttribute("success", "Cập nhật danh mục thành công!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Lỗi khi cập nhật danh mục: " + e.getMessage());
@@ -363,10 +422,90 @@ public class AdminController {
         return "redirect:/admin/categories";
     }
 
-    // ================== HELPERS ==================
+    @GetMapping("/auctions")
+    public String auctions(Model model) {
+        List<Auction> auctions = auctionRepository.findAll();
+        if (auctions == null || auctions.isEmpty()) {
+            model.addAttribute("auctions", Collections.emptyList());
+            model.addAttribute("highestMap", Collections.emptyMap());
+            model.addAttribute("bidCountMap", Collections.emptyMap());
+            model.addAttribute("participantMap", Collections.emptyMap());
+            model.addAttribute("statusMap", Collections.emptyMap());
+            return "admin/auctions";
+        }
+
+        List<Integer> auctionIds = auctions.stream()
+                .map(Auction::getId)
+                .filter(Objects::nonNull)
+                .toList();
+        Map<Integer, BigDecimal> highestMap =
+                bidHistoryService.getHighestBidMapByAuctionIds(auctionIds);
+        Map<Integer, Long> bidCountMap =
+                bidHistoryService.getBidCountMapByAuctionIds(auctionIds);
+        Map<Integer, Long> participantMap = auctions.stream()
+                .collect(Collectors.toMap(
+                        Auction::getId,
+                        a -> auctionRegistrationRepository.countRegsByAuction(a.getId())
+                ));
+        Map<Integer, String> statusMap = new HashMap<>();
+        LocalDateTime now = LocalDateTime.now();
+        for (Auction a : auctions) {
+            String stt;
+            if (a.getStartTime() != null && now.isBefore(a.getStartTime())) {
+                stt = "CHƯA BẮT ĐẦU";
+            } else if (a.getEndTime() != null && now.isAfter(a.getEndTime())) {
+                stt = "KẾT THÚC";
+            } else {
+                stt = "ĐANG DIỄN RA";
+            }
+            statusMap.put(a.getId(), stt);
+        }
+
+        model.addAttribute("auctions", auctions);
+        model.addAttribute("highestMap", highestMap);
+        model.addAttribute("bidCountMap", bidCountMap);
+        model.addAttribute("participantMap", participantMap);
+        model.addAttribute("statusMap", statusMap);
+        return "admin/auctions";
+    }
+
+
+    @GetMapping("/auctions/{id}")
+    public String auctionDetail(@PathVariable Integer id, Model model) {
+        var auctionOpt = auctionRepository.findById(id);
+        if (auctionOpt.isEmpty()) return "redirect:/admin/auctions";
+        Auction auction = auctionOpt.get();
+
+        // dữ liệu gốc
+        var histories = bidHistoryService.findByAuctionId(id);
+        var highest = bidHistoryService.getHighestBidByAuctionId(id);
+        long participants = auctionRegistrationRepository.countByAuction_Id(id);
+
+        // Map -> BidDTO (dùng User.getName() theo entity bạn đưa)
+        var fmt = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        java.util.List<com.example.auctionweb.dto.BidDTO> bidDTOs = histories.stream().map(h -> {
+            String display = "—";
+            try {
+                if (h.getUser() != null) {
+                    var u = h.getUser();
+                    if (u.getName() != null && !u.getName().isBlank()) display = u.getName();
+                    else if (u.getEmail() != null && !u.getEmail().isBlank()) display = u.getEmail();
+                }
+            } catch (Throwable ignore) {}
+
+            String timeText = (h.getTime() != null) ? fmt.format(h.getTime()) : "—";
+            return new com.example.auctionweb.dto.BidDTO(display, h.getAmount(), timeText);
+        }).toList();
+
+        model.addAttribute("auction", auction);
+        model.addAttribute("highest", highest);
+        model.addAttribute("participants", participants);
+        model.addAttribute("bidDTOs", bidDTOs);
+        return "admin/auction-detail";
+    }
 
     private boolean validateHighestPrice(BigDecimal startingPrice, BigDecimal highestPrice) {
-        if (startingPrice == null || highestPrice == null) return true; // bỏ qua nếu chưa nhập
+        if (startingPrice == null || highestPrice == null) return true;
         return highestPrice.compareTo(startingPrice) >= 0;
     }
 

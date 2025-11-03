@@ -10,13 +10,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface BidHistoryRepository extends JpaRepository<BidHistory, Integer> {
-    List<BidHistory> findAll();
-    BidHistory save(BidHistory bidHistory);
+
     List<BidHistory> findAllByOrderByTimeDesc();
-
-    List<BidHistory> findBidHistoriesByAuctionOrderByTimeDesc(com.example.auctionweb.entity.Auction auction);
-
-    BidHistory findTopByAuctionOrderByAmountDesc(com.example.auctionweb.entity.Auction auction);
+    List<BidHistory> findBidHistoriesByAuctionOrderByTimeDesc(Auction auction);
+    BidHistory findTopByAuctionOrderByAmountDesc(Auction auction);
 
     @Query("""
            SELECT MAX(b.amount)
@@ -32,4 +29,35 @@ public interface BidHistoryRepository extends JpaRepository<BidHistory, Integer>
            GROUP BY b.auction.product.id
            """)
     List<Object[]> findMaxAmountByProductIds(@Param("productIds") List<Integer> productIds);
+
+    List<BidHistory> findByAuction_IdOrderByTimeDesc(Integer auctionId);
+
+    @Query("""
+           SELECT COALESCE(MAX(b.amount), 0)
+           FROM BidHistory b
+           WHERE b.auction.id = :auctionId
+           """)
+    BigDecimal findMaxAmountByAuctionId(@Param("auctionId") Integer auctionId);
+
+    @Query("""
+           SELECT b.auction.id, COALESCE(MAX(b.amount), 0)
+           FROM BidHistory b
+           WHERE b.auction.id IN :auctionIds
+           GROUP BY b.auction.id
+           """)
+    List<Object[]> findMaxAmountByAuctionIds(@Param("auctionIds") List<Integer> auctionIds);
+    @Query("""
+       SELECT COUNT(b)
+       FROM BidHistory b
+       WHERE b.auction.id = :auctionId
+       """)
+    long countByAuctionId(@Param("auctionId") Integer auctionId);
+
+    @Query("""
+       SELECT b.auction.id, COUNT(b)
+       FROM BidHistory b
+       WHERE b.auction.id IN :auctionIds
+       GROUP BY b.auction.id
+       """)
+    List<Object[]> countByAuctionIds(@Param("auctionIds") List<Integer> auctionIds);
 }

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Phiên đấu giá - Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background:#f6f7fb }
+        .stat-card { background:#fff; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,.06) }
+        .table> :not(caption)>*>* { vertical-align:middle }
+    </style>
+</head>
+<body>
+<div class="container py-4">
+
+    <!-- header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0"><i class="bi bi-hammer"></i> Danh sách phiên đấu giá</h3>
+        <a href="/admin" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Dashboard
+        </a>
+    </div>
+
+    <!-- table -->
+    <div class="stat-card p-3">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Sản phẩm</th>
+                    <th>Bắt đầu</th>
+                    <th>Kết thúc</th>
+                    <th class="text-end">Giá cao nhất</th>
+                    <th class="text-end">Lượt bid</th>
+                    <th class="text-end">Đăng ký</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <!-- khi có dữ liệu -->
+                <tr th:each="a : ${auctions}"
+                    th:with="
+              stText=${statusMap != null && statusMap.containsKey(a.id) ? statusMap[a.id] : (a.status != null ? a.status.toString() : '—')},
+              stClass=${stText=='ĐANG DIỄN RA' ? 'badge bg-success' :
+                       (stText=='CHƯA BẮT ĐẦU' ? 'badge bg-warning text-dark' :
+                       (stText=='KẾT THÚC' ? 'badge bg-secondary' : 'badge bg-light text-dark'))}
+            ">
+                    <td th:text="${a.id}">1</td>
+
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <!-- ưu tiên URL CDN -->
+                            <img th:if="${a.product != null and a.product.imageUrl != null and #strings.startsWith(a.product.imageUrl,'http')}"
+                                 th:src="${a.product.imageUrl}" alt="Ảnh"
+                                 style="width:40px;height:40px;object-fit:cover;border-radius:6px;">
+                            <!-- nếu không phải URL thì coi là file tĩnh /images -->
+                            <img th:if="${a.product != null and a.product.imageUrl != null
+                           and !#strings.isEmpty(a.product.imageUrl)
+                           and !#strings.startsWith(a.product.imageUrl,'http')}"
+                                 th:src="@{'/images/' + ${a.product.imageUrl}}" alt="Ảnh"
+                                 style="width:40px;height:40px;object-fit:cover;border-radius:6px;">
+                            <span th:text="${a.product != null ? a.product.name : '—'}">—</span>
+                        </div>
+                    </td>
+
+                    <td th:text="${a.startTime != null ? #temporals.format(a.startTime,'dd/MM/yyyy HH:mm') : '—'}">—</td>
+                    <td th:text="${a.endTime   != null ? #temporals.format(a.endTime,  'dd/MM/yyyy HH:mm') : '—'}">—</td>
+
+                    <!-- giá cao nhất -->
+                    <td class="text-end"
+                        th:text="${highestMap != null && highestMap.containsKey(a.id)
+                        ? #numbers.formatDecimal(highestMap[a.id],0,'POINT',0,'COMMA') : '0'}">0</td>
+
+                    <!-- lượt bid -->
+                    <td class="text-end"
+                        th:text="${bidCountMap != null && bidCountMap.containsKey(a.id) ? bidCountMap[a.id] : 0}">0</td>
+
+                    <!-- số đăng ký -->
+                    <td class="text-end"
+                        th:text="${participantMap != null && participantMap.containsKey(a.id) ? participantMap[a.id] : 0}">0</td>
+
+                    <!-- trạng thái -->
+                    <td><span th:class="${stClass}" th:text="${stText}">—</span></td>
+
+                    <!-- action -->
+                    <td class="text-end">
+                        <a th:href="@{|/admin/auctions/${a.id}|}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i> Xem
+                        </a>
+                    </td>
+                </tr>
+
+                <!-- khi rỗng -->
+                <tr th:if="${auctions == null or #lists.isEmpty(auctions)}">
+                    <td colspan="9" class="text-center text-muted py-4">Chưa có phiên đấu giá</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

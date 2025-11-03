@@ -1,51 +1,51 @@
 package com.example.auctionweb.service;
 
-import com.example.auctionweb.dto.ProductRequestDTO;
-import com.example.auctionweb.entity.Product;
-import com.example.auctionweb.entity.Category;
-import jakarta.validation.Valid;
 
+import com.example.auctionweb.dto.ProductRequestDTO;
+import com.example.auctionweb.entity.Category;
+import com.example.auctionweb.entity.Product;
 import java.util.List;
 
-public interface IProductService {
 
-    // ========== CHO NGƯỜI DÙNG ==========
+public interface IProductService {
+    // ========= USER-FACING =========
     List<Product> searchProducts(String name, Integer categoryId);
     List<Category> getAllCategories();
 
-    // ========== CRUD SẢN PHẨM ==========
-    // CREATE
+
+    // ========= PRODUCT CRUD =========
+// Create via DTO (preferred)
+    Product createProduct(ProductRequestDTO productDTO);
+    // Create via entity (compat)
     Product saveProduct(Product product);
 
-    // READ
+
+    // Read
     List<Product> getAllProductsForAdmin();
     Product getProductById(Integer id);
     List<Product> getProductsByStatus(Product.ProductStatus status);
     List<Product> getProductsByCategory(Integer categoryId);
     List<Product> getProductsBySeller(Integer sellerId);
+    List<Product> findAll();
+    Product findById(int id);
 
-    // UPDATE
+
+    // Update
+    Product updateProduct(Integer id, ProductRequestDTO productDTO);
     Product updateProductStatus(Integer productId, Product.ProductStatus status);
 
-    // DELETE
+
+    // Delete
     void deleteProduct(Integer productId);
 
-    // ========== CRUD DANH MỤC ==========
-    // CREATE
+
+    // ========= CATEGORY CRUD =========
     Category createCategory(Category category);
-
-    // READ
     Category getCategoryById(Integer id);
-
-    // UPDATE
     Category updateCategory(Integer categoryId, Category category);
-
-    // DELETE
     void deleteCategory(Integer categoryId);
-    Product findById(int id);
-    List<Product> findAll();
 
-    Product updateProduct(Integer id,  ProductRequestDTO productDTO);
 
-    Product createProduct( ProductRequestDTO productDTO);
+    // Utility
+    long countProductsByStatus(Product.ProductStatus status);
 }

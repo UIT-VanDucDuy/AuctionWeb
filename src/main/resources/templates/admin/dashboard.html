@@ -215,14 +215,27 @@
                         <div class="stat-card p-4 mt-4">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="mb-0"><i class="bi bi-box-seam"></i> Sản phẩm mới nhất</h5>
-                                <div class="d-flex gap-2">
+                                <div class="d-flex flex-wrap gap-2 align-items-center">
                                     <a class="btn btn-primary" href="/admin/products/add">
                                         <i class="bi bi-plus-circle"></i> Thêm sản phẩm
                                     </a>
                                     <a class="btn btn-outline-secondary" href="/admin/products">
                                         <i class="bi bi-list-ul"></i> Tất cả sản phẩm
                                     </a>
+                                    <a class="btn btn-outline-secondary d-flex align-items-center gap-2" href="/admin/categories">
+                                        <i class="bi bi-tags"></i> Danh mục sản phẩm
+                                        <span class="badge bg-light text-dark ms-1"
+                                              th:text="${totalCategories != null ? totalCategories : 0}">0</span>
+                                    </a>
+                                    <a href="/admin/auctions" class="btn btn-warning text-dark">
+                                        <i class="bi bi-trophy"></i> Danh sách đấu giá
+                                    </a>
+
                                 </div>
+
+
+
+                            </div>
                             </div>
 
                             <div class="table-responsive">
@@ -243,29 +256,29 @@
                                         <td th:text="${p.id}">1</td>
 
                                         <td class="d-flex align-items-center gap-2">
+                                            <!-- FIX: ảnh từ static/images bằng tên file -->
                                             <img th:if="${p.imageUrl != null and !#strings.isEmpty(p.imageUrl)}"
-                                                 th:src="${p.imageUrl}"
+                                                 th:src="@{'/images/' + ${p.imageUrl}}"
                                                  alt="Ảnh sản phẩm"
                                                  style="width:36px;height:36px;object-fit:cover;border-radius:6px;">
-
-
                                             <span th:text="${p.name}">Tên SP</span>
                                         </td>
 
                                         <td th:text="${p.category != null ? p.category.name : '—'}">Danh mục</td>
 
+                                        <!-- FIX: format số: phân cách hàng nghìn COMMA, 0 chữ số thập phân -->
                                         <td class="text-end"
-                                            th:text="${#numbers.formatDecimal(p.startingPrice, 0, 'POINT', 0, 'COMMA')}">0</td>
+                                            th:text="${#numbers.formatDecimal(p.startingPrice, 0, 'COMMA', 0, 'POINT')}">0</td>
 
                                         <td class="text-end"
-                                            th:text="${highestBidMap[p.id] != null ? #numbers.formatDecimal(highestBidMap[p.id], 0, 'POINT', 0, 'COMMA') : '-'}">
+                                            th:text="${highestBidMap[p.id] != null ? #numbers.formatDecimal(highestBidMap[p.id], 0, 'COMMA', 0, 'POINT') : '-'}">
                                             -
                                         </td>
 
                                         <td>
-            <span th:classappend="${p.status.name() == 'APPROVED'} ? 'badge bg-success' :
-                                  (${p.status.name() == 'PENDING'} ? 'badge bg-warning text-dark' : 'badge bg-secondary')"
-                  th:text="${p.status}">PENDING</span>
+                                            <span th:classappend="${p.status.name() == 'APPROVED'} ? 'badge bg-success' :
+                                                                  (${p.status.name() == 'PENDING'} ? 'badge bg-warning text-dark' : 'badge bg-secondary')"
+                                                  th:text="${p.status}">PENDING</span>
                                         </td>
 
                                         <td class="text-end">

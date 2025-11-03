@@ -2,116 +2,136 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Quản lý sản phẩm</title>
+    <title>Tất cả sản phẩm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        body { background:#f8f9fa; }
-        .product-img { width:50px; height:50px; object-fit:cover; border-radius:6px; }
-        th { white-space:nowrap; }
+        .card{border:0;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+        .thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid #e9ecef}
     </style>
 </head>
-<body>
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold"><i class="bi bi-box-seam"></i> Danh sách sản phẩm</h3>
+<body class="bg-light">
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Tất cả sản phẩm</h3>
         <div class="d-flex gap-2">
-            <a class="btn btn-primary" href="/admin/products/add"><i class="bi bi-plus-circle"></i> Thêm sản phẩm</a>
-            <a class="btn btn-outline-secondary" href="/admin/dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+            <a th:href="@{/admin/products/add}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i> Thêm sản phẩm
+            </a>
+            <a th:href="@{/admin}" class="btn btn-outline-secondary">Về Dashboard</a>
         </div>
     </div>
 
     <!-- Filter -->
-    <form class="card mb-4 shadow-sm" method="get" th:action="@{/admin/products}">
-        <div class="card-body row g-3 align-items-end">
+    <div class="card p-3 mb-3">
+        <form class="row g-2" th:action="@{/admin/products}" method="get">
             <div class="col-md-4">
-                <label class="form-label">Trạng thái</label>
-                <select class="form-select" name="status">
-                    <option value="">-- Tất cả --</option>
-                    <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"
-                            th:selected="${selectedStatus != null and selectedStatus == s}">
-                    </option>
-                </select>
+                <input type="text" name="q" th:value="${q}" class="form-control" placeholder="Tìm theo tên...">
             </div>
-            <div class="col-md-4">
-                <label class="form-label">Danh mục</label>
-                <select class="form-select" name="categoryId">
-                    <option value="">-- Tất cả --</option>
-                    <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
-                            th:selected="${selectedCategoryId != null and selectedCategoryId == c.id}">
-                    </option>
-                </select>
-            </div>
-            <div class="col-md-4 d-flex gap-2">
-                <button type="submit" class="btn btn-success mt-auto"><i class="bi bi-funnel"></i> Lọc</button>
-                <a href="/admin/products" class="btn btn-outline-secondary mt-auto"><i class="bi bi-x-circle"></i> Xoá lọc</a>
-            </div>
-        </div>
-    </form>
 
-    <!-- Flash -->
-    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <!-- Dùng value thường thay vì th:value -->
+                    <option value="" th:selected="${selectedStatus == null}">-- Trạng thái --</option>
+                    <option th:each="st : ${statuses}"
+                            th:value="${st}"
+                            th:selected="${selectedStatus != null and selectedStatus == st}"
+                            th:text="${st}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <select name="categoryId" class="form-select">
+                    <!-- Dùng value thường thay vì th:value -->
+                    <option value="" th:selected="${selectedCategoryId == null}">-- Danh mục --</option>
+                    <option th:each="c : ${categories}"
+                            th:value="${c.id}"
+                            th:selected="${selectedCategoryId != null and selectedCategoryId == c.id}"
+                            th:text="${c.name}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-2 d-grid">
+                <button class="btn btn-secondary"><i class="bi bi-funnel me-1"></i> Lọc</button>
+            </div>
+        </form>
+    </div>
 
     <!-- Table -->
-    <div class="card shadow-sm">
+    <div class="card">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table align-middle mb-0">
                 <thead class="table-light">
                 <tr>
-                    <th>ID</th>
-                    <th>Tên sản phẩm</th>
+                    <th style="width:72px">ID</th>
+                    <th>Sản phẩm</th>
                     <th>Danh mục</th>
                     <th class="text-end">Giá khởi điểm</th>
-                    <th class="text-end">Giá cao nhất</th>
                     <th>Trạng thái</th>
-                    <th>Ngày yêu cầu</th>
-                    <th class="text-end">Thao tác</th>
+                    <th class="text-end" style="width:220px">Thao tác</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="p : ${products}">
                     <td th:text="${p.id}">1</td>
+
                     <td>
                         <div class="d-flex align-items-center gap-2">
-                            <img class="product-img" th:src="${@cdn.url(p.imageUrl)}" loading="lazy" decoding="async" alt="Ảnh">
-                            <span th:text="${p.name}">Tên SP</span>
+                            <img class="thumb"
+                                 th:if="${p.imageUrl != null and !#strings.isEmpty(p.imageUrl)}"
+                                 th:src="@{/images/{f}(f=${p.imageUrl})}"
+                                 alt="thumb">
+                            <div>
+                                <div class="fw-semibold" th:text="${p.name}">Tên SP</div>
+                                <div class="text-muted small"
+                                     th:text="${p.requestedAt != null ? #temporals.format(p.requestedAt,'dd/MM/yyyy HH:mm') : ''}">
+                                </div>
+                            </div>
                         </div>
                     </td>
+
                     <td th:text="${p.category != null ? p.category.name : '—'}">—</td>
+
                     <td class="text-end"
-                        th:text="${p.startingPrice != null ? #numbers.formatDecimal(p.startingPrice,0,'POINT',0,'COMMA') : '0'}">0</td>
-                    <td class="text-end"
-                        th:text="${(highestBidMap != null and highestBidMap[p.id] != null)
-                        ? #numbers.formatDecimal(highestBidMap[p.id],0,'POINT',0,'COMMA') : '-'}">-</td>
+                        th:text="${#numbers.formatDecimal(p.startingPrice, 0, 'COMMA', 0, 'POINT')}">0</td>
+
                     <td>
-            <span th:classappend="${p.status.name() == 'APPROVED'} ? 'badge bg-success' :
-                                  (${p.status.name() == 'PENDING'} ? 'badge bg-warning text-dark' :
-                                  (${p.status.name() == 'REJECTED'} ? 'badge bg-danger' : 'badge bg-secondary'))"
-                  th:text="${p.status}">PENDING</span>
+            <span th:text="${p.status}"
+                  th:classappend="${p.status != null and p.status.name()=='APPROVED' ? 'badge bg-success' :
+                                  (p.status != null and p.status.name()=='PENDING'  ? 'badge bg-warning text-dark' :
+                                                                                       'badge bg-secondary')}">
+              PENDING
+            </span>
                     </td>
-                    <td th:text="${p.requestedAt != null ? #temporals.format(p.requestedAt, 'dd/MM/yyyy HH:mm') : '—'}">—</td>
+
                     <td class="text-end">
-                        <a th:href="@{|/admin/products/${p.id}/edit|}" class="btn btn-sm btn-outline-primary me-1">
+                        <a class="btn btn-sm btn-outline-primary" th:href="@{|/admin/products/${p.id}/edit|}">
                             <i class="bi bi-pencil-square"></i> Sửa
                         </a>
                         <form th:action="@{|/admin/products/${p.id}/delete|}" method="post" class="d-inline"
-                              onsubmit="return confirm('Bạn có chắc muốn xoá sản phẩm này?');">
+                              onsubmit="return confirm('Xoá sản phẩm này?');">
                             <button type="submit" class="btn btn-sm btn-outline-danger">
                                 <i class="bi bi-trash"></i> Xoá
                             </button>
                         </form>
                     </td>
                 </tr>
+
                 <tr th:if="${#lists.isEmpty(products)}">
-                    <td colspan="8" class="text-center text-muted py-4">Không có sản phẩm nào</td>
+                    <td colspan="6" class="text-center text-muted py-4">Không có sản phẩm.</td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
