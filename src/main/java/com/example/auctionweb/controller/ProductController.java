@@ -3,6 +3,7 @@ package com.example.auctionweb.controller;
 import com.example.auctionweb.entity.Account;
 import com.example.auctionweb.entity.User;
 import com.example.auctionweb.entity.Product;
+import com.example.auctionweb.service.IProductService;
 import com.example.auctionweb.service.interfaces.*;
 import com.example.auctionweb.websocket.BidWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;

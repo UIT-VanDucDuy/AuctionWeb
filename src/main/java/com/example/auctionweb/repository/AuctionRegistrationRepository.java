@@ -1,5 +1,6 @@
 package com.example.auctionweb.repository;
 
+import com.example.auctionweb.entity.Auction;
 import com.example.auctionweb.entity.AuctionRegistration;
 import com.example.auctionweb.entity.AuctionRegistration.RegistrationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,7 @@ public interface AuctionRegistrationRepository extends JpaRepository<AuctionRegi
     @Query(value = "SELECT COUNT(*) FROM auctionregistration ar WHERE ar.auction_id = :auctionId", nativeQuery = true)
     long countRegsByAuction(@Param("auctionId") Integer auctionId);
 
+    List<AuctionRegistration> findByAuctionAndStatus(Auction auction, RegistrationStatus registrationStatus);
 }
 
 

@@ -1,6 +1,5 @@
 package com.example.auctionweb.controller;
 
-import com.example.auctionweb.dto.AuctionDto;
 import com.example.auctionweb.dto.ProductRequestDTO;
 import com.example.auctionweb.entity.*;
 import com.example.auctionweb.entity.AuctionRegistration.RegistrationStatus;
