@@ -86,7 +86,8 @@
                         </div>
 
 <!--                         4. Form Đấu giá -->
-                        <form class="mt-4" id="formSubmit" onsubmit="sendBid(); return false;" th:if="${auctionInfo.auction.status == 'ONGOING'}">
+                        <form class="mt-4" id="formSubmit" onsubmit="sendBid(); return false;"
+                              th:if="${auctionInfo.auction.status == 'ONGOING' and #lists.contains(auctionInfo.users, user)}">
                             <label for="amount" class="form-label font-weight-bold">Nhập số tiền đấu giá của bạn:</label>
                             <div class="input-group input-group-lg mb-3">
                                 <input type="number" id="amount" class="form-control"

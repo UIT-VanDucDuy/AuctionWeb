@@ -4,6 +4,7 @@ import com.example.auctionweb.entity.Account;
 import com.example.auctionweb.entity.User;
 import com.example.auctionweb.service.interfaces.IAccountService;
 import com.example.auctionweb.service.interfaces.IBidHistoryService;
+import com.example.auctionweb.service.interfaces.ICategoryService;
 import com.example.auctionweb.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -19,7 +20,8 @@ public class HomeController {
     private IAccountService accountService;
     @Autowired
     private IBidHistoryService bidHistoryService;
-    
+    @Autowired
+    private ICategoryService categoryService;
     @GetMapping(value = {"/", "/home"})
     public String showHome(Model model, Authentication authentication){
         // Lấy thông tin user nếu đã login
@@ -30,10 +32,8 @@ public class HomeController {
             User user = userService.findUserByAccount(account);
             model.addAttribute("user", user);
         }
-        
-        // Thêm bid history list
-        model.addAttribute("bidHistoryList", bidHistoryService.findAll());
-        
+        model.addAttribute("categories", categoryService.findAll());
+
         return "layout/home";
     }
 

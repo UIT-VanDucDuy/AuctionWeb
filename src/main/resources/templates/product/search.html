@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <!-- FIX: Link Bootstrap 5.3.3 đã bao gồm CSS và JS Bundle -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/header.js}"></script>
     <link rel="stylesheet" th:href="@{/css/header.css}">
@@ -146,76 +147,85 @@
     }
 
     /* 3. CONTAINER KẾT QUẢ SẢN PHẨM */
+
     .search-results {
+        /* Vẫn giữ lại thuộc tính này nếu nó định vị trong Grid lớn */
         grid-column: 2 / 3;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 20px;
+        /* Đảm bảo chiếm đủ chiều rộng trong cột của nó */
+        width: 100%;
     }
 
-    /* 4. SẢN PHẨM RIÊNG LẺ (TinTuc) */
+    /* * STYLES CHO CARD NỘI DUNG (KHÔNG CHỊU TRÁCH NHIỆM VỀ CHIỀU RỘNG/BỐ CỤC) */
     .TinTuc {
+        /* Loại bỏ các thuộc tính width/flex-grow vì đã dùng col-lg-3 */
+
+        /* Thiết kế card */
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s, box-shadow 0.2s;
+        background-color: white;
+        text-decoration: none;
+        color: #333;
+        padding: 15px;
         display: flex;
         flex-direction: column;
-        background-color: #ffffff;
-        border-radius: 10px;
-        padding: 15px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        text-align: left;
+
+        /* Đảm bảo chiều cao tối thiểu cho đồng nhất */
+        min-height: 350px;
+        width: 100%; /* Đảm bảo nó chiếm trọn cột Bootstrap */
     }
 
     .TinTuc:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
     }
 
-    .TinTuc a:first-child { /* Anchor tag containing image */
-        display: block;
-        margin-bottom: 10px;
-    }
-
-    .TinTuc a img {
+    .TinTuc img {
         width: 100%;
         height: 180px;
         object-fit: cover;
-        border-radius: 8px;
-        display: block;
-    }
-
-    .TinTuc a:nth-of-type(2) { /* Product name link */
-        font-weight: bold;
-        font-size: 16px;
-        margin-bottom: 5px;
-        color: var(--text-color);
-        line-height: 1.4;
-    }
-
-    .TinTuc div {
-        font-size: 14px;
-        color: #777;
-        margin-top: 5px;
-    }
-
-    .TinTuc span {
-        font-size: 20px;
-        font-weight: bold;
-        color: var(--primary-color);
+        border-radius: 6px;
         margin-bottom: 10px;
     }
 
-    /* 5. TIN NHẮN KHÔNG KẾT QUẢ */
-    h2.no-results-message {
-        grid-column: 2 / 3;
-        padding: 50px 0;
-        color: #b41712;
-        font-size: 24px;
-        text-align: center;
+    .TinTuc a {
+        font-weight: 600;
+        text-decoration: none;
+        color: #0d6efd; /* Màu link Bootstrap Primary */
+        margin-bottom: 5px;
+        font-size: 1.1em;
+
+        /* Thêm CSS để giới hạn tên sản phẩm chỉ trên một dòng */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
+
+    .TinTuc div {
+        font-size: 0.9em;
+        color: #6c757d;
+    }
+
+    .TinTuc span {
+        font-weight: bold;
+        color: #dc3545; /* Màu đỏ cho giá */
+        margin-bottom: 5px;
+    }
+
+    .no-results-message {
+        font-size: 1.5rem;
+        color: #6c757d;
+        text-align: center;
+        width: 100%;
+        padding: 50px 0;
+    }
+
 
     /* 6. PHÂN TRANG */
     .pagination-container {
-        grid-column: 2 / 3; /* FIX: Đảm bảo nó nằm dưới cột kết quả */
+        grid-column: 2 / 3;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -264,48 +274,6 @@
         padding: 0 5px;
     }
 
-    /* THANH TÌM KIẾM DƯỚI CHÂN */
-    .timkiem {
-        grid-column: 1 / -1; /* Chiếm toàn bộ chiều rộng */
-        background-color: #f0f0f0;
-        padding: 30px;
-        margin-top: 30px;
-        text-align: center;
-    }
-
-    .timkiem div {
-        font-size: 18px;
-        font-weight: 500;
-        margin-bottom: 15px;
-    }
-
-    .timkiem form {
-        display: flex;
-        justify-content: center;
-        max-width: 500px;
-        margin: 0 auto;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .timkiem input[type="text"] {
-        flex-grow: 1;
-        padding: 10px 15px;
-        border: 2px solid #ccc;
-        border-right: none;
-        outline: none;
-        font-size: 16px;
-    }
-
-    .timkiem button {
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
     /* 7. RESPONSIVE CHO THIẾT BỊ DI ĐỘNG */
     @media (max-width: 900px) {
         .gird-container {
@@ -317,12 +285,9 @@
             grid-column: 1 / 2; /* Bộ lọc lên đầu */
         }
 
-        .search-results {
-            grid-column: 1 / 2;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        }
+        /* TinTuc không cần thay đổi width nữa vì nó đã dùng col-12/col-sm-6/col-md-4 */
 
-        .TinTuc a img {
+        .TinTuc img {
             height: 120px; /* Giảm chiều cao ảnh trên mobile */
         }
 
@@ -354,85 +319,89 @@
         <!-- LỌC THEO GIÁ -->
         <div class="Loc">
             <p class="filter-title">Lọc theo giá</p>
-            <form action="">
+            <form th:action="@{/search}" method="post">
                 <div class="price-range">
                     <label for="min-price">Từ:</label>
                     <div id="min-price-display" class="price-display-value">10.000.000 VND</div>
-                    <input type="range" id="min-price" min="10000000" max="1000000000" value="10000000">
+                    <input type="range" id="min-price" name="minPrice" min="100000" max="10000000" value="100000">
                 </div>
                 <div class="price-range">
                     <label for="max-price">Đến:</label>
                     <div id="max-price-display" class="price-display-value">1.000.000.000 VND</div>
-                    <input type="range" id="max-price" min="1000000000" max="500000000000" value="1000000000">
+                    <input type="range" id="max-price" name="maxPrice" min="10000000" max="50000000" value="50000000">
                 </div>
-                <button type="submit">Lọc</button>
+                <input type="text" name="keyword" th:value="${keyword}" placeholder="Nhập từ khóa..." class="form-control mb-2"/>
+
+                <select name="categoryId" class="form-select mb-2">
+                    <option value="">Tất cả danh mục</option>
+                    <option th:each="c : ${categories}"
+                            th:value="${c.id}"
+                            th:text="${c.name}"
+                            th:selected="${c.id == categoryId}">
+                    </option>
+                </select>
+
+                <button type="submit">Tìm kiếm</button>
             </form>
+
         </div>
 
-        <!-- KẾT QUẢ TÌM KIẾM -->
-        <div class="search-results">
-            <div class="TinTuc">
-                <a href="/Auction/1"><img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bonsai.jpg" alt="Bonsai" onerror="this.onerror=null;this.src='https://placehold.co/200x180/DDDDDD/333333?text=Placeholder'"></a>
-                <a href="/Auction/1">Cây bonsai đẹp và độc đáo</a>
-                <div>Giá khởi điểm:</div>
-                <span style="font-size: 20px;">500.000 VND</span>
-                <div>Thời gian kết thúc: 10/12/2025</div>
+        <!-- FIX: Dùng Bootstrap row g-4 để chia cột một cách chuẩn mực -->
+        <div class="search-results row g-4">
+
+            <!-- THÔNG BÁO KHÔNG KẾT QUẢ: chiếm trọn chiều ngang (col-12) -->
+            <div th:if="${#lists.isEmpty(products)}" class="col-12">
+                <h2 class="no-results-message">Không có kết quả nào được tìm thấy...</h2>
             </div>
-            <div class="TinTuc">
-                <a href="/Auction/1"><img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bonsai.jpg" alt="Bonsai" onerror="this.onerror=null;this.src='https://placehold.co/200x180/DDDDDD/333333?text=Placeholder'"></a>
-                <a href="/Auction/1">Đồ cổ thời Nguyễn</a>
-                <div>Giá khởi điểm:</div>
-                <span style="font-size: 20px;">15.000.000 VND</span>
-                <div>Thời gian kết thúc: 10/12/2025</div>
-            </div>
-            <div class="TinTuc">
-                <a href="/Auction/1"><img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bonsai.jpg" alt="Bonsai" onerror="this.onerror=null;this.src='https://placehold.co/200x180/DDDDDD/333333?text=Placeholder'"></a>
-                <a href="/Auction/1">Bộ sưu tập tem quý hiếm</a>
-                <div>Giá khởi điểm:</div>
-                <span style="font-size: 20px;">2.500.000 VND</span>
-                <div>Thời gian kết thúc: 10/12/2025</div>
-            </div>
-            <div class="TinTuc">
-                <a href="/Auction/1"><img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bonsai.jpg" alt="Bonsai" onerror="this.onerror=null;this.src='https://placehold.co/200x180/DDDDDD/333333?text=Placeholder'"></a>
-                <a href="/Auction/1">Tượng gỗ trắc</a>
-                <div>Giá khởi điểm:</div>
-                <span style="font-size: 20px;">800.000 VND</span>
-                <div>Thời gian kết thúc: 10/12/2025</div>
-            </div>
-            <div class="TinTuc">
-                <a href="/Auction/1"><img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bonsai.jpg" alt="Bonsai" onerror="this.onerror=null;this.src='https://placehold.co/200x180/DDDDDD/333333?text=Placeholder'"></a>
-                <a href="/Auction/1">Lọ hoa sứ men ngọc</a>
-                <div>Giá khởi điểm:</div>
-                <span style="font-size: 20px;">500.000 VND</span>
-                <div>Thời gian kết thúc: 10/12/2025</div>
+
+            <!-- LẶP KẾT QUẢ VỚI GRID RESPONSIVE -->
+            <!-- col-12: 1 item/hàng (mobile) | col-sm-6: 2 item/hàng (tablet nhỏ) | col-md-4: 3 item/hàng (tablet lớn) | col-lg-3: 4 item/hàng (desktop) -->
+            <div th:each="product : ${products}" class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="TinTuc"> <!-- TinTuc giờ chỉ là nội dung thẻ -->
+                    <a th:href="@{'/Auction/' + ${product.id}}">
+                        <!-- Ảnh sản phẩm -->
+                        <img th:src="${product.imageUrl != null ? product.imageUrl : 'https://placehold.co/300x180/007bff/ffffff?text=Image+Not+Found'}"
+                             alt="Ảnh sản phẩm" class="img-fluid"/>
+                    </a>
+
+                    <a th:href="@{'/Product/' + ${product.id}}" th:text="${product.name}" class="text-decoration-none">Tên sản phẩm</a>
+
+                    <small class="text-muted">Giá khởi điểm:</small>
+
+                    <!-- Giá và ngày đăng -->
+                    <span th:text="${#numbers.formatDecimal(product.startingPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'" class="text-danger fw-bold mb-1"></span>
+                    <small th:text="'Ngày đăng: ' + ${#temporals.format(product.requestedAt, 'dd/MM/yyyy')}" class="text-secondary"></small>
+                </div>
             </div>
         </div>
 
-        <!-- TIN NHẮN KHÔNG CÓ KẾT QUẢ (Ẩn đi nếu có kết quả) -->
-        <!-- <h2 class="no-results-message">Không có kết quả nào được tìm thấy... </h2> -->
+        <div class="pagination-container" th:if="${totalPages > 1}">
 
-        <!-- PHÂN TRANG -->
-        <div class="pagination-container">
             <!-- Nút Quay lại -->
-            <a href="/Search?page=1" title="Trang trước">
+            <!-- FIX 2: Thêm size=${6} vào tất cả các link phân trang -->
+            <a th:if="${currentPage > 0}"
+               th:href="@{/search(keyword=${keyword}, categoryId=${categoryId}, page=${currentPage - 1}, size=${6})}"
+               title="Trang trước">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
 
-            <!-- Các Trang -->
-            <a href="#page1" class="active-page"> 1 </a>
-            <a href="#page2"> 2 </a>
-
-            <!-- Dấu 3 chấm -->
-            <div class="ellipsis">&hellip;</div>
-
-            <a href="#page3"> 3 </a>
-            <a href="#page4"> 4 </a>
+            <!-- Các trang -->
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/search(keyword=${keyword}, categoryId=${categoryId}, page=${i}, size=${6})}"
+           th:text="${i + 1}"
+           th:classappend="${i == currentPage} ? 'active-page' : ''">
+        </a>
+    </span>
 
             <!-- Nút Tiếp theo -->
-            <a href="/Search?page=5" title="Trang tiếp theo">
+            <!-- FIX 2: Thêm size=${6} vào tất cả các link phân trang -->
+            <a th:if="${currentPage + 1 < totalPages}"
+               th:href="@{/search(keyword=${keyword}, categoryId=${categoryId}, page=${currentPage + 1}, size=${6})}"
+               title="Trang tiếp theo">
                 <i class="fa-solid fa-arrow-right"></i>
             </a>
         </div>
+
     </div>
 </div>
 <div th:replace="~{/layout/footer::footer}"></div>

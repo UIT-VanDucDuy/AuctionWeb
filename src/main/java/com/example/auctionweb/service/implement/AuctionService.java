@@ -4,6 +4,8 @@ import com.example.auctionweb.dto.AuctionDto;
 import com.example.auctionweb.entity.Auction;
 import com.example.auctionweb.entity.BidHistory;
 import com.example.auctionweb.entity.Notification;
+import com.example.auctionweb.entity.User;
+import com.example.auctionweb.repository.AuctionRegistrationRepository;
 import com.example.auctionweb.repository.AuctionRepository;
 import com.example.auctionweb.service.interfaces.IAuctionService;
 import com.example.auctionweb.service.interfaces.INotificationService;
@@ -14,11 +16,17 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.example.auctionweb.entity.AuctionRegistration;
+
 @Service
 public class AuctionService implements IAuctionService {
     @Autowired
     private AuctionRepository auctionRepository;
+    @Autowired
+    private AuctionRegistrationRepository auctionRegistrationRepository;
     @Autowired
     private BidHistoryService bidHistoryService;
     @Autowired
@@ -36,14 +44,19 @@ public class AuctionService implements IAuctionService {
         Auction auction = auctionRepository.findById(id).get();
         List<BidHistory> bidHistories = bidHistoryService.findByAuction(auction);
         BigDecimal highestBidPrice;
-
+        List<AuctionRegistration> auctionRegistrations = auctionRegistrationRepository.findByAuctionAndStatus(auction, AuctionRegistration.RegistrationStatus.APPROVED);
+        List<User> users = new ArrayList<>();
+        for (AuctionRegistration auctionRegistration : auctionRegistrations) {
+            User user = auctionRegistration.getUser();
+            users.add(user);
+        }
         if(bidHistories.isEmpty()){
             highestBidPrice = auction.getStartingPrice();
         }else {
             highestBidPrice = bidHistoryService.findTopByAuction(auction).getAmount();
         }
         return new AuctionDto(auction,bidHistories,
-                highestBidPrice);
+                highestBidPrice,users);
     }
 
     @Override
