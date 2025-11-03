@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Auction Web</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .sidebar { min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .sidebar .nav-link { color: rgba(255, 255, 255, 0.8); border-radius: 10px; margin: 5px 0; transition: all 0.3s; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #fff; background: rgba(255, 255, 255, 0.2); transform: translateX(5px); }
+        .main-content { background-color: #f8f9fa; min-height: 100vh; }
+        .stat-card { background: #fff; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,.1); transition: transform .3s; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-icon { width: 60px; height: 60px; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size:24px; color:#fff; }
+        .pending-badge { background: linear-gradient(45deg, #ff6b6b, #ee5a24); }
+        .approved-badge { background: linear-gradient(45deg, #2ed573, #7bed9f); }
+        .rejected-badge { background: linear-gradient(45deg, #ff4757, #ff3838); }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar p-0">
+            <div class="p-3">
+                <h4 class="text-white mb-4">
+                    <i class="bi bi-shield-check"></i> Admin Panel
+                </h4>
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="/admin">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a class="nav-link" href="/admin/auction-registrations">
+                        <i class="bi bi-clipboard-check"></i> Đăng ký đấu giá
+                        <span class="badge bg-warning ms-2" th:text="${pendingRegistrations?:0}">0</span>
+                    </a>
+                    <a class="nav-link" href="/admin/product-registrations">
+                        <i class="bi bi-box-seam"></i> Đăng ký sản phẩm
+                        <span class="badge bg-warning ms-2" th:text="${pendingProducts?:0}">0</span>
+                    </a>
+                    <a class="nav-link" href="/admin/users">
+                        <i class="bi bi-people"></i> Quản lý User
+                    </a>
+                    <a class="nav-link" href="/admin/accounts">
+                        <i class="bi bi-person-badge"></i> Quản lý Account
+                    </a>
+                    <hr class="text-white">
+                    <a class="nav-link" href="/websocket-demo.html" target="_blank">
+                        <i class="bi bi-broadcast"></i> WebSocket Demo
+                    </a>
+                    <a class="nav-link" href="/">
+                        <i class="bi bi-house"></i> Về trang chủ
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10 main-content">
+            <div class="p-4">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="bi bi-speedometer2"></i> Admin Dashboard</h2>
+                    <div class="text-muted">
+                        <i class="bi bi-calendar3"></i>
+                        <span th:text="${#dates.format(new java.util.Date(), 'dd/MM/yyyy HH:mm')}">01/01/1970 00:00</span>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card p-4">
+                            <div class="d-flex align-items-center">
+                                <div class="stat-icon bg-primary me-3"><i class="bi bi-people"></i></div>
+                                <div>
+                                    <h3 class="mb-0" th:text="${totalUsers?:0}">0</h3>
+                                    <p class="text-muted mb-0">Tổng User</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card p-4">
+                            <div class="d-flex align-items-center">
+                                <div class="stat-icon bg-success me-3"><i class="bi bi-box-seam"></i></div>
+                                <div>
+                                    <h3 class="mb-0" th:text="${totalProducts?:0}">0</h3>
+                                    <p class="text-muted mb-0">Tổng Sản phẩm</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card p-4">
+                            <div class="d-flex align-items-center">
+                                <div class="stat-icon bg-warning me-3"><i class="bi bi-hammer"></i></div>
+                                <div>
+                                    <h3 class="mb-0" th:text="${totalAuctions?:0}">0</h3>
+                                    <p class="text-muted mb-0">Tổng Đấu giá</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card p-4">
+                            <div class="d-flex align-items-center">
+                                <div class="stat-icon bg-danger me-3"><i class="bi bi-clock"></i></div>
+                                <div>
+                                    <h3 class="mb-0" th:text="${(pendingRegistrations?:0) + (pendingProducts?:0)}">0</h3>
+                                    <p class="text-muted mb-0">Chờ duyệt</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="stat-card p-4">
+                            <h5 class="mb-3"><i class="bi bi-lightning"></i> Thao tác nhanh</h5>
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <a href="/admin/auction-registrations?status=PENDING" class="btn btn-warning w-100">
+                                        <i class="bi bi-clipboard-check"></i> Duyệt đăng ký đấu giá
+                                        <span class="badge bg-white text-warning ms-2" th:text="${pendingRegistrations?:0}">0</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <a href="/admin/product-registrations?status=PENDING" class="btn btn-info w-100">
+                                        <i class="bi bi-box-seam"></i> Duyệt sản phẩm
+                                        <span class="badge bg-white text-info ms-2" th:text="${pendingProducts?:0}">0</span>
+                                    </a>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <a href="/admin/users" class="btn btn-success w-100">
+                                        <i class="bi bi-people"></i> Quản lý User
+                                    </a>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <a href="/websocket-demo.html" target="_blank" class="btn btn-primary w-100">
+                                        <i class="bi bi-broadcast"></i> WebSocket Demo
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity + Products -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="stat-card p-4">
+                            <h5 class="mb-3"><i class="bi bi-clock-history"></i> Hoạt động gần đây</h5>
+                            <div class="list-group list-group-flush">
+                                <div class="list-group-item border-0 px-0">
+                                    <div class="d-flex align-items-center">
+                                        <div class="pending-badge stat-icon me-3" style="width:40px; height:40px; font-size:16px;">
+                                            <i class="bi bi-clock"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Đăng ký đấu giá chờ duyệt</h6>
+                                            <small class="text-muted" th:text="|${pendingRegistrations?:0} đăng ký cần xử lý|">
+                                                0 đăng ký cần xử lý
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="list-group-item border-0 px-0">
+                                    <div class="d-flex align-items-center">
+                                        <div class="pending-badge stat-icon me-3" style="width:40px; height:40px; font-size:16px;">
+                                            <i class="bi bi-box"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1">Sản phẩm chờ duyệt</h6>
+                                            <small class="text-muted" th:text="|${pendingProducts?:0} sản phẩm cần xử lý|">
+                                                0 sản phẩm cần xử lý
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="stat-card p-4">
+                            <h5 class="mb-3"><i class="bi bi-pie-chart"></i> Thống kê hệ thống</h5>
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <h4 class="text-primary" th:text="${totalUsers?:0}">0</h4>
+                                    <small class="text-muted">Người dùng</small>
+                                </div>
+                                <div class="col-6">
+                                    <h4 class="text-success" th:text="${totalProducts?:0}">0</h4>
+                                    <small class="text-muted">Sản phẩm</small>
+                                </div>
+                                <div class="col-6 mt-3">
+                                    <h4 class="text-warning" th:text="${totalAuctions?:0}">0</h4>
+                                    <small class="text-muted">Đấu giá</small>
+                                </div>
+                                <div class="col-6 mt-3">
+                                    <h4 class="text-danger" th:text="${(pendingRegistrations?:0) + (pendingProducts?:0)}">0</h4>
+                                    <small class="text-muted">Chờ duyệt</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Products – quick management on dashboard -->
+                    <div class="col-12">
+                        <div class="stat-card p-4 mt-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0"><i class="bi bi-box-seam"></i> Sản phẩm mới nhất</h5>
+                                <div class="d-flex flex-wrap gap-2 align-items-center">
+                                    <a class="btn btn-primary" href="/admin/products/add">
+                                        <i class="bi bi-plus-circle"></i> Thêm sản phẩm
+                                    </a>
+                                    <a class="btn btn-outline-secondary" href="/admin/products">
+                                        <i class="bi bi-list-ul"></i> Tất cả sản phẩm
+                                    </a>
+                                    <a class="btn btn-outline-secondary d-flex align-items-center gap-2" href="/admin/categories">
+                                        <i class="bi bi-tags"></i> Danh mục sản phẩm
+                                        <span class="badge bg-light text-dark ms-1"
+                                              th:text="${totalCategories != null ? totalCategories : 0}">0</span>
+                                    </a>
+                                    <a href="/admin/auctions" class="btn btn-warning text-dark">
+                                        <i class="bi bi-trophy"></i> Danh sách đấu giá
+                                    </a>
+
+                                </div>
+
+
+
+                            </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th style="width:72px;">ID</th>
+                                        <th>Tên</th>
+                                        <th>Danh mục</th>
+                                        <th class="text-end">Giá khởi điểm</th>
+                                        <th class="text-end">Giá cao nhất</th>
+                                        <th>Trạng thái</th>
+                                        <th style="width:180px;" class="text-end">Thao tác</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="p : ${recentProducts}">
+                                        <td th:text="${p.id}">1</td>
+
+                                        <td class="d-flex align-items-center gap-2">
+                                            <!-- FIX: ảnh từ static/images bằng tên file -->
+                                            <img th:if="${p.imageUrl != null and !#strings.isEmpty(p.imageUrl)}"
+                                                 th:src="@{'/images/' + ${p.imageUrl}}"
+                                                 alt="Ảnh sản phẩm"
+                                                 style="width:36px;height:36px;object-fit:cover;border-radius:6px;">
+                                            <span th:text="${p.name}">Tên SP</span>
+                                        </td>
+
+                                        <td th:text="${p.category != null ? p.category.name : '—'}">Danh mục</td>
+
+                                        <!-- FIX: format số: phân cách hàng nghìn COMMA, 0 chữ số thập phân -->
+                                        <td class="text-end"
+                                            th:text="${#numbers.formatDecimal(p.startingPrice, 0, 'COMMA', 0, 'POINT')}">0</td>
+
+                                        <td class="text-end"
+                                            th:text="${highestBidMap[p.id] != null ? #numbers.formatDecimal(highestBidMap[p.id], 0, 'COMMA', 0, 'POINT') : '-'}">
+                                            -
+                                        </td>
+
+                                        <td>
+                                            <span th:classappend="${p.status.name() == 'APPROVED'} ? 'badge bg-success' :
+                                                                  (${p.status.name() == 'PENDING'} ? 'badge bg-warning text-dark' : 'badge bg-secondary')"
+                                                  th:text="${p.status}">PENDING</span>
+                                        </td>
+
+                                        <td class="text-end">
+                                            <a class="btn btn-sm btn-outline-primary" th:href="@{|/admin/products/${p.id}/edit|}">
+                                                <i class="bi bi-pencil-square"></i> Sửa
+                                            </a>
+                                            <form th:action="@{|/admin/products/${p.id}/delete|}" method="post" class="d-inline"
+                                                  onsubmit="return confirm('Xoá sản phẩm này?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="bi bi-trash"></i> Xoá
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+
+                                    <tr th:if="${#lists.isEmpty(recentProducts)}">
+                                        <td colspan="7" class="text-center text-muted py-4">Chưa có sản phẩm</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /Products -->
+                </div>
+                <!-- /row -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

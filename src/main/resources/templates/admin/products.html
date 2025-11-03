@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tất cả sản phẩm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .card{border:0;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+        .thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid #e9ecef}
+    </style>
+</head>
+<body class="bg-light">
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Tất cả sản phẩm</h3>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/products/add}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i> Thêm sản phẩm
+            </a>
+            <a th:href="@{/admin}" class="btn btn-outline-secondary">Về Dashboard</a>
+        </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="card p-3 mb-3">
+        <form class="row g-2" th:action="@{/admin/products}" method="get">
+            <div class="col-md-4">
+                <input type="text" name="q" th:value="${q}" class="form-control" placeholder="Tìm theo tên...">
+            </div>
+
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <!-- Dùng value thường thay vì th:value -->
+                    <option value="" th:selected="${selectedStatus == null}">-- Trạng thái --</option>
+                    <option th:each="st : ${statuses}"
+                            th:value="${st}"
+                            th:selected="${selectedStatus != null and selectedStatus == st}"
+                            th:text="${st}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <select name="categoryId" class="form-select">
+                    <!-- Dùng value thường thay vì th:value -->
+                    <option value="" th:selected="${selectedCategoryId == null}">-- Danh mục --</option>
+                    <option th:each="c : ${categories}"
+                            th:value="${c.id}"
+                            th:selected="${selectedCategoryId != null and selectedCategoryId == c.id}"
+                            th:text="${c.name}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="col-md-2 d-grid">
+                <button class="btn btn-secondary"><i class="bi bi-funnel me-1"></i> Lọc</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th style="width:72px">ID</th>
+                    <th>Sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th class="text-end">Giá khởi điểm</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end" style="width:220px">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${products}">
+                    <td th:text="${p.id}">1</td>
+
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <img class="thumb"
+                                 th:if="${p.imageUrl != null and !#strings.isEmpty(p.imageUrl)}"
+                                 th:src="@{/images/{f}(f=${p.imageUrl})}"
+                                 alt="thumb">
+                            <div>
+                                <div class="fw-semibold" th:text="${p.name}">Tên SP</div>
+                                <div class="text-muted small"
+                                     th:text="${p.requestedAt != null ? #temporals.format(p.requestedAt,'dd/MM/yyyy HH:mm') : ''}">
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td th:text="${p.category != null ? p.category.name : '—'}">—</td>
+
+                    <td class="text-end"
+                        th:text="${#numbers.formatDecimal(p.startingPrice, 0, 'COMMA', 0, 'POINT')}">0</td>
+
+                    <td>
+            <span th:text="${p.status}"
+                  th:classappend="${p.status != null and p.status.name()=='APPROVED' ? 'badge bg-success' :
+                                  (p.status != null and p.status.name()=='PENDING'  ? 'badge bg-warning text-dark' :
+                                                                                       'badge bg-secondary')}">
+              PENDING
+            </span>
+                    </td>
+
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-primary" th:href="@{|/admin/products/${p.id}/edit|}">
+                            <i class="bi bi-pencil-square"></i> Sửa
+                        </a>
+                        <form th:action="@{|/admin/products/${p.id}/delete|}" method="post" class="d-inline"
+                              onsubmit="return confirm('Xoá sản phẩm này?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i> Xoá
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(products)}">
+                    <td colspan="6" class="text-center text-muted py-4">Không có sản phẩm.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
