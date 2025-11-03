@@ -44,3 +44,5 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findByStatusAndKeyword(@Param("status") ProductStatus status, @Param("keyword") String keyword);
 
 }
+
+

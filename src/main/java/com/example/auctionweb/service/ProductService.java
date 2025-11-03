@@ -7,6 +7,7 @@ import com.example.auctionweb.entity.User;
 import com.example.auctionweb.repository.CategoryRepository;
 import com.example.auctionweb.repository.ProductRepository;
 import com.example.auctionweb.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -64,10 +66,8 @@ public class ProductService implements IProductService {
 
     // ========= PRODUCT CRUD =========
 
-    /** Create via DTO (preferred). highestPrice chỉ tồn tại ở DTO, KHÔNG persist xuống Product. */
     @Override
     public Product createProduct(ProductRequestDTO dto) {
-        // (tuỳ chọn) kiểm tra form-only: highestPrice >= startingPrice — không lưu xuống entity
         validateHighestPrice(dto.getStartingPrice(), dto.getHighestPrice());
 
         Product p = new Product();
@@ -77,7 +77,6 @@ public class ProductService implements IProductService {
         p.setRequestedAt(LocalDateTime.now());
         p.setStatus(Product.ProductStatus.PENDING);
 
-        // ảnh: lưu CHỈ tên file (vd: iphone15.png). View render qua /images/<filename>
         p.setImageUrl(normalizeImageFileName(dto.getImageUrl()));
 
         if (dto.getCategoryId() != null) {
@@ -85,14 +84,12 @@ public class ProductService implements IProductService {
             p.setCategory(category);
         }
 
-        // gán seller mặc định nếu cần (tùy business của bạn). Có thể bỏ dòng này.
         userRepository.findById(1).ifPresent(p::setSeller);
 
         // KHÔNG set highestPrice vào Product
         return productRepository.save(p);
     }
 
-    /** Create via entity (giữ để tương thích cũ). */
     @Override
     public Product saveProduct(Product product) {
         return productRepository.save(product);
@@ -215,15 +212,12 @@ public class ProductService implements IProductService {
         return productRepository.countByStatus(status);
     }
 
-    /** Cho phép bỏ trống; nếu nhập thì yêu cầu highest >= starting. Chỉ kiểm tra ở DTO (không persist). */
     private void validateHighestPrice(BigDecimal startingPrice, BigDecimal highestPrice) {
         if (startingPrice == null || highestPrice == null) return;
         if (highestPrice.compareTo(startingPrice) < 0) {
             throw new IllegalArgumentException("Giá cao nhất không được nhỏ hơn giá khởi điểm!");
         }
     }
-
-    /** Nhận vào URL hoặc path, chỉ giữ lại phần tên file để lưu (vd: \"iphone15.png\"). */
     private String normalizeImageFileName(String raw) {
         if (raw == null) return null;
         String trimmed = raw.trim();

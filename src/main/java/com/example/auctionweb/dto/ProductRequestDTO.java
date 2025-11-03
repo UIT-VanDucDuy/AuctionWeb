@@ -3,13 +3,7 @@ package com.example.auctionweb.dto;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 
-/**
- * LƯU Ý:
- * - imageUrl: CHỈ là TÊN FILE trong src/main/resources/static/images
- *   Ví dụ: "iphone15.png". Khi render: @{'/images/' + ${product.imageUrl}}
- * - highestPrice: chỉ tồn tại ở DTO để hiển thị/validate form, KHÔNG map xuống Product.
- * - Không có bất kỳ validation cho imageUrl.
- */
+
 public class ProductRequestDTO {
 
     private Integer id;
@@ -34,7 +28,6 @@ public class ProductRequestDTO {
     @NotNull(message = "Danh mục không được để trống")
     private Integer categoryId;
 
-    // tên file trong static/images, VD: "iphone15.png"
     private String imageUrl;
 
     public ProductRequestDTO() {}
