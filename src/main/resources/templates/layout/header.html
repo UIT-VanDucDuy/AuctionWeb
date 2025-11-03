@@ -101,19 +101,18 @@
             <!-- Search form -->
             <div class="col-12 col-md-9 d-flex justify-content-center justify-content-md-start">
                 <form class="custom-search-form d-flex w-100" action="/search" method="POST">
-
                     <!-- Datalist Input (Bo góc trái) -->
-                    <input class="form-control input-category" list="types" name="types" placeholder="Danh mục">
-                    <datalist id="types">
-                        <option value="Hàng hiệu">
-                        <option value="Sưu tầm - Nghệ thuật">
-                        <option value="Phương tiện xe cộ">
-                        <option value="Bất động sản - Quyền sử dụng đất">
-                        <option value="Tài sản thanh lý">
-                    </datalist>
-
+                    <select class="form-control input-category" list="types" name="categoryId" placeholder="Danh mục" >
+                        <option value="" th:selected="${param.categoryId == null || param.categoryId == ''}">
+                            Tất cả
+                        </option>
+                        <option th:each="category : ${categories}"
+                                th:value="${category.id}"
+                                th:text="${category.name}">
+                        </option>
+                    </select>
                     <!-- Text Input -->
-                    <input class="form-control input-search-text" type="text" id="searched" name="searched" placeholder="Tìm kiếm tài sản...">
+                    <input class="form-control input-search-text" type="text" id="searched" name="keyword" placeholder="Tìm kiếm tài sản...">
 
                     <!-- Search Button -->
                     <button class="btn btn-primary search-button" type="submit">
@@ -180,6 +179,7 @@
     <p>Phần Logo và Top bar sẽ cuộn lên, chỉ có thanh menu màu đỏ này là cố định (fixed) khi cuộn qua chúng.</p>
     <div style="height: 1500px;"></div>
 </div>
+
 </body>
 
 <!-- Script để hiển thị ngày giờ và xử lý Fixed Nav -->
