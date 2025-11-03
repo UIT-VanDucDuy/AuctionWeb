@@ -2,10 +2,7 @@ package com.example.auctionweb.controller;
 import com.example.auctionweb.entity.Account;
 import com.example.auctionweb.entity.BidHistory;
 import com.example.auctionweb.entity.User;
-import com.example.auctionweb.service.interfaces.IAccountService;
-import com.example.auctionweb.service.interfaces.IAuctionService;
-import com.example.auctionweb.service.interfaces.IBidHistoryService;
-import com.example.auctionweb.service.interfaces.IUserService;
+import com.example.auctionweb.service.interfaces.*;
 import com.example.auctionweb.websocket.BidWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -26,6 +23,8 @@ public class AuctionController {
     private IUserService userService;
     @Autowired
     private IAccountService accountService;
+    @Autowired
+    private ICategoryService categoryService;
 
     @GetMapping("/{id}")
     public ModelAndView loadPage(@PathVariable(name = "id") int id, Authentication authentication) {
@@ -35,33 +34,13 @@ public class AuctionController {
         }
         Account account = accountService.getAccount(userName);
         User user = userService.findUserByAccount(account);
-        ModelAndView modelAndView = new ModelAndView("auction");
+        ModelAndView modelAndView = new ModelAndView("auction/auction");
         modelAndView.addObject("auctionInfo", auctionService.getAuctionInfoById(id));
         modelAndView.addObject("user", user);
+        modelAndView.addObject("categories", categoryService.findAll());
+
         return modelAndView;
     }
-    @PostMapping("")
-    public String save(@ModelAttribute("bidHistory") BidHistory bidHistory,
-                       RedirectAttributes redirectAttributes) {
-        boolean success;
-        BidHistory savedBid = bidHistoryService.save(bidHistory);
-        if (savedBid != null && savedBid.getId() != null) {
-            success = true;
-        } else {
-            success = false;
-        }
-        if (success) {
-            try {
-                bidWebSocketHandler.broadcastNewBid(bidHistory);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            redirectAttributes.addFlashAttribute("mess", "Add success");
-        } else {
-            redirectAttributes.addFlashAttribute("mess", "Add failed");
-        }
 
-        return "redirect:/listbid";
-    }
 
 }

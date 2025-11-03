@@ -93,7 +93,7 @@ public class WebSecurityConfig {
 
                 // 4. Các trang của USER (Ý định MỚI của bạn)
                 // Đã gộp /home, /auction/**, /blog/create vào đây
-                .requestMatchers("/auction/**", "/blog/create").hasAuthority("USER") // Dùng hasAuthority
+                .requestMatchers("/auction/**", "/create","/search/**").hasAuthority("USER") // Dùng hasAuthority
                 // 5. Tất cả các yêu cầu còn lại phải được xác thực (đăng nhập)
                 // (Nếu bạn muốn /home và /auction là public, hãy chuyển chúng lên mục số 2)
                 .anyRequest().authenticated()

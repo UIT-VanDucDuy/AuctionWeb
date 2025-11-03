@@ -1,538 +1,473 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security"
+      lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
+    <!-- FIX: Link Bootstrap 5.3.3 đã bao gồm CSS và JS Bundle -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/header.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/auction.css}">
     <title>Tìm kiếm</title>
-    {% load static %}
 </head>
+<style>
+    :root {
+        --primary-color: #b41712;
+        --text-color: #333;
+        --background-color: #f8fafa;
+    }
 
-<body>
-    <div class="header">
-        <div class="header_item1">
-            <div>Liên hệ: 0818666***/0979334***</div>
-            <div>Email: 20521251@gm.uit.edu.vn </div>
-            {% if user.username %}
-            <div class="dropdown">
-                <span><i class="fa-regular fa-user"></i> <b>{{user.username}}</b> <i
-                        class="fa-solid fa-sort-down"></i></span>
-                <div class="dropdown-content">
-                    <a href="/User">Thông tin cá nhân</a>
-                    <a href="/User">Lịch sử giao dịch</a>
-                    <a href="/Changeyourpassword">Đổi mật khẩu</a>
-                    <a href="/Logout">Đăng xuất</a>
-                </div>
-            </div>
-            {% else %}
-            <a style="color: rgb(161, 161, 161)" href="/Signin">Đăng nhập</a>
-            <a style="color: rgb(161, 161, 161)" href="/Signup">Đăng ký</a>
-            {% endif %}
-        </div>
-        <div class="header_item2">
-            <a href="/"><img style="width: 350px;" src="{% static 'image/logoLacViet.png'%}" alt=""></a>
-            <div class="form">
-                <form action="/Search/" method="POST">
-                    {% csrf_token %}
-                    <input class="input1" list="types" name="types" placeholder=" Danh mục">
-                    <datalist id="types">
-                        <option value="Hàng hiệu">
-                        <option value="Sưu tầm - Nghệ thuật">
-                        <option value="Phương tiện xe cộ">
-                        <option value="Bất động sản - Quyền sử dụng đất">
-                        <option value="Tài sản thanh lý">
-                        <option value="Khác">
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--background-color);
+        margin: 0;
+        padding: 0;
+    }
 
-                    </datalist>
-                    <input class="input2" type="text" id="searched" name="searched" placeholder="Tìm kiếm...">
-                    <button><i class="fa-solid fa-magnifying-glass"></i></button>
-                </form>
-            </div>
-        </div>
+    a {
+        text-decoration: none;
+        color: var(--text-color);
+        transition: color 0.3s;
+    }
 
-        <div class="header_item3">
-            &nbsp;
-            <nav role="navigation" class="primary-navigation">
-                <li>
-                    <a style="color:white;"><i class="fa-solid fa-bars"></i> Danh mục tài sản</a>
-                    <ul class="dropdown">
-                        <li><a href="/Search/Hàng hiệu">Hàng hiệu</a></li>
-                        <li><a href="/Search/Sưu tầm - Nghệ thuật">Sưu tầm - Nghệ thuật</a></li>
-                        <li><a href="/Search/Phương tiện xe cộ">Phương tiện xe cộ</a></li>
-                        <li><a href="/Search/Bất động sản - Quyền sử dụng đất">Bất động sản </a></li>
-                        <li><a href="/Search/Tài sản thanh lý">Tài sản thanh lý</a></li>
-                    </ul>
-                </li>
-            </nav>
-            <form action="/Search/" method="POST">
-                {%csrf_token%}
-                <input type="hidden" list="types" name="types">
-                <input type="hidden" id="searched" name="searched" placeholder="Tìm kiếm...">
-                <button class="but1">
-                    <a class="a1">Cuộc đấu giá</a></button>
-            </form>
-            <a class="a1" href="/Information">Tin tức</a>
-            <a class="a1" href="/Information">Giới thiệu</a>
-            <a class="a1" href="/Lienhe">Liên hệ bán tài sản</a>
-            <DIv></DIv>
-            <p id="time"></p>
-            <p id="current_date"></p>
-            <script>
-                date = new Date();
-                year = date.getFullYear();
-                month = date.getMonth() + 1;
-                day = date.getDate();
-                document.getElementById("current_date").innerHTML = day + "/" + month + "/" + year;
+    a:hover {
+        color: var(--primary-color);
+    }
 
-            </script>
-        </div>
-    </div>
-    <div style="padding: 10px;">
-        <a style="color: gray;" href="/Auction">Trang chủ/</a>
-        <a style="color: gray;" href="/Search"> Tìm kiếm</a>
-    </div>
-    <div style="font-size: 18px; padding-left: 3ch;">
-        Kết quả tìm kiếm từ khóa: {{searched}}
-    </div>
-    <div class="main1">
-        <div class="gird-container">
-            <div class="Loc" style="grid-row: 1/9;">
-                <p>Lọc theo giá</p>
-                <form action="">
-                    <div>Từ :</div>
-                    <div>
-                        <div> 10.000.000</div>
-                        <input type="range" min="10000000" max="1000000000" value="10000000">
-                        <div> 1.000.000.000</div>
-                    </div>
-                    <div>Đến :</div>
-                    <div>
-                        <div> 1.000.000.000</div>
-                        <input type="range" max="500000000000" min="1000000000" value="1000000000">
-                        <div> 50.000.000.000</div>
-                    </div>
+    /* BREADCRUMB */
+    .breadcrumb {
+        padding-top: 10px;
+        padding-left: 10px;
+    }
 
-                    <button>Lọc</button>
-                </form>
-            </div>
-            {%if goods_list %}
-            {% for goods in goods_list|slice:"0:12" %}
-            <div class="TinTuc">
-                <a href="/Goods/{{goods.id}}"><img src="{{goods.image.url}}" alt=""></a>
-                <a href="/Goods/{{goods.id}}">{{goods.name}}</a>
-                <p> </p>
-                <div>Giá khởi điểm:</div>
-                <span style="font-size: 20px;">{{goods.price}} VND</span>
-                <div>Thời gian kết thúc: {{goods.endingdate}}</div>
-            </div>
-            {% endfor %}
-            {%else%}
-            <h2>Không có kết quả nào được tìm thấy... </h2>
-            <style>
-                h2 {
-                    grid-column: 2/5;
-                    display: flex;
-                    flex-direction: column;
-                    text-align: center;
-                    font-weight: 400;
-                }
-            </style>
-            {%endif%}
-            {%if leng > 12%}
-            <div class="radio" style="grid-column: 2/3;">
-                <a href="/Search"><i class="fa-solid fa-arrow-left"></i></a>
-                <a href="#page1"> 1 </a>
-                <a href="#page1"> 2 </a>
-                <div style="padding-left: 10px;padding-right: 10px;"> ... </div>
-                <a href="#page1"> 3 </a>
-                <a href="#page1"> 4 </a>
-                <a href="/Search"><i class="fa-solid fa-arrow-right"></i></a>
-            </div>
-            {%endif%}
-        </div>
-    </div>
-    <div class="timkiem">
-        <div>Nhanh tay tìm kiếm vật phẩm bạn cần nào !</div>
-        <div></div>
-        <form action="/Search/" method="POST">
-            {% csrf_token %}
-            <input type="text" id="searched" name="searched" placeholder="Tìm kiếm...">
-            <button><i class="fa-solid fa-magnifying-glass"></i></button>
-        </form>
-    </div>
-    <div class="main4">
-        <div style="display:flex;flex-direction:column">
-            <img style="width: 350px;" src="{% static 'image/logoLacViet.png'%}" alt="">
+    .breadcrumb a {
+        color: gray;
+        font-size: 14px;
+    }
 
-            Đăng ký email để nhận tin tức mới nhất từ chúng tôi
-        </div>
-        <div style="display:flex;flex-direction:column">
-            Thông tin liên hệ:
-            <div></div>
-            &nbsp;
-            <a class="click">20521251@bm.uit.edu.vn</a>&nbsp;
-            <a class="click">0818666***</a>&nbsp;
-            <a class="click">0979334***</a>&nbsp;
-        </div>
-        <div style="display:flex;flex-direction:column">
-            Về chúng tôi :
-            <div></div>
-            &nbsp;
-            <a class="click" href="#">Giới thiệu</a>&nbsp;
-            <a class="click" href="#">Quy chế hoạt động</a>&nbsp;
-            <a class="click" href="#">Cơ chế giải quyết tranh chấp</a>&nbsp;
-        </div>
-        <div style="display:flex;flex-direction:column">
-            Chính sách :
-            <div></div>
-            &nbsp;
-            <a class="click" href="#"> Văn bản pháp quy</a>&nbsp;
-            <a class="click" href="#">Chính sách bảo mật thông tin</a>&nbsp;
+    /* TIÊU ĐỀ KẾT QUẢ */
+    .search-title {
+        font-size: 18px;
+        padding: 10px 30px;
+        font-weight: bold;
+        color: var(--text-color);
+    }
 
-        </div>
-        <div></div>
-        <div>Công ty đấu giá ****</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>Công ty đấu giá ****</div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div>Công ty đấu giá ****</div>
-    </div>
-    <style>
-        .but1 {
-            background-color: transparent;
-            border: none;
-            font-family: 'Times New Roman', Times, serif;
-            height: 1.75cm;
-            padding: 0cm;
-        }
+    .main1 {
+        padding: 20px 30px;
+    }
 
-        .primary-navigation {
-            margin: 0 auto;
-            display: flex;
-            font-size: 20px;
-            height: 100%;
-        }
+    /* 1. CONTAINER CHÍNH - GRID LAYOUT */
+    .gird-container {
+        display: grid;
+        grid-template-columns: 280px 1fr; /* Bộ lọc 280px cố định */
+        gap: 30px;
+    }
 
-        .primary-navigation li {
-            list-style: none;
-            margin: 0 auto;
-            display: inline-flex;
-            position: relative;
-            text-decoration: none;
-            height: 1.75cm;
-            align-items: center;
-        }
+    /* 2. CỘT LỌC */
+    .Loc {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        height: fit-content;
+    }
 
-        .primary-navigation li ul {
-            visibility: hidden;
-            opacity: 0;
-            position: absolute;
-            padding-left: 0;
-            top: 50px;
-            left: 0px;
-            display: none;
-            background: white;
-        }
+    .Loc .filter-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+    }
 
-        .primary-navigation li ul::before {
-            content: '';
-            top: -10px;
-            position: absolute;
-            width: 100%;
-            z-index: 10;
-            height: 20px;
-            background-color: transparent;
-        }
+    .Loc form button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        width: 100%;
+        margin-top: 20px;
+    }
 
-        .primary-navigation li:hover>ul,
-        .primary-navigation li ul:hover {
-            visibility: visible;
-            opacity: 1;
-            display: block;
-            min-width: 250px;
-            text-align: left;
-            padding-top: 10px;
-            box-shadow: 0px 3px 5px -1px #ccc;
-        }
+    .Loc form button:hover {
+        background-color: #9c140f;
+    }
 
-        .primary-navigation li ul li {
-            clear: both;
-            width: 100%;
-            text-align: left;
-            margin-bottom: 20px;
-            padding-left: 5px;
-            border-style: none;
-            text-decoration: none;
-            height: 100%;
+    .price-range {
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
 
-        }
+    .price-range label {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 5px;
+        color: var(--text-color);
+    }
 
-        .primary-navigation li ul li a {
-            text-align: center;
-            display: flex;
-            transition: all 1s ease;
-            padding-left: 10px;
-        }
+    .price-range .price-display-value {
+        font-size: 16px;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
 
-        .primary-navigation li ul li a:hover {
-            padding-left: 20px;
-            border-left: 3px solid #ffffff;
-            transition: all 0.3s ease;
-            color: #b41712;
-            height: 100%;
-            text-align: left;
-        }
+    .price-range input[type="range"] {
+        width: 100%;
+        height: 6px;
+        -webkit-appearance: none;
+        background: #ddd;
+        border-radius: 5px;
+        outline: none;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
 
-        /*---------------header-------------------*/
-        body {
-            background-color: rgb(248, 250, 250);
-        }
+    .price-range input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        cursor: pointer;
+        box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+    }
 
-        .header_item1 {
-            display: grid;
-            grid-template-columns: 18% 67% 7% 8%;
-            align-items: center;
-            padding-left: 2vh;
-            border-color: rgb(182, 181, 181);
-            border-style: hidden hidden solid hidden;
-            border-width: 1px;
-            color: rgb(161, 161, 161);
-            background-color: rgb(248, 250, 250);
-        }
+    /* 3. CONTAINER KẾT QUẢ SẢN PHẨM */
 
-        a {
-            list-style: none;
-            color: black;
-            text-decoration: none;
-        }
+    .search-results {
+        /* Vẫn giữ lại thuộc tính này nếu nó định vị trong Grid lớn */
+        grid-column: 2 / 3;
+        /* Đảm bảo chiếm đủ chiều rộng trong cột của nó */
+        width: 100%;
+    }
 
-        .header_item2 {
-            display: grid;
-            grid-template-columns: 30% 50%;
-            align-items: center;
-            padding: 1.5ch;
-            background-color: rgb(248, 250, 250);
-        }
+    /* * STYLES CHO CARD NỘI DUNG (KHÔNG CHỊU TRÁCH NHIỆM VỀ CHIỀU RỘNG/BỐ CỤC) */
+    .TinTuc {
+        /* Loại bỏ các thuộc tính width/flex-grow vì đã dùng col-lg-3 */
 
-        .header_item3 {
-            display: grid;
-            grid-template-columns: 2% 15% 8% 8% 8% 15% 24% 6% 6%;
-            align-items: center;
-            justify-items: center;
-            height: 1.75cm;
-            background-color: #b41712;
-            color: white;
-            font-size: 20px;
-            position: relative;
-        }
+        /* Thiết kế card */
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s, box-shadow 0.2s;
+        background-color: white;
+        text-decoration: none;
+        color: #333;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
 
-        .a1 {
-            color: white;
-            font-size: 20px;
-        }
+        /* Đảm bảo chiều cao tối thiểu cho đồng nhất */
+        min-height: 350px;
+        width: 100%; /* Đảm bảo nó chiếm trọn cột Bootstrap */
+    }
 
-        .a1:hover {
-            background-color: #ffffff;
-            color: #b41712;
-            font-size: 20px;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .TinTuc:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
 
-        .input1 {
-            border-bottom-left-radius: 15px;
-            border-top-left-radius: 15px;
-            border: none;
-            height: 1cm;
-            padding-right: 0%;
-            box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
-        }
+    .TinTuc img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 6px;
+        margin-bottom: 10px;
+    }
 
-        .input2 {
-            border-bottom-right-radius: 15px;
-            border-top-right-radius: 15px;
-            border: none;
-            height: 1cm;
-            width: 10cm;
-            padding-left: 0%;
-            box-shadow: 50px 10px #111111 0 0 10px 30px #0e0d0d 30px 0 20px 30px #1a1919;
-        }
+    .TinTuc a {
+        font-weight: 600;
+        text-decoration: none;
+        color: #0d6efd; /* Màu link Bootstrap Primary */
+        margin-bottom: 5px;
+        font-size: 1.1em;
 
-        .form form button {
-            background-color: rgb(66, 65, 65);
-            color: #ffffff;
-            border: none;
-            border-radius: 20px;
-            width: 1cm;
-            height: 1cm;
-        }
+        /* Thêm CSS để giới hạn tên sản phẩm chỉ trên một dòng */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
-        /*----------------main---------*/
-        .main1 {
-            padding-top: 2ch;
-        }
+    .TinTuc div {
+        font-size: 0.9em;
+        color: #6c757d;
+    }
 
+    .TinTuc span {
+        font-weight: bold;
+        color: #dc3545; /* Màu đỏ cho giá */
+        margin-bottom: 5px;
+    }
+
+    .no-results-message {
+        font-size: 1.5rem;
+        color: #6c757d;
+        text-align: center;
+        width: 100%;
+        padding: 50px 0;
+    }
+
+
+    /* 6. PHÂN TRANG */
+    .pagination-container {
+        grid-column: 2 / 3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        padding: 20px 0;
+        margin-top: 20px;
+    }
+
+    .pagination-container a,
+    .pagination-container .ellipsis {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 40px;
+        min-width: 40px;
+        padding: 0 10px;
+        background-color: #ffffff;
+        border-radius: 6px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        font-size: 16px;
+        color: var(--text-color);
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+
+    .pagination-container a:hover {
+        background-color: #f0f0f0;
+        color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .pagination-container a.active-page {
+        background-color: var(--primary-color);
+        color: #ffffff;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(180, 23, 18, 0.4);
+    }
+
+    .pagination-container .ellipsis {
+        background: none;
+        box-shadow: none;
+        min-width: 20px;
+        cursor: default;
+        color: #777;
+        padding: 0 5px;
+    }
+
+    /* 7. RESPONSIVE CHO THIẾT BỊ DI ĐỘNG */
+    @media (max-width: 900px) {
         .gird-container {
-            display: grid;
-            grid-template-columns: 24% 24% 24% 24%;
-            gap: 1em;
-        }
-
-        .TinTuc {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background-color: #ffffff;
-        }
-
-        .TinTuc>div {
-            background-color: white;
-        }
-
-        .TinTuc a {
-            font-size: 20px;
-            font-weight: bolder;
-        }
-
-        .TinTuc a img {
-            max-width: 100%;
-            height: 13em;
+            grid-template-columns: 1fr; /* Đổi sang layout 1 cột cho di động */
+            padding: 0 10px;
         }
 
         .Loc {
-            display: flex;
-            flex-direction: column;
+            grid-column: 1 / 2; /* Bộ lọc lên đầu */
         }
 
-        .Loc p {
-            font-size: 20px;
-            text-align: center;
-            color: #b41712;
-            border-style: hidden hidden solid hidden;
-            border-color: #e7e6e6;
-            border-width: 1px;
+        /* TinTuc không cần thay đổi width nữa vì nó đã dùng col-12/col-sm-6/col-md-4 */
+
+        .TinTuc img {
+            height: 120px; /* Giảm chiều cao ảnh trên mobile */
         }
 
-        .Loc form div {
-            display: grid;
-            grid-template-columns: 31% 38% 32%;
-            padding: 5px;
-            font-size: 18px;
+        .pagination-container,
+        h2.no-results-message {
+            grid-column: 1 / 2;
         }
 
-        .Loc form button {
-            font-size: 16px;
-            color: #ffffff;
-            background-color: #b41712;
-            border: none;
-            height: 1.2cm;
-            width: 2cm;
-            border-radius: 20px;
+        .search-title {
+            padding-left: 15px;
         }
+    }
+</style>
+<body>
+<div th:replace="~{/layout/header::header}"></div>
 
-        .Loc form button:hover {
-            font-size: 16px;
-            color: #b41712;
-            background-color: #ffffff;
-            border: none;
-            height: 1.2cm;
-            width: 2cm;
-            border-radius: 20px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
+<div class="breadcrumb">
+    <a href="/Auction">Trang chủ/</a>
+    <a href="/Search"> Tìm kiếm</a>
+</div>
 
-        .radio {
-            padding-top: 5ch;
-            padding-bottom: 5ch;
-            display: flex;
-            flex-direction: row;
-        }
+<div class="search-title">
+    Kết quả tìm kiếm từ khóa:
+</div>
 
-        .radio a {
-            background-color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-            font-size: 16px;
-            padding-left: 5px;
-            padding-right: 5px;
-        }
+<div class="main1">
+    <div class="gird-container">
 
-        .radio a:hover {
-            background-color: #b41712;
-            color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-            font-size: 16px;
-            padding-left: 5px;
-            padding-right: 5px;
-        }
+        <!-- LỌC THEO GIÁ -->
+        <div class="Loc">
+            <p class="filter-title">Lọc theo giá</p>
+            <form th:action="@{/search}" method="post">
+                <div class="price-range">
+                    <label for="min-price">Từ:</label>
+                    <div id="min-price-display" class="price-display-value">10.000.000 VND</div>
+                    <input type="range" id="min-price" name="minPrice" min="1000000" max="1000000000" value="100000">
+                </div>
+                <div class="price-range">
+                    <label for="max-price">Đến:</label>
+                    <div id="max-price-display" class="price-display-value">1.000.000.000 VND</div>
+                    <input type="range" id="max-price" name="maxPrice" min="1000000000" max="5000000000" value="5000000000">
+                </div>
+                <input type="text" name="keyword" th:value="${keyword}" placeholder="Nhập từ khóa..." class="form-control mb-2"/>
 
-        /*------------main4------------*/
-        .main4 {
-            padding-top: 5ch;
-            padding-bottom: 5ch;
-            padding-left: 3ch;
-            padding-right: 3ch;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            grid-gap: 30px;
-            border: #686666;
-            border-color: red;
-            font-size: 22px;
-        }
+                <select name="categoryId" class="form-select mb-2">
+                    <option value="">Tất cả danh mục</option>
+                    <option th:each="c : ${categories}"
+                            th:value="${c.id}"
+                            th:text="${c.name}"
+                            th:selected="${c.id == categoryId}">
+                    </option>
+                </select>
 
-        .main4>div>a {
-            font-size: 17px;
-            color: #686666;
-        }
+                <button type="submit">Tìm kiếm</button>
+            </form>
 
-        .timkiem {
-            display: grid;
-            grid-template-columns: 40% 40% 20%;
-            align-items: center;
-            justify-items: center;
-            height: 1.5cm;
-            background-color: #b41712;
-            color: white;
-            font-size: 20px;
-        }
+        </div>
 
-        /*-------------dropdowm-----------*/
-        .dropdown {
-            position: relative;
-            display: inline-block;
-            color: #0e0d0d;
-        }
+        <!-- FIX: Dùng Bootstrap row g-4 để chia cột một cách chuẩn mực -->
+        <div class="search-results row g-4">
 
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 140px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            padding: 12px 16px;
-            z-index: 1;
-        }
+            <!-- THÔNG BÁO KHÔNG KẾT QUẢ: chiếm trọn chiều ngang (col-12) -->
+            <div th:if="${#lists.isEmpty(products)}" class="col-12">
+                <h2 class="no-results-message">Không có kết quả nào được tìm thấy...</h2>
+            </div>
 
-        .dropdown:hover .dropdown-content {
-            display: flex;
-            flex-direction: column;
-        }
+            <!-- LẶP KẾT QUẢ VỚI GRID RESPONSIVE -->
+            <!-- col-12: 1 item/hàng (mobile) | col-sm-6: 2 item/hàng (tablet nhỏ) | col-md-4: 3 item/hàng (tablet lớn) | col-lg-3: 4 item/hàng (desktop) -->
+            <div th:each="product : ${products}" class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="TinTuc"> <!-- TinTuc giờ chỉ là nội dung thẻ -->
+                    <a th:href="@{'/Auction/' + ${product.id}}">
+                        <!-- Ảnh sản phẩm -->
+                        <img th:src="${product.imageUrl != null ? product.imageUrl : 'https://placehold.co/300x180/007bff/ffffff?text=Image+Not+Found'}"
+                             alt="Ảnh sản phẩm" class="img-fluid"/>
+                    </a>
 
-        .dropdown-content a:hover {
-            font-size: 18px;
-            color: #b41712;
-        }
-    </style>
+                    <a th:href="@{'/Product/' + ${product.id}}" th:text="${product.name}" class="text-decoration-none">Tên sản phẩm</a>
+
+                    <small class="text-muted">Giá khởi điểm:</small>
+
+                    <!-- Giá và ngày đăng -->
+                    <span th:text="${#numbers.formatDecimal(product.startingPrice, 0, 'COMMA', 0, 'POINT')} + ' VND'" class="text-danger fw-bold mb-1"></span>
+                    <small th:text="'Ngày đăng: ' + ${#temporals.format(product.requestedAt, 'dd/MM/yyyy')}" class="text-secondary"></small>
+                </div>
+            </div>
+        </div>
+
+        <div class="pagination-container" th:if="${totalPages > 1}">
+
+            <!-- Nút Quay lại -->
+            <!-- FIX 2: Thêm size=${6} vào tất cả các link phân trang -->
+            <a th:if="${currentPage > 0}"
+               th:href="@{/search(keyword=${keyword}, categoryId=${categoryId}, page=${currentPage - 1}, size=${6})}"
+               title="Trang trước">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+
+            <!-- Các trang -->
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/search(keyword=${keyword}, categoryId=${categoryId}, page=${i}, size=${6})}"
+           th:text="${i + 1}"
+           th:classappend="${i == currentPage} ? 'active-page' : ''">
+        </a>
+    </span>
+
+            <!-- Nút Tiếp theo -->
+            <!-- FIX 2: Thêm size=${6} vào tất cả các link phân trang -->
+            <a th:if="${currentPage + 1 < totalPages}"
+               th:href="@{/search(keyword=${keyword}, categoryId=${categoryId}, page=${currentPage + 1}, size=${6})}"
+               title="Trang tiếp theo">
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+
+    </div>
+</div>
+<div th:replace="~{/layout/footer::footer}"></div>
+
+
 </body>
 
-</html>
+<!-- JAVASCRIPT CHO BỘ LỌC GIÁ -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const minPriceSlider = document.getElementById('min-price');
+        const maxPriceSlider = document.getElementById('max-price');
+        const minPriceDisplay = document.getElementById('min-price-display');
+        const maxPriceDisplay = document.getElementById('max-price-display');
+
+        /**
+         * Định dạng số thành chuỗi tiền tệ Việt Nam (10000000 -> 10.000.000 VND)
+         * @param {number} value - Giá trị số.
+         * @returns {string} - Chuỗi tiền tệ.
+         */
+        function formatCurrency(value) {
+            if (value === null || value === undefined) return "0 VND";
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND',
+                maximumFractionDigits: 0
+            }).format(value);
+        }
+
+        /**
+         * Cập nhật hiển thị giá trị slider
+         * @param {HTMLElement} slider - Thanh trượt (input[type=range]).
+         * @param {HTMLElement} display - Phần tử hiển thị giá trị.
+         */
+        function updateDisplay(slider, display) {
+            const value = parseInt(slider.value, 10);
+            display.textContent = formatCurrency(value);
+        }
+
+        // Khởi tạo giá trị ban đầu (chạy 1 lần khi tải trang)
+        updateDisplay(minPriceSlider, minPriceDisplay);
+        updateDisplay(maxPriceSlider, maxPriceDisplay);
+
+        // Lắng nghe sự kiện thay đổi trên thanh trượt
+        minPriceSlider.addEventListener('input', function() {
+            updateDisplay(minPriceSlider, minPriceDisplay);
+        });
+
+        maxPriceSlider.addEventListener('input', function() {
+            updateDisplay(maxPriceSlider, maxPriceDisplay);
+        });
+
+        // Xử lý logic khi giá tối thiểu vượt quá giá tối đa (ngăn chặn slider đi qua nhau)
+        // Đây là một tính năng nâng cao, nhưng cần thiết cho bộ lọc 2 chiều.
+        minPriceSlider.addEventListener('change', function() {
+            if (parseInt(minPriceSlider.value) > parseInt(maxPriceSlider.value)) {
+                maxPriceSlider.value = minPriceSlider.value;
+                updateDisplay(maxPriceSlider, maxPriceDisplay);
+            }
+        });
+
+        maxPriceSlider.addEventListener('change', function() {
+            if (parseInt(maxPriceSlider.value) < parseInt(minPriceSlider.value)) {
+                minPriceSlider.value = maxPriceSlider.value;
+                updateDisplay(minPriceSlider, minPriceDisplay);
+            }
+        });
+    });
+</script>

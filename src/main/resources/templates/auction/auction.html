@@ -19,7 +19,7 @@
     <div class="item" style="padding:1em ;">
         <a style="color: gray;" href="/Auction">Trang chủ/</a>
         <a style="color: gray;">Tài sản đấu giá</a>
-        <div style="padding-top:0.5em ;font-size: 25px;">Xe ô tô Ford cũ nhưng còn mới :))
+        <div style="padding-top:0.5em ;font-size: 25px;" th:text="${auctionInfo.auction.product.name}">
         </div>
     </div>
     <div class="main1 pb-4">
@@ -30,7 +30,7 @@
                     <!-- Cột 1: Ảnh Sản phẩm -->
                     <div class="col-lg-6 col-md-12 text-center">
                         <a href="#">
-                            <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_cu5.jpg" alt="Ảnh sản phẩm đấu giá"
+                            <img th:src="${auctionInfo.auction.product.getImageUrl()}" alt="Ảnh sản phẩm đấu giá"
                                  class="img-fluid rounded-3 product-main-img">
                         </a>
                     </div>
@@ -85,39 +85,40 @@
                             </div>
                         </div>
 
-<!--&lt;!&ndash;                         4. Form Đấu giá &ndash;&gt;-->
-<!--                        <form class="mt-4" id="formSubmit" onsubmit="sendBid(); return false;" th:if="${auctionInfo.auction.status == 'ONGOING'}">-->
-<!--                            <label for="amount" class="form-label font-weight-bold">Nhập số tiền đấu giá của bạn:</label>-->
-<!--                            <div class="input-group input-group-lg mb-3">-->
-<!--                                <input type="number" id="amount" class="form-control"-->
-<!--                                       placeholder="Số tiền tối thiểu...">-->
-<!--                                <span class="input-group-text font-weight-bold text-secondary">VND</span>-->
-<!--                                <div id="bid-error-message" class="invalid-feedback d-none"></div>-->
-<!--                            </div>-->
-<!--                            <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn">-->
-<!--                                <i class="fas fa-gavel me-2"></i> Đấu giá ngay-->
-<!--                            </button>-->
-<!--                        </form>-->
-<!--                        &lt;!&ndash; 5. Người thắng cuộc &ndash;&gt;-->
-<!--                        <div class="mt-4 p-4 bg-success-subtle border-start border-5 border-success rounded shadow-sm" id="divWinner"-->
-<!--                             th:if="${auctionInfo.auction.status == 'FINISHED'}">-->
-<!--                            <h5 class="text-success font-weight-bold mb-3">-->
-<!--                                <i class="fas fa-trophy me-2"></i> PHIÊN ĐẤU GIÁ ĐÃ KẾT THÚC-->
-<!--                            </h5>-->
-<!--                            <p class="mb-1 text-dark">-->
-<!--                                <strong class="text-secondary-dark">Người thắng cuộc:</strong>-->
-<!--                                <span class="text-primary font-weight-bold h5" id="winnerName"-->
-<!--                                      th:text="${auctionInfo.auction.winner.name}">-->
-<!--                            </span>-->
-<!--                            </p>-->
-<!--                            <p class="mb-0 text-dark">-->
-<!--                                <strong class="text-secondary-dark">Giá thắng cuộc:</strong>-->
-<!--                                &lt;!&ndash; Hiển thị giá cao nhất &ndash;&gt;-->
-<!--                                <span class="text-danger font-weight-bold h5" id="winnerPrice"-->
-<!--                                      th:text="${#strings.replace(auctionInfo.highestBidPrice, '.00', '')} + ' VNĐ'">-->
-<!--                            </span>-->
-<!--                            </p>-->
-<!--                        </div>-->
+<!--                         4. Form Đấu giá -->
+                        <form class="mt-4" id="formSubmit" onsubmit="sendBid(); return false;"
+                              th:if="${auctionInfo.auction.status == 'ONGOING' and #lists.contains(auctionInfo.users, user)}">
+                            <label for="amount" class="form-label font-weight-bold">Nhập số tiền đấu giá của bạn:</label>
+                            <div class="input-group input-group-lg mb-3">
+                                <input type="number" id="amount" class="form-control"
+                                       placeholder="Số tiền tối thiểu...">
+                                <span class="input-group-text font-weight-bold text-secondary">VND</span>
+                                <div id="bid-error-message" class="invalid-feedback d-none"></div>
+                            </div>
+                            <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn">
+                                <i class="fas fa-gavel me-2"></i> Đấu giá ngay
+                            </button>
+                        </form>
+                        <!-- 5. Người thắng cuộc -->
+                        <div class="mt-4 p-4 bg-success-subtle border-start border-5 border-success rounded shadow-sm" id="divWinner"
+                             th:if="${auctionInfo.auction.status == 'FINISHED'}">
+                            <h5 class="text-success font-weight-bold mb-3">
+                                <i class="fas fa-trophy me-2"></i> PHIÊN ĐẤU GIÁ ĐÃ KẾT THÚC
+                            </h5>
+                            <p class="mb-1 text-dark">
+                                <strong class="text-secondary-dark">Người thắng cuộc:</strong>
+                                <span class="text-primary font-weight-bold h5" id="winnerName"
+                                      th:text="${auctionInfo.auction.winner.name}">
+                            </span>
+                            </p>
+                            <p class="mb-0 text-dark">
+                                <strong class="text-secondary-dark">Giá thắng cuộc:</strong>
+                                <!-- Hiển thị giá cao nhất -->
+                                <span class="text-danger font-weight-bold h5" id="winnerPrice"
+                                      th:text="${#strings.replace(auctionInfo.highestBidPrice, '.00', '')} + ' VNĐ'">
+                            </span>
+                            </p>
+                        </div>
 
                         <form class="mt-4" onsubmit="sendBid(); return false;" th:if="${auctionInfo.auction.status == 'PENDING'}">
                             <button class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn"

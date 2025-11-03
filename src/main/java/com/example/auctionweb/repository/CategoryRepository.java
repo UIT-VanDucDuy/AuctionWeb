@@ -13,6 +13,7 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
     List<Category> findAllByOrderByNameAsc();
     Category findByName(String name);
+    List<Category> findAll();
 
     @Query("SELECT c, COUNT(p) FROM Category c LEFT JOIN Product p ON p.category = c GROUP BY c")
     List<Object[]> findAllWithProductCount();
