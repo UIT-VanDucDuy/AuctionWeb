@@ -37,62 +37,15 @@
         <!-- Danh sách tài sản (Grid 5 cột trên desktop) -->
         <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-4">
             <!-- MOCK Item 1 -->
-            <div class="col">
+            <div class="col" th:each="auction : ${auctionsPending}">
                 <div class="card h-100 border-0 shadow-sm auction-card-item">
-                    <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bua4.jpg" class="card-img-top" alt="Vật phẩm đấu giá" onerror="this.onerror=null;this.src='https://placehold.co/600x400/b41712/ffffff?text=V%E1%BA%ADt+Ph%E1%BA%A9m';">
+                    <img th:src="${auction.product.getImageUrl()}" class="card-img-top" alt="Vật phẩm đấu giá" onerror="this.onerror=null;this.src='https://placehold.co/600x400/b41712/ffffff?text=V%E1%BA%ADt+Ph%E1%BA%A9m';">
                     <div class="card-body p-3">
-                        <a href="/auction/1" class="card-title h6 fw-bold text-dark text-decoration-none hover-red d-block mb-2">Vật phẩm đấu giá (Mã #001)</a>
+                        <a th:href="@{'/auction/' + ${auction.id}}"
+                           class="card-title h6 fw-bold text-dark text-decoration-none hover-red d-block mb-2" th:text="${auction.product.name}"> </a>
                         <div class="text-muted small">Giá khởi điểm:</div>
-                        <span class="fs-5 fw-bolder text-primary-red">500.000 VND</span>
-                        <div class="text-muted small mt-1">Kết thúc: 10/12/2025</div>
-                    </div>
-                </div>
-            </div>
-            <!-- MOCK Item 2 -->
-            <div class="col">
-                <div class="card h-100 border-0 shadow-sm auction-card-item">
-                    <img src="https://placehold.co/600x400/0d9488/ffffff?text=Xe+C%E1%BB%99" class="card-img-top" alt="Xe Mô Tô" onerror="this.onerror=null;this.src='https://placehold.co/600x400/0d9488/ffffff?text=Xe+C%E1%BB%99';">
-                    <div class="card-body p-3">
-                        <a href="/Goods/2" class="card-title h6 fw-bold text-dark text-decoration-none hover-red d-block mb-2">Xe Mô Tô Cổ Điển</a>
-                        <div class="text-muted small">Giá khởi điểm:</div>
-                        <span class="fs-5 fw-bolder text-primary-red">15.000.000 VND</span>
-                        <div class="text-muted small mt-1">Kết thúc: 15/11/2025</div>
-                    </div>
-                </div>
-            </div>
-            <!-- MOCK Item 3 -->
-            <div class="col">
-                <div class="card h-100 border-0 shadow-sm auction-card-item">
-                    <img src="https://placehold.co/600x400/9b59b6/ffffff?text=Ngh%E1%BB%87+Thu%E1%BA%ADt" class="card-img-top" alt="Bức Tranh" onerror="this.onerror=null;this.src='https://placehold.co/600x400/9b59b6/ffffff?text=Ngh%E1%BB%87+Thu%E1%BA%ADt';">
-                    <div class="card-body p-3">
-                        <a href="/Goods/3" class="card-title h6 fw-bold text-dark text-decoration-none hover-red d-block mb-2">Bức Tranh Sơn Dầu</a>
-                        <div class="text-muted small">Giá khởi điểm:</div>
-                        <span class="fs-5 fw-bolder text-primary-red">5.000.000 VND</span>
-                        <div class="text-muted small mt-1">Kết thúc: 05/12/2025</div>
-                    </div>
-                </div>
-            </div>
-            <!-- MOCK Item 4 -->
-            <div class="col">
-                <div class="card h-100 border-0 shadow-sm auction-card-item">
-                    <img src="https://placehold.co/600x400/3498db/ffffff?text=H%C3%A0ng+Hi%E1%BB%87u" class="card-img-top" alt="Túi Xách" onerror="this.onerror=null;this.src='https://placehold.co/600x400/3498db/ffffff?text=H%C3%A0ng+Hi%E1%BB%87u';">
-                    <div class="card-body p-3">
-                        <a href="/Goods/4" class="card-title h6 fw-bold text-dark text-decoration-none hover-red d-block mb-2">Túi Xách Da Cao Cấp</a>
-                        <div class="text-muted small">Giá khởi điểm:</div>
-                        <span class="fs-5 fw-bolder text-primary-red">12.000.000 VND</span>
-                        <div class="text-muted small mt-1">Kết thúc: 20/12/2025</div>
-                    </div>
-                </div>
-            </div>
-            <!-- MOCK Item 5 -->
-            <div class="col">
-                <div class="card h-100 border-0 shadow-sm auction-card-item">
-                    <img src="https://placehold.co/600x400/e67e22/ffffff?text=B%C4%90S" class="card-img-top" alt="Lô Đất" onerror="this.onerror=null;this.src='https://placehold.co/600x400/e67e22/ffffff?text=B%C4%90S';">
-                    <div class="card-body p-3">
-                        <a href="/Goods/5" class="card-title h6 fw-bold text-dark text-decoration-none hover-red d-block mb-2">Lô Đất Mặt Tiền</a>
-                        <div class="text-muted small">Giá khởi điểm:</div>
-                        <span class="fs-5 fw-bolder text-primary-red">2.5 Tỷ VND</span>
-                        <div class="text-muted small mt-1">Kết thúc: 25/12/2025</div>
+                        <span class="fs-5 fw-bolder text-primary-red" th:text="${auction.product.startingPrice}"></span>
+                        <div class="text-muted small mt-1" th:text="'Bắt đầu:'+${auction.startTime}"></div>
                     </div>
                 </div>
             </div>
@@ -108,55 +61,49 @@
 
             <!-- 1. TÀI SẢN THANH LÝ -->
             <div class="col">
-                <a href="/Search/Tài sản thanh lý" class="category-card-v2 p-4 text-center shadow-sm">
+                <a href="/search?categoryId=3" class="category-card-v2 p-4 text-center shadow-sm">
                     <i class="fa-solid fa-gavel category-card-icon"></i>
-                    <div class="category-card-title">TÀI SẢN THANH LÝ</div>
-                    <div class="category-card-count">({{list1_length}} tài sản)</div>
+                    <div class="category-card-title">ĐỒ GIA DỤNG</div>
                 </a>
             </div>
 
             <!-- 2. XE CỘ -->
             <div class="col">
-                <a href="/Search/Phương tiện xe cộ" class="category-card-v2 p-4 text-center shadow-sm">
+                <a href="/search?categoryId=8" class="category-card-v2 p-4 text-center shadow-sm">
                     <i class="fa-solid fa-car category-card-icon"></i>
                     <div class="category-card-title">XE CỘ</div>
-                    <div class="category-card-count">({{list3_length}} tài sản)</div>
                 </a>
             </div>
 
             <!-- 3. NGHỆ THUẬT -->
             <div class="col">
-                <a href="/Search/Sưu tầm - Nghệ thuật" class="category-card-v2 p-4 text-center shadow-sm">
+                <a href="/search?categoryId=6" class="category-card-v2 p-4 text-center shadow-sm">
                     <i class="fa-solid fa-feather-pointed category-card-icon"></i>
                     <div class="category-card-title">NGHỆ THUẬT</div>
-                    <div class="category-card-count">({{list4_length}} tài sản)</div>
                 </a>
             </div>
 
             <!-- 4. BẤT ĐỘNG SẢN -->
             <div class="col">
-                <a href="/Search/Bất động sản - Quyền sử dụng đất" class="category-card-v2 p-4 text-center shadow-sm">
+                <a href="/search?categoryId=7" class="category-card-v2 p-4 text-center shadow-sm">
                     <i class="fa-solid fa-building category-card-icon"></i>
-                    <div class="category-card-title">BẤT ĐỘNG SẢN</div>
-                    <div class="category-card-count">({{list2_length}} tài sản)</div>
+                    <div class="category-card-title">ĐỒ CỔ</div>
                 </a>
             </div>
 
             <!-- 5. HÀNG HIỆU -->
             <div class="col">
-                <a href="/Search/Hàng hiệu" class="category-card-v2 p-4 text-center shadow-sm">
+                <a href="/search?categoryId=2" class="category-card-v2 p-4 text-center shadow-sm">
                     <i class="fa-solid fa-gem category-card-icon"></i>
-                    <div class="category-card-title">HÀNG HIỆU</div>
-                    <div class="category-card-count">({{list5_length}} tài sản)</div>
+                    <div class="category-card-title">THỜI TRANG</div>
                 </a>
             </div>
 
             <!-- 6. TÀI SẢN KHÁC -->
             <div class="col">
-                <a href="/Search/Khác" class="category-card-v2 p-4 text-center shadow-sm">
+                <a href="/search?categoryId=1" class="category-card-v2 p-4 text-center shadow-sm">
                     <i class="fa-solid fa-tag category-card-icon"></i>
-                    <div class="category-card-title">TÀI SẢN KHÁC</div>
-                    <div class="category-card-count">({{list6_length}} tài sản)</div>
+                    <div class="category-card-title">ĐIỆN TỬ</div>
                 </a>
             </div>
         </div>
@@ -172,10 +119,9 @@
                 <div class="card h-100 listing-sidebar p-4 rounded-lg shadow-sm bg-tstl">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center text-center">
                         <div class="mb-3">
-                            <h3 class="fw-bolder fs-3 text-white">TÀI SẢN THANH LÝ</h3>
-                            <div class="small">tài sản({{list1_length}})</div>
+                            <h3 class="fw-bolder fs-3 text-white">ĐỒ HIỆU, THỜI TRANG</h3>
                         </div>
-                        <a href="/Search/Tài sản thanh lý" class="btn btn-outline-light rounded-pill px-4">Xem thêm</a>
+                        <a href="/search?categoryId=2" class="btn btn-outline-light rounded-pill px-4">Xem thêm</a>
                     </div>
                 </div>
             </div>
@@ -184,51 +130,18 @@
             <div class="col-lg-9">
                 <!-- Sử dụng row-cols-2 để tạo 2 cột trên mọi thiết bị -->
                 <div class="row row-cols-2 g-4">
-                    <!-- Item Mock 1 -->
-                    <div class="col">
+                    <div class="col" th:each="auction2,stat :${auctions2}" th:if="${stat.index < 4}">
                         <div class="card auction-card-item h-100">
-                            <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/2.jpg" class="card-img-top" alt="Gỗ thông" onerror="this.onerror=null;this.src='https://placehold.co/600x180/3498db/ffffff?text=G%E1%BB%97+Thanh+L%C3%BD';">
+                            <img th:src="${auction2.product.getImageUrl()}" class="card-img-top" alt="Gỗ thông" onerror="this.onerror=null;this.src='https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bua4.jpg';">
                             <div class="card-body p-3">
-                                <a href="/Goods/mock1" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Gỗ thông chất lượng cao</a>
-                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">500.000 VND</span></div>
-                                <div class="text-muted small">Kết thúc: 1/12/2025</div>
+                                <a th:href="@{'/auction/' + ${auction2.id}}"
+                                   class="card-title fw-bold text-dark text-decoration-none d-block mb-1"
+                                   th:text="${auction2.product.name}"></a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red" th:text="${auction2.product.startingPrice}"></span></div>
+                                <div class="text-muted small" th:text="'Bắt đầu: ' + ${auction2.startTime}"></div>
                             </div>
                         </div>
                     </div>
-                    <!-- Item Mock 2 -->
-                    <div class="col">
-                        <div class="card auction-card-item h-100">
-                            <img src="https://placehold.co/600x180/f39c12/ffffff?text=Laptop" class="card-img-top" alt="Laptop" onerror="this.onerror=null;this.src='https://placehold.co/600x180/f39c12/ffffff?text=Laptop';">
-                            <div class="card-body p-3">
-                                <a href="/Goods/mock2" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Laptop Thinkpad X1</a>
-                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">15.000.000 VND</span></div>
-                                <div class="text-muted small">Kết thúc: 15/12/2025</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Item Mock 3 -->
-                    <div class="col">
-                        <div class="card auction-card-item h-100">
-                            <img src="https://placehold.co/600x180/34495e/ffffff?text=Gh%E1%BA%BF+Sofa" class="card-img-top" alt="Ghế Sofa" onerror="this.onerror=null;this.src='https://placehold.co/600x180/34495e/ffffff?text=Gh%E1%BA%BF+Sofa';">
-                            <div class="card-body p-3">
-                                <a href="/Goods/mock3" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Bộ Ghế Sofa Da</a>
-                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">8.000.000 VND</span></div>
-                                <div class="text-muted small">Kết thúc: 20/12/2025</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Item Mock 4 -->
-                    <div class="col">
-                        <div class="card auction-card-item h-100">
-                            <img src="https://placehold.co/600x180/8e44ad/ffffff?text=Tivi+Sony" class="card-img-top" alt="Tivi Sony" onerror="this.onerror=null;this.src='https://placehold.co/600x180/8e44ad/ffffff?text=Tivi+Sony';">
-                            <div class="card-body p-3">
-                                <a href="/Goods/mock4" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Tivi Sony 65 inch</a>
-                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">10.000.000 VND</span></div>
-                                <div class="text-muted small">Kết thúc: 25/12/2025</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Đã xóa các mock items 5, 6, 7, 8 để duy trì bố cục 2x2 (4 items) -->
                 </div>
             </div>
         </div>
@@ -242,11 +155,9 @@
                 <div class="card h-100 listing-sidebar bg-bds p-4 rounded-lg shadow-sm">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center text-center partner-content">
                         <div class="mb-3">
-                            <h3 class="fw-bolder fs-3 text-white">BẤT ĐỘNG SẢN</h3>
-                            <h3 class="fw-bolder fs-5 text-white">QUYỀN SD ĐẤT</h3>
-                            <div class="small">tài sản({{list2_length}})</div>
+                            <h3 class="fw-bolder fs-3 text-white">TÁC PHẨM NGHỆ THUẬT</h3>
                         </div>
-                        <a href="/Search/Bất động sản - Quyền sử dụng đất" class="btn btn-outline-light rounded-pill px-4">Xem thêm</a>
+                        <a href="/search?categoryId=6" class="btn btn-outline-light rounded-pill px-4">Xem thêm</a>
                     </div>
                 </div>
             </div>
@@ -255,51 +166,18 @@
             <div class="col-lg-9">
                 <!-- Sử dụng row-cols-2 để tạo 2 cột trên mọi thiết bị -->
                 <div class="row row-cols-2 g-4">
-                    <!-- Item Mock 1 -->
-                    <div class="col">
+                    <div class="col" th:each="auction6,stat :${auctions6}" th:if="${stat.index < 4}">
                         <div class="card auction-card-item h-100">
-                            <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bua2.jpg" class="card-img-top" alt="Đất nền" onerror="this.onerror=null;this.src='https://placehold.co/600x180/b41712/ffffff?text=%C4%90%E1%BA%A5t+N%E1%BB%81n';">
+                            <img th:src="${auction6.product.getImageUrl()}" class="card-img-top" alt="Gỗ thông" onerror="this.onerror=null;this.src='https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bua4.jpg';">
                             <div class="card-body p-3">
-                                <a href="/Goods/mock9" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Lô đất QSDĐ (Mã 005)</a>
-                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">2.5 Tỷ VND</span></div>
-                                <div class="text-muted small">Kết thúc: 05/02/2026</div>
+                                <a th:href="@{'/auction/' + ${auction6.id}}"
+                                   class="card-title fw-bold text-dark text-decoration-none d-block mb-1"
+                                   th:text="${auction6.product.name}"></a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red" th:text="${auction6.product.startingPrice}"></span></div>
+                                <div class="text-muted small" th:text="'Bắt đầu: ' + ${auction6.startTime}"></div>
                             </div>
                         </div>
                     </div>
-                    <!-- Item Mock 2 -->
-                    <div class="col">
-                        <div class="card auction-card-item h-100">
-                            <img src="https://placehold.co/600x180/27ae60/ffffff?text=Nh%C3%A0+Ph%E1%BB%91" class="card-img-top" alt="Nhà Phố" onerror="this.onerror=null;this.src='https://placehold.co/600x180/27ae60/ffffff?text=Nh%C3%A0+Ph%E1%BB%91';">
-                            <div class="card-body p-3">
-                                <a href="/Goods/mock10" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Nhà Phố Quận 7</a>
-                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">4.5 Tỷ VND</span></div>
-                                <div class="text-muted small">Kết thúc: 10/02/2026</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Item Mock 3 -->
-                    <div class="col">
-                        <div class="card auction-card-item h-100">
-                            <img src="https://placehold.co/600x180/c0392b/ffffff?text=Bi%E1%BB%87t+Th%E1%BB%B1" class="card-img-top" alt="Biệt Thự" onerror="this.onerror=null;this.src='https://placehold.co/600x180/c0392b/ffffff?text=Bi%E1%BB%87t+Th%E1%BB%B1';">
-                            <div class="card-body p-3">
-                                <a href="/Goods/mock11" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Biệt Thự nghỉ dưỡng</a>
-                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">15 Tỷ VND</span></div>
-                                <div class="text-muted small">Kết thúc: 15/02/2026</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Item Mock 4 -->
-                    <div class="col">
-                        <div class="card auction-card-item h-100">
-                            <img src="https://placehold.co/600x180/95a5a6/ffffff?text=%C4%90%E1%BA%A5t+N%E1%BB%81n" class="card-img-top" alt="Đất Nền" onerror="this.onerror=null;this.src='https://placehold.co/600x180/95a5a6/ffffff?text=%C4%90%E1%BA%A5t+N%E1%BB%81n';">
-                            <div class="card-body p-3">
-                                <a href="/Goods/mock12" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Đất Nền Dịch Vụ</a>
-                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">1.2 Tỷ VND</span></div>
-                                <div class="text-muted small">Kết thúc: 20/02/2026</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Đã xóa các mock items 5, 6, 7, 8 để duy trì bố cục 2x2 (4 items) -->
                 </div>
             </div>
         </div>
@@ -314,9 +192,8 @@
                     <div class="card-body d-flex flex-column justify-content-center align-items-center text-center partner-content">
                         <div class="mb-3">
                             <h3 class="fw-bolder fs-3 text-white">XE CỘ</h3>
-                            <div class="small">tài sản({{list3_length}})</div>
                         </div>
-                        <a href="/Search/Phương tiện xe cộ" class="btn btn-outline-light rounded-pill px-4">Xem thêm</a>
+                        <a href="/search?categoryId=8" class="btn btn-outline-light rounded-pill px-4">Xem thêm</a>
                     </div>
                 </div>
             </div>
@@ -325,51 +202,18 @@
             <div class="col-lg-9">
                 <!-- Sử dụng row-cols-2 để tạo 2 cột trên mọi thiết bị -->
                 <div class="row row-cols-2 g-4">
-                    <!-- Item Mock 1 -->
-                    <div class="col">
+                    <div class="col" th:each="auction8,stat :${auctions8}" th:if="${stat.index < 4}">
                         <div class="card auction-card-item h-100">
-                            <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_cu2.jpg" class="card-img-top" alt="Xe ô tô" onerror="this.onerror=null;this.src='https://placehold.co/600x180/3498db/ffffff?text=%C3%94+T%C3%B4';">
+                            <img th:src="${auction8.product.getImageUrl()}" class="card-img-top" alt="Gỗ thông" onerror="this.onerror=null;this.src='https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/bua4.jpg';">
                             <div class="card-body p-3">
-                                <a href="/Goods/mock17" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Ô tô Sedan hạng sang</a>
-                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">850.000.000 VND</span></div>
-                                <div class="text-muted small">Kết thúc: 15/03/2026</div>
+                                <a th:href="@{'/auction/' + ${auction8.id}}"
+                                   class="card-title fw-bold text-dark text-decoration-none d-block mb-1"
+                                   th:text="${auction8.product.name}"></a>
+                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red" th:text="${auction8.product.startingPrice}"></span></div>
+                                <div class="text-muted small" th:text="'Bắt đầu: ' + ${auction8.startTime}"></div>
                             </div>
                         </div>
                     </div>
-                    <!-- Item Mock 2 -->
-                    <div class="col">
-                        <div class="card auction-card-item h-100">
-                            <img src="https://placehold.co/600x180/8e44ad/ffffff?text=Moto" class="card-img-top" alt="Xe Mô tô" onerror="this.onerror=null;this.src='https://placehold.co/600x180/8e44ad/ffffff?text=Moto';">
-                            <div class="card-body p-3">
-                                <a href="/Goods/mock18" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Xe mô tô phân khối lớn</a>
-                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">500.000.000 VND</span></div>
-                                <div class="text-muted small">Kết thúc: 20/03/2026</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Item Mock 3 -->
-                    <div class="col">
-                        <div class="card auction-card-item h-100">
-                            <img src="https://placehold.co/600x180/1abc9c/ffffff?text=Xe+T%E1%BA%A3i" class="card-img-top" alt="Xe Tải" onerror="this.onerror=null;this.src='https://placehold.co/600x180/1abc9c/ffffff?text=Xe+T%E1%BA%A3i';">
-                            <div class="card-body p-3">
-                                <a href="/Goods/mock19" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Xe tải Isuzu 2 tấn</a>
-                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">250.000.000 VND</span></div>
-                                <div class="text-muted small">Kết thúc: 25/03/2026</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Item Mock 4 -->
-                    <div class="col">
-                        <div class="card auction-card-item h-100">
-                            <img src="https://placehold.co/600x180/f1c40f/ffffff?text=Xe+%C4%90%E1%BA%A1p" class="card-img-top" alt="Xe đạp" onerror="this.onerror=null;this.src='https://placehold.co/600x180/f1c40f/ffffff?text=Xe+%C4%90%E1%BA%A1p';">
-                            <div class="card-body p-3">
-                                <a href="/Goods/mock20" class="card-title fw-bold text-dark text-decoration-none d-block mb-1">Xe đạp thể thao</a>
-                                <div class="text-dark small mt-2">Giá khởi điểm: <span class="fw-semibold text-primary-red">5.000.000 VND</span></div>
-                                <div class="text-muted small">Kết thúc: 01/04/2026</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Đã xóa các mock items 5, 6, 7, 8 để duy trì bố cục 2x2 (4 items) -->
                 </div>
             </div>
         </div>

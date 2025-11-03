@@ -28,6 +28,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     Page<Product> findByNameContainingIgnoreCaseAndCategory_IdAndStartingPriceBetween(String keyword, Integer categoryId, BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable);
 
+    List<Product> findAllByCategory_Id(Integer categoryId);
 }
 
 

@@ -19,7 +19,7 @@
     <div class="item" style="padding:1em ;">
         <a style="color: gray;" href="/Auction">Trang chủ/</a>
         <a style="color: gray;">Tài sản đấu giá</a>
-        <div style="padding-top:0.5em ;font-size: 25px;">Xe ô tô Ford cũ nhưng còn mới :))
+        <div style="padding-top:0.5em ;font-size: 25px;" th:text="${auctionInfo.auction.product.name}">
         </div>
     </div>
     <div class="main1 pb-4">
@@ -30,7 +30,7 @@
                     <!-- Cột 1: Ảnh Sản phẩm -->
                     <div class="col-lg-6 col-md-12 text-center">
                         <a href="#">
-                            <img src="https://wnjsfnpkfoewpslkturh.supabase.co/storage/v1/object/public/Image/xe_cu5.jpg" alt="Ảnh sản phẩm đấu giá"
+                            <img th:src="${auctionInfo.auction.product.getImageUrl()}" alt="Ảnh sản phẩm đấu giá"
                                  class="img-fluid rounded-3 product-main-img">
                         </a>
                     </div>

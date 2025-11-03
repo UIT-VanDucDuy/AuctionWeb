@@ -1,12 +1,10 @@
 package com.example.auctionweb.service.implement;
 
 import com.example.auctionweb.dto.AuctionDto;
-import com.example.auctionweb.entity.Auction;
-import com.example.auctionweb.entity.BidHistory;
-import com.example.auctionweb.entity.Notification;
-import com.example.auctionweb.entity.User;
+import com.example.auctionweb.entity.*;
 import com.example.auctionweb.repository.AuctionRegistrationRepository;
 import com.example.auctionweb.repository.AuctionRepository;
+import com.example.auctionweb.repository.ProductRepository;
 import com.example.auctionweb.service.interfaces.IAuctionService;
 import com.example.auctionweb.service.interfaces.INotificationService;
 import com.example.auctionweb.websocket.BidWebSocketHandler;
@@ -19,14 +17,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.auctionweb.entity.AuctionRegistration;
-
 @Service
 public class AuctionService implements IAuctionService {
     @Autowired
     private AuctionRepository auctionRepository;
     @Autowired
     private AuctionRegistrationRepository auctionRegistrationRepository;
+    @Autowired
+    private ProductRepository productRepository;
     @Autowired
     private BidHistoryService bidHistoryService;
     @Autowired
@@ -88,5 +86,25 @@ public class AuctionService implements IAuctionService {
             Notification notificationSeller = new Notification(a.getProduct().getSeller(),"Bắt đầu đấu giá sản phẩm:" + a.getProduct().getId().toString());
             notificationService.save(notificationSeller);
         }
+    }
+
+    @Override
+    public List<Auction> getAuctionsByStatus(String status) {
+        LocalDateTime now = LocalDateTime.now();
+        List<Auction> auctions = auctionRepository.findAllByStatusAndStartTimeAfter(status,now);
+        return auctions;
+    }
+
+    @Override
+    public List<Auction> getAuctionsByCategory(Integer categoryId) {
+        List<Auction> auctions = new ArrayList<>();
+        List<Product> products = productRepository.findAllByCategory_Id(categoryId);
+        for (Product p : products) {
+        if(auctionRepository.findAllByProduct(p).getStatus().equals("ONGOING") ||
+                auctionRepository.findAllByProduct(p).getStatus().equals("PENDING")){
+                auctions.add(auctionRepository.findAllByProduct(p));
+            }
+        }
+        return auctions;
     }
 }
