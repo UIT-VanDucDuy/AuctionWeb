@@ -66,7 +66,7 @@ public class RegisterController {
             Account account = new Account();
             account.setUsername(username.trim());
             account.setPassword(passwordEncoder.encode(password)); // Mã hóa password bằng BCrypt
-            account.setRole(Account.Role.USER); // Mặc định là USER
+            account.setRole(Account.Role.ROLE_USER); // Mặc định là USER
             account.setActive(true); // Tự động kích hoạt
             Account savedAccount = accountRepository.save(account);
 
@@ -127,7 +127,7 @@ public class RegisterController {
             Account admin = new Account();
             admin.setUsername("admin");
             admin.setPassword(passwordEncoder.encode("admin123")); // Mã hóa password
-            admin.setRole(Account.Role.ADMIN);
+            admin.setRole(Account.Role.ROLE_ADMIN);
             admin.setActive(true);
             accountRepository.save(admin);
 
@@ -163,7 +163,7 @@ public class RegisterController {
             Account account = new Account();
             account.setUsername(username);
             account.setPassword(passwordEncoder.encode(password));
-            account.setRole(Account.Role.USER);
+            account.setRole(Account.Role.ROLE_USER);
             account.setActive(true);
             accountRepository.save(account);
 

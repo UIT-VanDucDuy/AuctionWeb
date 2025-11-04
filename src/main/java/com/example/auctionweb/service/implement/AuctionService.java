@@ -65,14 +65,20 @@ public class AuctionService implements IAuctionService {
             a.setStatus("FINISHED");
             // tìm bid cao nhất
             BidHistory top = bidHistoryService.findTopByAuction(a);
-            if (top != null) a.setWinner(top.getUser());
-            auctionRepository.save(a);
+            if (top != null) {
+                a.setWinner(top.getUser());
+                auctionRepository.save(a);
+                a.getProduct().setOwner(top.getUser());
+                productRepository.save(a.getProduct());
+            }
+
             Notification notificationSeller = new Notification(a.getProduct().getSeller(),"Bán thành công sản phẩm ID:" + a.getProduct().getId().toString());
             notificationService.save(notificationSeller);
             Notification notificationNewOwner = new Notification(a.getWinner(),"Đấu giá thành công sản phẩm ID:" + a.getProduct().getId().toString());
             notificationService.save(notificationNewOwner);
             // gửi thông báo qua WebSocket tới tất cả client
             bidWebSocketHandler.broadcastFinishAuction(a);
+
         }
     }
 

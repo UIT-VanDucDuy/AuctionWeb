@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "account")
-public class    Account {
+public class Account {
     public enum Role {
-        ADMIN, USER, SELLER
+        ROLE_ADMIN, ROLE_USER
     }
 
     @Id
