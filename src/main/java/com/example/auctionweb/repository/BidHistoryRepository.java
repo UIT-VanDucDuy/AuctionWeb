@@ -2,6 +2,7 @@ package com.example.auctionweb.repository;
 
 import com.example.auctionweb.entity.Auction;
 import com.example.auctionweb.entity.BidHistory;
+import com.example.auctionweb.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -60,4 +61,6 @@ public interface BidHistoryRepository extends JpaRepository<BidHistory, Integer>
        GROUP BY b.auction.id
        """)
     List<Object[]> countByAuctionIds(@Param("auctionIds") List<Integer> auctionIds);
+
+    List<BidHistory> findByUserOrderByTimeDesc(User user);
 }

@@ -71,9 +71,8 @@
                             <i class="fa-solid fa-caret-down ms-1"></i>
                         </span>
                     <div class="custom-dropdown-menu">
-                        <a href="/User" sec:authorize="hasAuthority('USER')">Thông tin cá nhân</a>
+                        <a href="/user/profile" sec:authorize="hasAuthority('USER')">Hồ sơ (thông tin & đổi mật khẩu)</a>
                         <a href="/admin" sec:authorize="hasAuthority('ADMIN')">Quản lý hệ thống</a>
-                        <a href="/Changeyourpassword">Đổi mật khẩu</a>
                         <a href="/logout">Đăng xuất</a>
                     </div>
                 </div>

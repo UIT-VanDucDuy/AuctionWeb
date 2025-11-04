@@ -34,11 +34,15 @@ public class HomeController {
         }
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("auctionsPending",auctionService.getAuctionsByStatus("PENDING"));
-        List<Auction> auctions = auctionService.getAuctionsByStatus("PENDING");
         model.addAttribute("auctions8",auctionService.getAuctionsByCategory(8));
         model.addAttribute("auctions2",auctionService.getAuctionsByCategory(2));
         model.addAttribute("auctions6",auctionService.getAuctionsByCategory(6));
         return "layout/home";
+    }
+
+    @GetMapping("/403")
+    public String accessDenied() {
+        return "error/403";
     }
 
 }

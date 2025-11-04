@@ -120,12 +120,14 @@
                             </p>
                         </div>
 
-                        <form class="mt-4" onsubmit="sendBid(); return false;" th:if="${auctionInfo.auction.status == 'PENDING'}">
-                            <button class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn"
-                                    data-bs-toggle="modal" data-bs-target="#auctionRegistration">
-                                <i class="fas fa-gavel me-2"></i> Đăng ký tham gia ngay
-                            </button>
-                        </form>
+                        <div class="mt-4" th:if="${auctionInfo.auction.status == 'PENDING'}">
+                            <form th:action="@{'/auction/' + ${auctionInfo.auction.id} + '/register'}" method="post">
+                                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn">
+                                    <i class="fas fa-gavel me-2"></i> Đăng ký tham gia ngay
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
