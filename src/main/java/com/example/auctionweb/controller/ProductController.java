@@ -83,6 +83,7 @@ public class ProductController {
         product.setDescription(description);
         product.setStartingPrice(startingPrice);
         product.setSeller(user);
+        product.setOwner(user);
         product.setRequestedAt(java.time.LocalDateTime.now());
         product.setStatus(Product.ProductStatus.PENDING);
 

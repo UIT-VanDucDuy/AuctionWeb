@@ -121,12 +121,17 @@ public class AuctionService implements IAuctionService {
     public List<Auction> getAuctionsByCategory(Integer categoryId) {
         List<Auction> auctions = new ArrayList<>();
         List<Product> products = productRepository.findAllByCategory_Id(categoryId);
+
         for (Product p : products) {
-        if(auctionRepository.findAllByProduct(p).getStatus().equals("ONGOING") ||
-                auctionRepository.findAllByProduct(p).getStatus().equals("PENDING")){
-                auctions.add(auctionRepository.findAllByProduct(p));
+            Auction auction = auctionRepository.findAllByProduct(p);
+            if (auction != null && (
+                    "ONGOING".equals(auction.getStatus()) ||
+                            "PENDING".equals(auction.getStatus())
+            )) {
+                auctions.add(auction);
             }
         }
+
         return auctions;
     }
 }
