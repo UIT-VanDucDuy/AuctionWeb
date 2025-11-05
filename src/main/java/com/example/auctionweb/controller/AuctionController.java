@@ -42,7 +42,7 @@ public class AuctionController {
         modelAndView.addObject("auctionInfo", auctionService.getAuctionInfoById(id));
         modelAndView.addObject("user", user);
         modelAndView.addObject("categories", categoryService.findAll());
-
+        modelAndView.addObject("listRegistration",auctionRegistrationRepository.findByAuction_Id(id));
         return modelAndView;
     }
 

@@ -236,14 +236,22 @@
                             </span>
                             </p>
                         </div>
-                        <!--Đăng ký tham gia đấu giá   -->
+                        <!--Đăng ký tham gia đấu giá  listRegistration -->
                         <div class="mt-4" th:if="${auctionInfo.auction.status == 'PENDING'}">
                             <form th:action="@{'/auction/' + ${auctionInfo.auction.id} + '/register'}" method="post">
-                                <button type="button" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn"
-                                        data-bs-toggle="modal" data-bs-target="#paymentModal">
-                                    <i class="fas fa-gavel me-2"></i> Đăng ký tham gia ngay
-                                </button>
+                                <div th:if="${#lists.contains(listRegistration, currentUser)} == false">
+                                    <button type="button"
+                                            class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn"
+                                            data-bs-toggle="modal" data-bs-target="#paymentModal">
+                                        <i class="fas fa-gavel me-2"></i> Đăng ký tham gia ngay
+                                    </button>
+                                </div>
 
+                                <div th:if="${#lists.contains(listRegistration, currentUser)}">
+                                    <button class="btn btn-secondary btn-lg w-100 shadow-sm custom-bid-btn" disabled>
+                                        <i class="fas fa-check me-2"></i> Bạn đã đăng ký rồi
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>

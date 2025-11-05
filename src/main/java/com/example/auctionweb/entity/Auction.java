@@ -29,7 +29,6 @@ public class Auction {
     @OneToOne
     @JoinColumn(name = "winner")
     private User winner;
-
     public Auction() {
     }
 }

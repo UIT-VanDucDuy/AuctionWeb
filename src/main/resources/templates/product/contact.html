@@ -91,7 +91,8 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <form th:action="@{/create}" method="POST" class="p-4 p-md-5 bg-white shadow-lg rounded-3 border-top border-5 border-primary-custom">
+            <form th:action="@{/create}" method="POST" enctype="multipart/form-data"
+                  class="p-4 p-md-5 bg-white shadow-lg rounded-3 border-top border-5 border-primary-custom">
                 <fieldset class="border-0 p-0">
                     <legend class="fs-4 fw-bold mb-4 text-primary-custom">Thông tin Yêu cầu Bán Tài sản</legend>
 
@@ -108,7 +109,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Họ và tên người liên hệ:</label>
-                            <input type="text" class="form-control" value="Nguyễn Văn A" placeholder="Họ và tên">
+                            <input type="text" class="form-control" th:value="${user.name}" placeholder="Họ và tên">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Số điện thoại liên hệ:</label>
@@ -130,28 +131,11 @@
                             <input type="number" step="0.01" class="form-control" name="startingPrice" placeholder="Ví dụ: 10000000 (10 triệu)">
                         </div>
                     </div>
-
-                    <!-- Location and Time -->
-                    <div class="row mb-4 g-3">
-                        <div class="col-12">
-                            <label class="form-label fw-bold">Địa chỉ xem tài sản:</label>
-                            <input type="text" class="form-control" name="diachi" placeholder="Số nhà, đường, quận/huyện, tỉnh/thành phố">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Thời gian xem tài sản:</label>
-                            <input type="text" class="form-control" name="time" placeholder="Ví dụ: Từ 9h - 11h sáng các ngày thứ 7">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Ngày kết thúc đấu giá mong muốn:</label>
-                            <input type="date" class="form-control" name="endingdate" max="2025-12-31">
-                        </div>
-                    </div>
-
                     <!-- Image Upload -->
                     <div class="row mb-4 g-3 align-items-center">
                         <div class="col-12">
                             <label class="form-label fw-bold">Hình ảnh của sản phẩm:</label>
-                            <input type="text" class="form-control" id="image" name="imageUrl" placeholder="Tên file ảnh hoặc URL">
+                            <input type="file" class="form-control" id="image" name="image" placeholder="Tên file ảnh hoặc URL">
                         </div>
                         <div class="col-12">
                             <div class="display_image shadow-sm">
