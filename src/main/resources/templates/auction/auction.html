@@ -7,12 +7,129 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
     <title>Thông tin sản phẩm</title>
     <script th:src="@{/js/header.js}"></script>
     <link rel="stylesheet" th:href="@{/css/header.css}">
     <link rel="stylesheet" th:href="@{/css/auction.css}">
+    <style>
+        :root {
+            --primary-color: #b41712; /* Màu chủ đạo theo file search_page.html */
+            --text-color: #333;
+        }
+        /* Tùy chỉnh Modal Header */
+        .modal-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-bottom: none;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            padding: 1.5rem 1.5rem;
+        }
+
+        .modal-title {
+            font-weight: 600;
+        }
+
+        .btn-close {
+            filter: invert(1); /* Biến icon đóng thành màu trắng */
+        }
+
+        /* Tùy chỉnh Modal Content */
+        .modal-content {
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Khu vực QR Code */
+        .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 6px;
+            /* margin-bottom: 20px; - Đã được thay thế bằng class mb-3/mb-md-0 trong HTML */
+            text-align: center;
+        }
+
+        .qr-section img {
+            width: 180px;
+            height: 180px;
+            border: 5px solid white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        /* Khu vực thông tin chi tiết */
+        .info-detail {
+            margin-bottom: 15px;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .info-detail:last-child {
+            border-bottom: none;
+        }
+
+        .info-detail .label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
+            display: block;
+        }
+
+        /* Style cho giá trị nổi bật (Số tài khoản) */
+        .highlight-value-box {
+            background-color: #e9ecef; /* Light gray background */
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color); /* Highlight color */
+            letter-spacing: 1px; /* Tách số ra một chút cho dễ đọc */
+            width: 100%;
+            word-break: break-all;
+        }
+
+        /* Cập nhật style .value cho các trường không nổi bật */
+        .info-detail .value {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            font-weight: 700;
+            word-break: break-all;
+        }
+
+        /* Nút copy */
+        .btn-copy {
+            background-color: #28a745; /* Màu xanh lá cho nút copy */
+            border-color: #28a745;
+            transition: background-color 0.2s;
+        }
+
+        .btn-copy:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        /* Thông báo sao chép */
+        #copy-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            display: none;
+            /* Tùy chỉnh Bootstrap Alert/Toast */
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+        }
+    </style>
 </head>
 <div th:replace="~{/layout/header::header}"></div>
 <body class="container-fluid">
@@ -49,7 +166,7 @@
                             <div class="col-6 mb-2"><strong class="text-secondary-dark">Thời gian kết thúc ĐK:</strong></div>
                             <div class="col-6 mb-2">21/10/2022 17:00:00</div>
                             <div class="col-6 mb-2"><strong class="text-secondary-dark">Phí ĐK tham gia:</strong></div>
-                            <div class="col-6 mb-2 text-danger font-weight-bold">10% Giá khởi điểm</div>
+                            <div class="col-6 mb-2 text-danger font-weight-bold">5% Giá khởi điểm</div>
                         </div>
 
                         <!-- 2. Thông tin Chủ tài sản & Tổ chức -->
@@ -119,13 +236,16 @@
                             </span>
                             </p>
                         </div>
+                        <!--Đăng ký tham gia đấu giá   -->
+                        <div class="mt-4" th:if="${auctionInfo.auction.status == 'PENDING'}">
+                            <form th:action="@{'/auction/' + ${auctionInfo.auction.id} + '/register'}" method="post">
+                                <button type="button" class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn"
+                                        data-bs-toggle="modal" data-bs-target="#paymentModal">
+                                    <i class="fas fa-gavel me-2"></i> Đăng ký tham gia ngay
+                                </button>
 
-                        <form class="mt-4" onsubmit="sendBid(); return false;" th:if="${auctionInfo.auction.status == 'PENDING'}">
-                            <button class="btn btn-danger btn-lg w-100 shadow-sm custom-bid-btn"
-                                    data-bs-toggle="modal" data-bs-target="#auctionRegistration">
-                                <i class="fas fa-gavel me-2"></i> Đăng ký tham gia ngay
-                            </button>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -234,36 +354,82 @@
 
         </div>
     </div>
-</div>
-<div class="modal fade" id="auctionRegistration" tabindex="-1" aria-labelledby="auctionRegistrationLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md">
-        <div class="modal-content bg-dark text-white">
-            <div class="modal-header">
-                <h5 class="modal-title" id="auctionRegistrationLabel">Login</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-            </div>
-            <div class="modal-body justify-content-center align-items-center d-flex  ">
-                <form action="/Home?action=login" class="form" method="post">
-               <span class="input-span">
-                    <label for="usernameLogin" class="label">Username</label>
-                    <input type="text" name="username" id="usernameLogin"/>
-                    <label for="passwordLogin" class="label">Password</label>
-                    <input type="password" name="password" id="passwordLogin"/>
-                </span>
-                    <br>
-                    <p id="loginMessage"></p>
-                    <span class="span"><a href="#">Forgot password?</a></span>
-                    <input class="submit" type="submit" value="Log in"/>
-                    <span class="span">Don't have an account?
-                    <a href="" data-bs-toggle="modal" data-bs-target="#signUpModal">Sign up</a>
-                </span>
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- Thêm modal-lg để có đủ không gian cho bố cục ngang -->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentModalLabel">Thông Tin Chuyển Khoản</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Bắt đầu bố cục Ngang -->
+                <div class="modal-body">
+                    <div class="row g-3"> <!-- g-3: Khoảng cách giữa 2 cột -->
+
+                        <!-- CỘT 1: QR Code (5/12 chiều rộng trên màn hình trung bình trở lên) -->
+                        <div class="col-12 col-md-5 d-flex flex-column justify-content-center align-items-center mb-3 mb-md-0">
+                            <!-- Khu vực QR Code (đã loại bỏ margin-bottom để cột kiểm soát) -->
+                            <div class="qr-section w-100 h-100">
+                                <p class="text-danger fw-bold mb-3">Quét mã QR để chuyển khoản nhanh</p>
+                                <img src="https://placehold.co/180x180/000000/ffffff?text=QR+Code+Placeholder" alt="Mã QR Chuyển Khoản">
+                                <p class="text-muted small" th:text="'Nội dung:' + ${auctionInfo.auction.id} + ' - ' +${user.id}"></p>
+                            </div>
+                        </div>
+
+                        <!-- CỘT 2: Thông tin Người nhận (7/12 chiều rộng trên màn hình trung bình trở lên) -->
+                        <div class="col-12 col-md-7">
+                            <div class="row">
+                                <div class="col-12 text-center mb-3">
+                                    <p class="h6 fw-bold text-success">THÔNG TIN NGƯỜI NHẬN</p>
+                                </div>
+
+                                <!-- Tên Người Nhận -->
+                                <div class="col-12 info-detail">
+                                    <span class="label">Tên Người Nhận</span>
+                                    <span class="value" id="receiver-name">TONG CONG TY DAU GIA LAC VIET</span>
+                                </div>
+
+                                <!-- Ngân hàng -->
+                                <div class="col-12 info-detail">
+                                    <span class="label">Ngân Hàng</span>
+                                    <span class="value" id="bank-name">VIETCOMBANK (VCB)</span>
+                                </div>
+
+                                <!-- Số Tài Khoản (Nổi bật) -->
+                                <div class="col-12 info-detail">
+                                    <span class="label">Số Tài Khoản</span>
+                                    <div class="d-flex align-items-center mt-1">
+                                        <!-- Box chứa số tài khoản, sử dụng class nổi bật -->
+                                        <div id="account-number" class="highlight-value-box flex-grow-1 me-2">00110022334455</div>
+
+                                        <!-- Nút sao chép -->
+                                        <button class="btn btn-copy flex-shrink-0"
+                                                onclick="copyToClipboard('account-number', this)">
+                                            <i class="far fa-copy me-1"></i> Sao chép
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Số Tiền -->
+                                <div class="col-12 info-detail">
+                                    <span class="label">Số Tiền Cần Chuyển</span>
+                                    <span class="value text-danger" th:text="${auctionInfo.auction.startingPrice/20}"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Kết thúc bố cục Ngang -->
+
+                <form th:action="@{'/auction/' + ${auctionInfo.auction.id} + '/register'}"
+                      method="post" class="modal-footer justify-content-center" >
+                    <button type="submit" class="btn btn-outline-secondary" data-bs-dismiss="modal">Đăng ký</button>
                 </form>
             </div>
         </div>
     </div>
-</div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:inline="javascript">
     var auctionInfo = /*[[${auctionInfo}]]*/ {};
     var user = /*[[${user}]]*/ {};
@@ -409,8 +575,8 @@
             console.error("Lỗi khi gửi dữ liệu qua WebSocket:", error);
         }
     }
-
 </script>
+
 </body>
 <div th:replace="~{/layout/footer::footer}"></div>
 

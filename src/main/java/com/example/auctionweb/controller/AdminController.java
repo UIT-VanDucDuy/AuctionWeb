@@ -152,9 +152,28 @@ public class AdminController {
             p.setStatus(ProductStatus.APPROVED);
             productRepository.save(p);
 
+            // Tự động tạo Auction khi sản phẩm được approve
+            if (auctionRepository != null) {
+                // Kiểm tra xem đã có Auction cho sản phẩm này chưa
+                Auction existingAuction = auctionRepository.findAllByProduct(p);
+                if (existingAuction == null) {
+                    Auction newAuction = new Auction();
+                    newAuction.setProduct(p);
+                    newAuction.setStartingPrice(p.getStartingPrice());
+                    
+                    // Đặt lịch: bắt đầu sau 24 giờ, kết thúc sau 48 giờ (phiên đấu giá kéo dài 24h)
+                    LocalDateTime now = LocalDateTime.now();
+                    newAuction.setStartTime(now.plusHours(24));
+                    newAuction.setEndTime(now.plusHours(48));
+                    newAuction.setStatus("PENDING"); // PENDING -> ONGOING -> FINISHED
+                    
+                    auctionRepository.save(newAuction);
+                }
+            }
+
             Notification n = new Notification();
             n.setUser(p.getSeller());
-            n.setNotification("Sản phẩm của bạn đã được duyệt");
+            n.setNotification("Sản phẩm của bạn đã được duyệt. Phiên đấu giá sẽ bắt đầu sau 24 giờ.");
             n.setTime(LocalDateTime.now());
             notificationRepository.save(n);
 

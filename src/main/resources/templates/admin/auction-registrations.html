@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Duyệt đăng ký đấu giá - Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background:#f6f7fb }
+        .card{border:0;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+        .thumb{width:50px;height:50px;border-radius:8px;object-fit:cover;border:1px solid #e9ecef}
+    </style>
+</head>
+<body>
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0"><i class="bi bi-clipboard-check"></i> Duyệt đăng ký đấu giá</h3>
+        <div class="d-flex gap-2">
+            <a href="/admin" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="card mb-3">
+        <div class="card-body">
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${currentStatus == 'PENDING' ? 'active' : ''}"
+                       th:href="@{/admin/auction-registrations(status='PENDING')}">
+                        <i class="bi bi-clock-history"></i> Chờ duyệt
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${currentStatus == 'APPROVED' ? 'active' : ''}"
+                       th:href="@{/admin/auction-registrations(status='APPROVED')}">
+                        <i class="bi bi-check-circle"></i> Đã duyệt
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${currentStatus == 'REJECTED' ? 'active' : ''}"
+                       th:href="@{/admin/auction-registrations(status='REJECTED')}">
+                        <i class="bi bi-x-circle"></i> Đã từ chối
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:classappend="${currentStatus == 'ALL' ? 'active' : ''}"
+                       th:href="@{/admin/auction-registrations(status='ALL')}">
+                        <i class="bi bi-list"></i> Tất cả
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th style="width:72px">ID</th>
+                    <th>Phiên đấu giá</th>
+                    <th>Sản phẩm</th>
+                    <th>Người đăng ký</th>
+                    <th>Ngày đăng ký</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end" style="width:220px">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="reg : ${registrations}">
+                    <td th:text="${reg.id}">1</td>
+
+                    <td>
+                        <div class="fw-semibold">Phiên #<span th:text="${reg.auction != null ? reg.auction.id : '—'}">—</span></div>
+                        <div class="text-muted small">
+                            Bắt đầu: <span th:text="${reg.auction != null and reg.auction.startTime != null ? #temporals.format(reg.auction.startTime,'dd/MM/yyyy HH:mm') : '—'}">—</span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <img class="thumb"
+                                 th:if="${reg.auction != null and reg.auction.product != null and reg.auction.product.imageUrl != null}"
+                                 th:src="${reg.auction.product.imageUrl != null and #strings.startsWith(reg.auction.product.imageUrl,'http') ? reg.auction.product.imageUrl : '/images/' + reg.auction.product.imageUrl}"
+                                 alt="thumb">
+                            <div>
+                                <div class="fw-semibold" th:text="${reg.auction != null and reg.auction.product != null ? reg.auction.product.name : '—'}">—</div>
+                                <div class="text-muted small"
+                                     th:text="${reg.auction != null and reg.auction.startingPrice != null ? #numbers.formatDecimal(reg.auction.startingPrice, 0, 'COMMA', 0, 'POINT') + ' VND' : '—'}">—</div>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div th:text="${reg.user != null ? reg.user.name : '—'}">—</div>
+                        <div class="text-muted small" th:text="${reg.user != null ? reg.user.email : '—'}">—</div>
+                    </td>
+
+                    <td th:text="${reg.createdAt != null ? #temporals.format(reg.createdAt,'dd/MM/yyyy HH:mm') : '—'}">—</td>
+
+                    <td>
+                        <span th:text="${reg.status}"
+                              th:classappend="${reg.status != null and reg.status.name()=='APPROVED' ? 'badge bg-success' :
+                                              (reg.status != null and reg.status.name()=='PENDING'  ? 'badge bg-warning text-dark' :
+                                              (reg.status != null and reg.status.name()=='REJECTED' ? 'badge bg-danger' :
+                                              'badge bg-secondary'))}">
+                            PENDING
+                        </span>
+                    </td>
+
+                    <td class="text-end">
+                        <div class="d-flex gap-2 justify-content-end">
+                            <form th:if="${reg.status == null or reg.status.name() == 'PENDING'}"
+                                  th:action="@{|/admin/auction-registrations/${reg.id}/approve|}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="bi bi-check-circle"></i> Duyệt
+                                </button>
+                            </form>
+                            <form th:if="${reg.status == null or reg.status.name() == 'PENDING'}"
+                                  th:action="@{|/admin/auction-registrations/${reg.id}/reject|}" method="post" class="d-inline"
+                                  onsubmit="return confirm('Từ chối đăng ký này?');">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-x-circle"></i> Từ chối
+                                </button>
+                            </form>
+                            <a th:if="${reg.auction != null}"
+                               th:href="@{|/admin/auctions/${reg.auction.id}|}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> Xem phiên
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(registrations)}">
+                    <td colspan="7" class="text-center text-muted py-4">
+                        <i class="bi bi-inbox"></i> Không có đăng ký nào.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

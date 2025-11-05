@@ -65,20 +65,26 @@ public class AuctionService implements IAuctionService {
             a.setStatus("FINISHED");
             // tìm bid cao nhất
             BidHistory top = bidHistoryService.findTopByAuction(a);
-            if (top != null) {
-                a.setWinner(top.getUser());
-                auctionRepository.save(a);
-                a.getProduct().setOwner(top.getUser());
-                productRepository.save(a.getProduct());
+            if (top != null) a.setWinner(top.getUser());
+            auctionRepository.save(a);
+            // Thông báo cho người bán (nếu có)
+            if (a.getProduct() != null && a.getProduct().getSeller() != null) {
+                Notification notificationSeller = new Notification(
+                        a.getProduct().getSeller(),
+                        "Bán thành công sản phẩm ID:" + a.getProduct().getId()
+                );
+                notificationService.save(notificationSeller);
             }
-
-            Notification notificationSeller = new Notification(a.getProduct().getSeller(),"Bán thành công sản phẩm ID:" + a.getProduct().getId().toString());
-            notificationService.save(notificationSeller);
-            Notification notificationNewOwner = new Notification(a.getWinner(),"Đấu giá thành công sản phẩm ID:" + a.getProduct().getId().toString());
-            notificationService.save(notificationNewOwner);
+            // Thông báo cho người thắng (chỉ khi có winner)
+            if (a.getWinner() != null) {
+                Notification notificationNewOwner = new Notification(
+                        a.getWinner(),
+                        "Đấu giá thành công sản phẩm ID:" + a.getProduct().getId()
+                );
+                notificationService.save(notificationNewOwner);
+            }
             // gửi thông báo qua WebSocket tới tất cả client
             bidWebSocketHandler.broadcastFinishAuction(a);
-
         }
     }
 
@@ -89,8 +95,18 @@ public class AuctionService implements IAuctionService {
         for (Auction a : auctions) {
             a.setStatus("ONGOING");
             auctionRepository.save(a);
-            Notification notificationSeller = new Notification(a.getProduct().getSeller(),"Bắt đầu đấu giá sản phẩm:" + a.getProduct().getId().toString());
-            notificationService.save(notificationSeller);
+            List<AuctionRegistration> auctionRegistrations= auctionRegistrationRepository.findByAuctionAndStatus(a, AuctionRegistration.RegistrationStatus.PENDING);
+            for (AuctionRegistration auctionRegistration : auctionRegistrations) {
+                auctionRegistration.setStatus(AuctionRegistration.RegistrationStatus.REJECTED);
+                auctionRegistrationRepository.save(auctionRegistration);
+            }
+            if (a.getProduct() != null && a.getProduct().getSeller() != null) {
+                Notification notificationSeller = new Notification(
+                        a.getProduct().getSeller(),
+                        "Bắt đầu đấu giá sản phẩm:" + a.getProduct().getId()
+                );
+                notificationService.save(notificationSeller);
+            }
         }
     }
 

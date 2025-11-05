@@ -1,552 +1,869 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="http://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
-    <title>Document</title>
-    {% load static %}
-</head>
-
-<body>
-    <div class="item">
-        <a href="/Auction">Trang chủ/</a>
-        <a href="/Auction">Tài khoản</a>
-        <div style="padding-bottom: 0.5ch;">Quản lý tài khoản</div>
-    </div>
-    <div class="main1">
-        <div class="TuyChon">
-            <div style="display: flex; flex-direction: column;align-items: center;">
-                <div style="font-size: 24px;padding-top: 1.5ch;">{{user_profile.firstname}} {{user_profile.lastname}}
-                </div>
-                <div style="padding-bottom:0.5ch;padding-bottom: 1ch;">Tài khoản cá nhân</div>
-                <img style="width: 155px;background-color: white; border-radius: 200px;"
-                    src="{%static 'image/user1.png'%}" alt="">
-                <div style="background-color: white;height:2cm;width:100% ;"></div>
-            </div>
-            <a><i class="fa-regular fa-bell"></i>&nbsp; Thông báo</a>
-            <a><i class="fa-regular fa-circle-user"></i>&nbsp; Thông tin tài
-                khoản</a>
-            <a><i class="fa-solid fa-bars-staggered"></i>&nbsp; Lịch sử giao dịch
-            </a>
-            <a><i class="fa-solid fa-house-chimney"></i>&nbsp; Cuộc đấu giá của
-                tôi</a>
-            <a href="/Logout"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; Đăng xuất </a>
-        </div>
-        <div class="in4 thongbao in4--active ">
-            <div class="thongbao1">
-                Thông báo
-            </div>
-            {%for notification in notification_list %}
-            <a class="list" href="/Goods/{{notification.goods}}">
-                <div><i class="fa-regular fa-bell"></i></div>
-                <div>{{notification.type}} sản phẩm </div>
-                <div>{{notification.goods}}</div>
-                <div>{{notification.price}} VND</div>
-                <div>{{notification.time}}
-                </div>
-            </a>
-            {%endfor%}
-        </div>
-        <div class="in4 info ">
-            <div class="thongbao1">
-                Thông tin tài khoản
-            </div>
-            <form action="" method="POST">
-                {% csrf_token %}
-                <label style="grid-column: 1/2;">Họ và tên:</label>
-                <input style="grid-column: 2/5;" type="text" name="firstname"
-                    value="{{user_profile.firstname}} {{user_profile.lastname}}" readonly>
-                <label style="grid-column: 1/2;">Địa chỉ email:</label>
-                <input style="grid-column: 2/7;" type="email" name="email" value="{{user.email}}" readonly>
-                <label style="grid-column: 1/2;">Số điện thoại(di động):</label>
-                <input style="grid-column: 2/7;" type="text" name="phonenumber" value="{{user_profile.phonenumber}}"
-                    readonly>
-                <label style="grid-column: 1/2;">Ngày sinh:</label>
-                <input style="grid-column: 2/7;" value="{{user_profile.dateofbirth}}" readonly>
-                <label style="grid-column: 1/2;">Địa chỉ:</label>
-                <input style="grid-column: 2/4;" name="tinh" value="{{user_profile.tinh}}" readonly>
-                <input style="grid-column: 4/6;" name="huyen" value="{{user_profile.huyen}}" readonly>
-                <input style="grid-column: 6/7;" name="xa" value="{{user_profile.xa}}" readonly>
-                <input style="grid-column: 2/7;" type="text" name="diachi" value="{{user_profile.diachi}}" readonly>
-                <label style="grid-column: 1/2;">Giới tính:</label>
-                <input style="grid-column: 2/4;" type="text" name="diachi" value="{{user_profile.gender}}" readonly>
-
-
-            </form>
-        </div>
-        <div class="in4 history ">
-            <div class="thongbao1">
-                Lịch sử giao dịch
-            </div>
-            <a class="list0">
-                <div>Tên người dùng </div>
-                <div>Giá tiền</div>
-                <div>ID sản phẩm</div>
-                <div>Thời gian trả giá </div>
-            </a>
-            {%for history in history_list %}
-            <a class="list1" href="/Goods/{{history.goods}}">
-                <div>{{history.user}} </div>
-                <div>{{history.price}} VND</div>
-                <div>{{history.goods}}</div>
-                <div>{{history.datetime}}
-                </div>
-            </a>
-            {%endfor%}
-        </div>
-        <div class="in4 myauction ">
-            <div class="thongbao1">
-                Các cuộc dấu giá
-            </div>
-            <a class="list0">
-                <div>Tên người dùng </div>
-                <div>Giá khởi điểm</div>
-                <div>ID sản phẩm </div>
-                <div>Ngày đấu giá</div>
-            </a>
-            {%for goods in goods_list %}
-            <a class="list1" href="/Goods/{{goods.id}}">
-                <div>{{goods.user}} </div>
-                <div>{{goods.price}} VND</div>
-                <div>{{goods.id}}</div>
-                <div>{{goods.startingdate}}</div>
-            </a>
-        </div>
-    </div>
-    <script>
-        const thongbao = document.querySelectorAll(".in4.thongbao")
-        const history = document.querySelectorAll(".in4.history")
-        const info = document.querySelectorAll(".in4.info")
-        const myauction = document.querySelectorAll(".in4.myauction")
-        const tuychon = document.querySelector(".TuyChon").children
-        tuychon[1].addEventListener('click', () => {
-            thongbao.forEach((item) => item.classList.add("in4--active"))
-            info.forEach((item) => item.classList.remove("in4--active"))
-            history.forEach((item) => item.classList.remove("in4--active"))
-            myauction.forEach((item) => item.classList.remove("in4--active"))
-        })
-        tuychon[2].addEventListener('click', () => {
-            thongbao.forEach((item) => item.classList.remove("in4--active"))
-            info.forEach((item) => item.classList.add("in4--active"))
-            history.forEach((item) => item.classList.remove("in4--active"))
-            myauction.forEach((item) => item.classList.remove("in4--active"))
-
-        })
-        tuychon[3].addEventListener('click', () => {
-            thongbao.forEach((item) => item.classList.remove("in4--active"))
-            info.forEach((item) => item.classList.remove("in4--active"))
-            history.forEach((item) => item.classList.add("in4--active"))
-            myauction.forEach((item) => item.classList.remove("in4--active"))
-
-        })
-        tuychon[4].addEventListener('click', () => {
-            thongbao.forEach((item) => item.classList.remove("in4--active"))
-            info.forEach((item) => item.classList.remove("in4--active"))
-            history.forEach((item) => item.classList.remove("in4--active"))
-            myauction.forEach((item) => item.classList.add("in4--active"))
-        })
-    </script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" xintegrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/d3ee10eebc.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/header.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/auction.css}">
+    <title>Quản lý tài khoản</title>
+    <script th:src="@{/js/header.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" th:href="@{/css/auction.css}">
     <style>
-        .but1 {
-            background-color: transparent;
-            border: none;
-            font-family: 'Times New Roman', Times, serif;
-            height: 1.75cm;
-            padding: 0cm;
+        /* --- Biến màu và cài đặt cơ bản --- */
+        :root {
+            --mdc-theme-primary: #b41712;
+            --mdc-theme-secondary: #676767;
+            --mdc-theme-background: #f5f5f5;
+            --mdc-theme-surface: #ffffff;
+            --mdc-theme-error: #b00020;
+            --transition-speed: 0.3s;
+            --border-radius: 8px;
+            --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        /*--------------------------------*/
-        .in4 {
-            padding-left: 4ch;
-            display: none;
-        }
-
-        .in4--active {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .in4.history.in4--active {
-            display: flex;
-        }
-
-        .in4.history {
-            display: hidden;
-        }
-
-        .in4.info {
-            display: hidden;
-        }
-
-        .in4.myauction {
-            display: hidden;
-        }
-
-        .thongbao1 {
-            background-color: #dfdfdf;
-            font-size: 18px;
-            border-style: hidden hidden solid hidden;
-            border-color: #585858;
-            display: grid;
-            grid-template-columns: 30% 70%;
-            align-items: center;
-            height: 1cm;
-            text-align: center;
-            padding-bottom: 2px;
-        }
-
-        /*---------------form----------------*/
-        .in4 form {
-            display: grid;
-            grid-template-columns: 25% 1fr 1fr 1fr 1fr 1fr 1fr;
-            gap: 1em;
-            padding: 3em;
-            background-color: white;
-        }
-
-        .in4 form input {
-            padding: 0.5em;
-            border: none;
-            border-bottom: 1px solid #686666;
-            background-color: white;
-            font-size: 16px;
-        }
-
-        .in4 form label {
-            padding: 1em;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .in4 form button {
-            padding: 0.5em;
-            width: 4cm;
-            height: 1cm;
-            background-color: #b41712;
-            border: none;
-            border-radius: 100px;
-            color: white;
-        }
-
-        /*--------------list----------------*/
-        .list {
-            background-color: #ffffff;
-            font-size: 18px;
-            display: grid;
-            grid-template-columns: 5% 25% 30% 20% 20%;
-            height: 2.5cm;
-            align-items: center;
-            padding-left: 2ch;
-            border-style: hidden solid solid solid;
-            border-width: 1px;
-            border-color: #dfdfdf;
-        }
-
-        .list:hover {
-            background-color: #ffffff;
-            font-size: 18px;
-            display: grid;
-            grid-template-columns: 5% 25% 30% 20% 20%;
-            height: 2.5cm;
-            align-items: center;
-            padding-left: 2ch;
-            border-style: solid solid solid solid;
-            border-width: 1px;
-            border-color: #242424;
-        }
-
-        .list0 {
-            background-color: #ffffff;
-            font-size: 18px;
-            display: grid;
-            grid-template-columns: 15% 25% 35% 25%;
-            height: 1cm;
-            align-items: center;
-            text-align: center;
-            padding-left: 2ch;
-            border-style: hidden solid solid solid;
-            border-width: 1px;
-            border-color: #dfdfdf;
-        }
-
-        .list1 {
-            background-color: #ffffff;
-            font-size: 18px;
-            display: grid;
-            grid-template-columns: 15% 25% 35% 25%;
-            height: 1cm;
-            align-items: center;
-            text-align: center;
-            padding-left: 2ch;
-            border-style: hidden solid solid solid;
-            border-width: 1px;
-            border-color: #dfdfdf;
-        }
-
-        .list1:hover {
-            background-color: #ffffff;
-            font-size: 18px;
-            display: grid;
-            grid-template-columns: 15% 25% 35% 25%;
-            height: 1cm;
-            align-items: center;
-            text-align: center;
-            padding-left: 2ch;
-            border-style: solid solid solid solid;
-            border-width: 1px;
-            border-color: #242424;
-        }
-
-        .primary-navigation {
-            margin: 0 auto;
-            display: flex;
-            font-size: 20px;
-            height: 100%;
-        }
-
-        .primary-navigation li {
-            list-style: none;
-            margin: 0 auto;
-            display: inline-flex;
-            position: relative;
-            text-decoration: none;
-            height: 1.75cm;
-            align-items: center;
-        }
-
-        .primary-navigation li ul {
-            visibility: hidden;
-            opacity: 0;
-            position: absolute;
-            padding-left: 0;
-            top: 50px;
-            left: 0px;
-            display: none;
-            background: white;
-        }
-
-        .primary-navigation li ul::before {
-            content: '';
-            top: -10px;
-            position: absolute;
-            width: 100%;
-            z-index: 10;
-            height: 20px;
-            background-color: transparent;
-        }
-
-        .primary-navigation li:hover>ul,
-        .primary-navigation li ul:hover {
-            visibility: visible;
-            opacity: 1;
-            display: block;
-            min-width: 250px;
-            text-align: left;
-            padding-top: 10px;
-            box-shadow: 0px 3px 5px -1px #ccc;
-        }
-
-        .primary-navigation li ul li {
-            clear: both;
-            width: 100%;
-            text-align: left;
-            margin-bottom: 20px;
-            padding-left: 5px;
-            border-style: none;
-            text-decoration: none;
-            height: 100%;
-
-        }
-
-        .primary-navigation li ul li a {
-            text-align: center;
-            display: flex;
-            transition: all 1s ease;
-            padding-left: 10px;
-        }
-
-        .primary-navigation li ul li a:hover {
-            padding-left: 20px;
-            border-left: 3px solid #ffffff;
-            transition: all 0.3s ease;
-            color: #b41712;
-            height: 100%;
-            text-align: left;
-        }
-
-        /*---------------header-------------------*/
         body {
-            background-color: rgb(248, 250, 250);
-        }
-
-        .header_item1 {
-            display: grid;
-            grid-template-columns: 18% 67% 7% 8%;
-            align-items: center;
-            padding-left: 2vh;
-            border-color: rgb(182, 181, 181);
-            border-style: hidden hidden solid hidden;
-            border-width: 1px;
-            color: rgb(161, 161, 161);
-            background-color: rgb(248, 250, 250);
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--mdc-theme-background);
+            color: #333;
+            line-height: 1.6;
         }
 
         a {
-            list-style: none;
-            color: black;
             text-decoration: none;
+            color: black;
         }
 
-        .header_item2 {
-            display: grid;
-            grid-template-columns: 30% 50%;
-            align-items: center;
-            padding: 1.5ch;
-            background-color: rgb(248, 250, 250);
+        /* --- Breadcrumb --- */
+        .breadcrumb {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #ddd;
+            background-color: var(--mdc-theme-surface);
         }
 
-        .header_item3 {
-            display: grid;
-            grid-template-columns: 2% 15% 8% 8% 8% 15% 24% 6% 6%;
-            align-items: center;
-            justify-items: center;
-            height: 1.75cm;
-            background-color: #b41712;
-            color: white;
-            font-size: 20px;
-            position: relative;
-        }
-
-        .a1 {
-            color: white;
-            font-size: 20px;
-        }
-
-        .a1:hover {
-            background-color: #ffffff;
-            color: #b41712;
-            font-size: 20px;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-
-        .input01 {
-            border: none;
-        }
-
-        .input1 {
-            border-bottom-left-radius: 15px;
-            border-top-left-radius: 15px;
-            border: none;
-            height: 1cm;
-            padding-right: 0%;
-            box-shadow: 10px 10px #e7e6e6 0 0 10px 30px #e7e6e6 30px 0 20px 30px #e7e6e6;
-        }
-
-        .input2 {
-            border-bottom-right-radius: 15px;
-            border-top-right-radius: 15px;
-            border: none;
-            height: 1cm;
-            width: 10cm;
-            padding-left: 0%;
-            box-shadow: 50px 10px #111111 0 0 10px 30px #0e0d0d 30px 0 20px 30px #1a1919;
-        }
-
-        .form form button {
-            background-color: rgb(66, 65, 65);
-            color: #ffffff;
-            border: none;
-            border-radius: 20px;
-            width: 1cm;
-            height: 1cm;
-        }
-
-        /*-------------dropdowm-----------*/
-        .dropdown {
-            position: relative;
-            display: inline-block;
-            color: #0e0d0d;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #f9f9f9;
-            min-width: 140px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            padding: 12px 16px;
-            z-index: 1;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .dropdown-content a:hover {
-            font-size: 18px;
-            color: #b41712;
-        }
-
-        /*------------item-----------*/
-        .item div {
-            padding-top: 0.3em;
-            font-size: 24px;
-        }
-
-        .item {
-            padding-top: 2ch;
-            border-color: rgb(182, 181, 181);
-            border-style: hidden hidden solid hidden;
-            border-width: 1px;
-        }
-
-        .item a {
+        .breadcrumb a {
             color: gray;
         }
 
-        /*-----------main1----------*/
-        .main1 {
-            display: grid;
-            grid-template-columns: 25% 75%;
+        .breadcrumb div {
+            padding-top: 0.5rem;
+            font-size: 1.5rem; /* 24px */
+            font-weight: 500;
         }
 
+        /* --- Bố cục chính --- */
+        .main-layout {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            gap: 1.5rem;
+        }
+
+        /* --- Sidebar (Tùy chọn) --- */
         .TuyChon {
-            background-color: #b41712;
+            flex-basis: 280px; /* Chiều rộng cố định cho sidebar */
+            flex-shrink: 0;
+            background-color: var(--mdc-theme-primary);
             color: #ffffff;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            height: fit-content; /* Chỉ cao bằng nội dung */
+            overflow: hidden;
+        }
+
+        .user-profile {
             display: flex;
             flex-direction: column;
-            height: 18cm;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .TuyChon a {
-            height: 1.5cm;
+        .user-profile-name {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .user-profile-desc {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .user-profile img {
+            width: 120px; /* Giảm kích thước avatar */
+            height: 120px;
+            background-color: white;
+            border-radius: 50%; /* Tròn */
+            border: 3px solid var(--mdc-theme-surface);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
             color: #ffffff;
-            font-size: 18px;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            padding: 1ch;
+            font-size: 1rem; /* 16px */
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            cursor: pointer;
+            border-left: 4px solid transparent;
         }
 
-        .TuyChon a:hover {
-            background-color: #ffffff;
-            color: #b41712;
-            font-size: 18px;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            padding: 1ch;
+        .nav-link i {
+            width: 20px; /* Căn chỉnh icon */
+            text-align: center;
         }
+
+        .nav-link:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-link.active {
+            background-color: var(--mdc-theme-surface);
+            color: var(--mdc-theme-primary);
+            font-weight: 500;
+            border-left: 4px solid var(--mdc-theme-error);
+        }
+
+        /* --- Khu vực nội dung --- */
+        .content-panels {
+            flex: 1; /* Tự động lấp đầy không gian còn lại */
+            min-width: 0; /* Cho phép flex-shrink */
+        }
+
+        .in4 {
+            display: none; /* Ẩn tất cả các panel */
+            background-color: var(--mdc-theme-surface);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden; /* Đảm bảo border-radius hoạt động */
+            margin-bottom: 1.5rem; /* Thêm khoảng cách giữa các panel nếu xếp chồng */
+        }
+
+        .in4.in4--active {
+            display: block; /* Chỉ hiện panel active */
+        }
+
+        .panel-header {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 500;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            background-color: #fafafa;
+        }
+
+        /* Bổ sung style cho sub-header */
+        .panel-subheader {
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 1rem 1.5rem 0 1.5rem;
+            margin-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        /* --- Panel Thông báo --- */
+        .list {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color var(--transition-speed);
+        }
+
+        .list:last-child {
+            border-bottom: none;
+        }
+
+        .list:hover {
+            background-color: #f9f9f9;
+        }
+
+        .list i {
+            color: var(--mdc-theme-primary);
+        }
+
+        .empty-message {
+            padding: 2rem;
+            text-align: center;
+            color: var(--mdc-theme-secondary);
+        }
+
+        /* --- Panel Thông tin tài khoản --- */
+        .info-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 cột */
+            gap: 1.5rem;
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--mdc-theme-secondary);
+        }
+
+        /* Chia style cho input thường và readonly */
+        .form-group input {
+            padding: 0.75rem 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            background-color: var(--mdc-theme-surface); /* Nền trắng mặc định */
+        }
+
+        .form-group input[readonly] {
+            background-color: #f9f9f9; /* Màu nền cho trường readonly */
+            border-color: #eee;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Nút submit căn phải */
+        .form-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+
+        /* Styles cho thông báo lỗi/thành công */
+        .alert {
+            padding: 1rem;
+            margin: 0 1.5rem 1rem 1.5rem; /* Căn lề giống form */
+            border-radius: 4px;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+        .alert-success {
+            background-color: #e0f8e9;
+            color: #1d723a;
+            border-color: #b8e9c9;
+        }
+        .alert-error {
+            background-color: #fdebee;
+            color: var(--mdc-theme-error); /* Use existing variable */
+            border-color: #f5c6cb;
+        }
+
+
+        /* --- Panel Lịch sử giao dịch --- */
+        .history-grid-header,
+        .history-grid-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            text-align: left;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .history-grid-header {
+            font-weight: 500;
+            background-color: #fafafa;
+            font-size: 0.9rem;
+            color: var(--mdc-theme-secondary);
+            text-transform: uppercase;
+        }
+
+        .history-grid-row:last-child {
+            border-bottom: none;
+        }
+
+        .history-grid-row:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* --- Panel Đấu giá của tôi (Styles từ code gốc) --- */
+        .action-buttons {
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .product-card {
+            display: flex;
+            flex-direction: column;
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .product-card__media {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .product-card__media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-card__content {
+            padding: 1rem;
+            flex: 1; /* Đẩy action xuống dưới */
+        }
+
+        .product-card__content h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        .product-card__content .price {
+            font-weight: 500;
+            color: var(--mdc-theme-primary);
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+        .product-card__content .status,
+        .product-card__content .date {
+            font-size: 0.9rem;
+            color: var(--mdc-theme-secondary);
+        }
+
+
+        .product-card__actions {
+            padding: 0.5rem 1rem 1rem 1rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--mdc-theme-secondary);
+        }
+        .empty-state i {
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+        .empty-state p {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        /* --- Modal (Styles từ code gốc) --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            overflow-y: auto; /* Cho phép cuộn nếu modal dài */
+        }
+
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--mdc-theme-surface);
+            border-radius: var(--border-radius);
+        }
+
+        #productForm .mdc-text-field,
+        #productForm .mdc-select {
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+        .mdc-select {
+            width: 100%;
+            height: 56px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .mdc-select select {
+            width: 100%;
+            height: 100%;
+            border: none;
+            padding: 0 1rem;
+            font-size: 1rem;
+            background: transparent;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .file-upload {
+            margin: 1rem 0;
+        }
+        .file-upload label {
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .file-upload input[type="file"] {
+            font-size: 1rem;
+        }
+
+        #imagePreview {
+            width: 100%;
+            height: 200px;
+            background: #f0f0f0;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        #imagePreview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 900px) {
+            .main-layout {
+                flex-direction: column; /* Xếp chồng sidebar và content */
+                padding: 0.5rem;
+                gap: 0.5rem;
+            }
+
+            .TuyChon {
+                flex-basis: auto; /* Bỏ chiều rộng cố định */
+                width: 100%;
+                height: auto;
+            }
+
+            .breadcrumb {
+                padding: 1rem;
+            }
+
+            .info-form {
+                grid-template-columns: 1fr; /* Form 1 cột */
+            }
+
+            .history-grid-header {
+                display: none; /* Ẩn header của grid lịch sử */
+            }
+
+            .history-grid-row {
+                grid-template-columns: 1fr; /* Lịch sử 1 cột */
+                gap: 0.5rem;
+                padding: 1rem;
+                border: 1px solid #eee;
+                border-radius: var(--border-radius);
+                margin-bottom: 1rem;
+            }
+
+            .history-grid-row div:nth-child(1)::before { content: 'Người dùng: '; font-weight: 500; }
+            .history-grid-row div:nth-child(2)::before { content: 'Giá tiền: '; font-weight: 500; }
+            .history-grid-row div:nth-child(3)::before { content: 'ID sản phẩm: '; font-weight: 500; }
+            .history-grid-row div:nth-child(4)::before { content: 'Thời gian: '; font-weight: 500; }
+
+            .list {
+                grid-template-columns: auto 1fr; /* Thông báo 2 cột */
+                grid-template-rows: auto auto;
+            }
+            .list div:nth-child(1) { grid-row: 1 / 3; } /* Icon */
+            .list div:nth-child(2) { grid-column: 2 / 3; font-weight: 500; } /* Nội dung */
+            .list div:nth-child(5) { grid-column: 2 / 3; font-size: 0.9rem; color: #666; } /* Thời gian */
+            .list div:nth-child(3), .list div:nth-child(4) { display: none; } /* Ẩn N/A */
+        }
+
     </style>
+</head>
+<div th:replace="~{/layout/header::header}"></div>
+
+<body>
+<div class="breadcrumb">
+    <a href="/home">Trang chủ /</a>
+    <a href="/user/profile">Tài khoản</a>
+</div>
+
+<div class="main-layout">
+
+    <div class="TuyChon">
+        <div class="user-profile">
+            <img src="/images/no-image.png" alt="User avatar">
+            <div class="user-profile-name" th:text="${user != null ? user.name : 'Người dùng'}">
+            </div>
+            <div class="user-profile-desc">Tài khoản cá nhân</div>
+        </div>
+
+        <a class="nav-link" data-target="thongbao" href="#"><i class="fa-regular fa-bell"></i>&nbsp; Thông báo</a>
+        <a class="nav-link" data-target="info" href="#"><i class="fa-regular fa-circle-user"></i>&nbsp; Thông tin tài khoản</a>
+        <a class="nav-link" data-target="history" href="#"><i class="fa-solid fa-bars-staggered"></i>&nbsp; Lịch sử giao dịch</a>
+        <a class="nav-link" data-target="myauction" href="#"><i class="fa-solid fa-house-chimney"></i>&nbsp; Cuộc đấu giá của tôi</a>
+        <a class="nav-link" href="/logout"><i class="fa-solid fa-right-from-bracket"></i>&nbsp; Đăng xuất</a>
+    </div>
+
+    <div class="content-panels">
+
+        <div id="thongbao" class="in4 thongbao in4--active">
+            <div class="panel-header">
+                Thông báo
+            </div>
+            <div class="panel-content">
+                <a th:each="notification : ${notifications}" class="list" href="#">
+                    <div><i class="fa-regular fa-bell"></i></div>
+                    <div th:text="${notification.notification}">Thông báo</div>
+                    <div>N/A</div>
+                    <div>N/A</div>
+                    <div th:text="${#temporals.format(notification.time, 'dd/MM/yyyy HH:mm')}">Thời gian</div>
+                </a>
+                <div th:if="${notifications == null or #lists.isEmpty(notifications)}" class="empty-message">
+                    <p>Không có thông báo nào</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="info" class="in4 info">
+            <div class="panel-header">
+                Thông tin tài khoản
+            </div>
+            <form th:action="@{/user/profile}" method="POST" class="info-form">
+                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <div class="form-group full-width">
+                    <label for="name">Họ và tên:</label>
+                    <input id="name" type="text" name="name" th:value="${user != null ? user.name : ''}" readonly>
+                </div>
+                <div class="form-group full-width">
+                    <label for="email">Địa chỉ email:</label>
+                    <input id="email" type="email" name="email" th:value="${user != null ? user.email : ''}" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Số điện thoại:</label>
+                    <input id="phone" type="text" name="phone" th:value="${user != null ? user.phone : ''}" readonly>
+                </div>
+                <div class="form-group full-width">
+                    <label for="address">Địa chỉ:</label>
+                    <input id="address" type="text" name="address" th:value="${user != null ? user.address : ''}" readonly>
+                </div>
+            </form>
+
+
+            <div class="panel-subheader">
+                Đổi mật khẩu
+            </div>
+
+            <div th:if="${param.pwd_changed == '1'}" class="alert alert-success">
+                Đổi mật khẩu thành công!
+            </div>
+
+            <div th:if="${pwd_error != null}" class="alert alert-error" th:text="${pwd_error}">
+                Lỗi mật khẩu sẽ hiện ở đây.
+            </div>
+
+            <form th:action="@{/user/change-password}" method="POST" class="info-form" style="padding-top: 1rem;">
+                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <div class="form-group full-width">
+                    <label for="currentPassword">Mật khẩu hiện tại:</label>
+                    <input id="currentPassword" type="password" name="currentPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Mật khẩu mới:</label>
+                    <input id="newPassword" type="password" name="newPassword" required pattern=".{6,}" title="Mật khẩu phải từ 6 ký tự trở lên">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Xác nhận mật khẩu mới:</label>
+                    <input id="confirmPassword" type="password" name="confirmPassword" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="mdc-button mdc-button--raised">
+                        <i class="fa-solid fa-key"></i>&nbsp; Đổi mật khẩu
+                    </button>
+                </div>
+            </form>
+
+        </div>
+
+        <div id="history" class="in4 history">
+            <div class="panel-header">
+                Lịch sử giao dịch
+            </div>
+            <div class="panel-content">
+                <div class="history-grid-header">
+                    <div>Tên người dùng </div>
+                    <div>Giá tiền</div>
+                    <div>ID sản phẩm</div>
+                    <div>Thời gian trả giá </div>
+                </div>
+                <a th:each="history : ${bidHistory}" class="history-grid-row" th:href="@{/Goods/{id}(id=${history.auction.product.id})}">
+                    <div th:text="${history.user != null ? history.user.name : 'N/A'}">Người dùng</div>
+                    <div th:text="${#strings.replace(history.amount.toString(), '.00', '')} + ' VND'">Giá tiền</div>
+                    <div th:text="${history.auction.product.id}">ID sản phẩm</div>
+                    <div th:text="${#temporals.format(history.time, 'dd/MM/yyyy HH:mm:ss')}">Thời gian</div>
+                </a>
+                <div th:if="${bidHistory == null or #lists.isEmpty(bidHistory)}" class="empty-message">
+                    <p>Không có lịch sử giao dịch</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="myauction" class="in4 myauction">
+            <div class="panel-header">
+                Quản lý sản phẩm đấu giá
+            </div>
+
+            <div th:if="${param.success == '1'}" class="alert alert-success" style="margin: 1rem; padding: 1rem; background-color: #d4edda; color: #155724; border-radius: 4px;">
+                <strong>Thành công!</strong> Sản phẩm của bạn đã được đăng thành công và đang chờ duyệt.
+            </div>
+
+            <div class="action-buttons">
+                <button class="mdc-button mdc-button--raised" onclick="showCreateProductForm()">
+                    <i class="fa-solid fa-plus"></i>&nbsp;Đăng sản phẩm mới
+                </button>
+            </div>
+
+            <div class="product-grid">
+                <div th:each="product : ${myProducts}" class="product-card mdc-card">
+                    <div class="product-card__media">
+                        <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" alt="Product image">
+                        <img th:unless="${product.imageUrl}" src="/images/no-image.png" alt="No image">
+                    </div>
+                    <div class="product-card__content">
+                        <h3 th:text="${product.name}">Product Name</h3>
+                        <p class="price" th:text="${product.startingPrice != null ? (#strings.replace(product.startingPrice.toString(), '.00', '') + ' VND') : 'N/A'}">Price</p>
+                        <p class="status" th:text="${product.status}">Status</p>
+                        <p class="date" th:text="${product.requestedAt != null ? #temporals.format(product.requestedAt, 'dd/MM/yyyy') : 'N/A'}">Date</p>
+                    </div>
+                    <div class="product-card__actions">
+                        <button class="mdc-button" th:onclick="'editProduct(' + ${product.id} + ')'">
+                            <i class="fa-solid fa-edit"></i>&nbsp;Chỉnh sửa
+                        </button>
+                        <a th:href="@{/auction/{id}(id=${product.id})}" class="mdc-button mdc-button--raised">
+                            <i class="fa-solid fa-gavel"></i>&nbsp;Xem đấu giá
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${myProducts == null or #lists.isEmpty(myProducts)}" class="empty-state">
+                <i class="fa-solid fa-box-open fa-3x"></i>
+                <p>Bạn chưa có sản phẩm nào</p>
+                <button class="mdc-button mdc-button--raised" onclick="showCreateProductForm()">
+                    Đăng sản phẩm đầu tiên
+                </button>
+            </div>
+        </div>
+
+        <div id="productModal" class="modal">
+            <div class="modal-content mdc-card">
+                <h2 id="modalTitle">Đăng sản phẩm mới</h2>
+                <form id="productForm" th:action="@{/create}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <input type="hidden" id="productId" name="id">
+
+                    <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+                        <input type="text" id="productName" name="name" class="mdc-text-field__input" required>
+                        <div class="mdc-notched-outline">
+                            <div class="mdc-notched-outline__leading"></div>
+                            <div class="mdc-notched-outline__notch">
+                                <label for="productName" class="mdc-floating-label">Tên sản phẩm</label>
+                            </div>
+                            <div class="mdc-notched-outline__trailing"></div>
+                        </div>
+                    </div>
+
+                    <div class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+                        <input type="number" id="startingPrice" name="startingPrice" class="mdc-text-field__input" required>
+                        <div class="mdc-notched-outline">
+                            <div class="mdc-notched-outline__leading"></div>
+                            <div class="mdc-notched-outline__notch">
+                                <label for="startingPrice" class="mdc-floating-label">Giá khởi điểm (VND)</label>
+                            </div>
+                            <div class="mdc-notched-outline__trailing"></div>
+                        </div>
+                    </div>
+
+                    <div class="mdc-select">
+                        <select id="categoryId" name="categoryId" required>
+                            <option value="">Chọn danh mục</option>
+                            <option th:each="category : ${categories}"
+                                    th:value="${category.id}"
+                                    th:text="${category.name}">Category name</option>
+                        </select>
+                    </div>
+
+                    <div class="mdc-text-field mdc-text-field--textarea" data-mdc-auto-init="MDCTextField">
+                        <textarea id="description" name="description" class="mdc-text-field__input" rows="4"></textarea>
+                        <div class="mdc-notched-outline">
+                            <div class="mdc-notched-outline__leading"></div>
+                            <div class="mdc-notched-outline__notch">
+                                <label for="description" class="mdc-floating-label">Mô tả sản phẩm</label>
+                            </div>
+                            <div class="mdc-notched-outline__trailing"></div>
+                        </div>
+                    </div>
+
+                    <div class="file-upload">
+                        <label for="imageFile">Hình ảnh sản phẩm</label>
+                        <input type="file" id="imageFile" name="imageFile" accept="image/*">
+                        <div id="imagePreview"></div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="mdc-button" onclick="closeProductModal()">Hủy</button>
+                        <button type="submit" class="mdc-button mdc-button--raised">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div> </div> <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const navLinks = document.querySelectorAll('.TuyChon .nav-link');
+        const panels = document.querySelectorAll('.content-panels .in4');
+
+        // --- CẬP NHẬT LOGIC KHỞI TẠO ---
+        // Kiểm tra xem có lỗi mật khẩu hoặc thông báo thành công không
+        // Nếu có, tự động active tab "Thông tin tài khoản"
+        const hasPwdError = document.querySelector('.alert-error[th\\:if="${pwd_error != null}"]');
+        const hasPwdSuccess = document.querySelector('.alert-success[th\\:if="${param.pwd_changed == \'1\'}"]');
+        let defaultActiveId = 'thongbao'; // Mặc định là tab thông báo
+
+        if (hasPwdError || hasPwdSuccess) {
+            // Lấy từ thực tế (nếu Thymeleaf đã render)
+            if (document.querySelector('.alert-error') || document.querySelector('.alert-success')) {
+                defaultActiveId = 'info';
+            }
+        }
+
+        // Tìm link và panel tương ứng với defaultActiveId
+        const activeLink = document.querySelector(`.nav-link[data-target="${defaultActiveId}"]`);
+        const activePanel = document.getElementById(defaultActiveId);
+
+        // Gỡ active cũ (nếu có)
+        document.querySelectorAll('.in4.in4--active').forEach(p => p.classList.remove('in4--active'));
+        document.querySelectorAll('.nav-link.active').forEach(l => l.classList.remove('active'));
+
+        // Set active mới
+        if (activeLink && activePanel) {
+            activeLink.classList.add('active');
+            activePanel.classList.add('in4--active');
+        } else {
+            // Fallback: Nếu không tìm thấy, active cái đầu tiên
+            document.querySelector('.nav-link[data-target]').classList.add('active');
+            document.querySelector('.in4').classList.add('in4--active');
+        }
+        // --- HẾT CẬP NHẬT LOGIC KHỞI TẠO ---
+
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const targetId = link.dataset.target;
+
+                if (!targetId) {
+                    return;
+                }
+
+                e.preventDefault();
+
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                link.classList.add('active');
+
+                panels.forEach(panel => {
+                    if (panel.id === targetId) {
+                        panel.classList.add('in4--active');
+                    } else {
+                        panel.classList.remove('in4--active');
+                    }
+                });
+            });
+        });
+
+        mdc.autoInit();
+    });
+
+    // --- Các hàm modal (giữ nguyên) ---
+    function showCreateProductForm() {
+        document.getElementById('modalTitle').textContent = 'Đăng sản phẩm mới';
+        document.getElementById('productForm').reset();
+        document.getElementById('productId').value = '';
+        document.getElementById('imagePreview').innerHTML = '';
+        document.getElementById('productModal').style.display = 'block';
+        mdc.autoInit(document.getElementById('productModal'));
+    }
+
+    function editProduct(productId) {
+        document.getElementById('modalTitle').textContent = 'Chỉnh sửa sản phẩm';
+        document.getElementById('productId').value = productId;
+
+        fetch(`/products/${productId}`)
+            .then(response => response.json())
+            .then(product => {
+                document.getElementById('productName').value = product.name;
+                document.getElementById('startingPrice').value = product.startingPrice;
+                document.getElementById('categoryId').value = product.categoryId;
+                document.getElementById('description').value = product.description;
+                const preview = document.getElementById('imagePreview');
+                if (product.imageUrl) {
+                    preview.innerHTML = `<img src="${product.imageUrl}" alt="Product image">`;
+                } else {
+                    preview.innerHTML = '';
+                }
+
+                document.getElementById('productModal').style.display = 'block';
+                mdc.autoInit(document.getElementById('productModal'));
+            });
+    }
+
+    function closeProductModal() {
+        document.getElementById('productModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('productModal');
+        if (event.target == modal) {
+            closeProductModal();
+        }
+    }
+
+    document.getElementById('imageFile').onchange = function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
 </body>
 
 </html>

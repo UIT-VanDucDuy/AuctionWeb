@@ -18,6 +18,7 @@ public interface AuctionRegistrationRepository extends JpaRepository<AuctionRegi
     long countRegsByAuction(@Param("auctionId") Integer auctionId);
 
     List<AuctionRegistration> findByAuctionAndStatus(Auction auction, RegistrationStatus registrationStatus);
+    boolean existsByAuction_IdAndUser_Id(Integer auctionId, Integer userId);
 }
 
 
